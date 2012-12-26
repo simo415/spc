@@ -16,7 +16,7 @@ import java.util.List;
 @Command (
    name = "enderchest",
    description = "Opens EnderChest GUI without having EnderChest",
-   example = "all",
+   example = "",
    version = "1.4.2"
 )
 public class EnderChest extends StandardCommand {
