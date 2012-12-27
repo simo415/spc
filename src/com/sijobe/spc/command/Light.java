@@ -52,11 +52,10 @@ public class Light extends StandardCommand {
          }
          litWorld = player.getWorld().getMinecraftWorld().hashCode(); // we go by the serverside hashcode
       } else {
-         sender.sendMessageToPlayer("Restoring defaults");
-         // clientWorld.getMinecraftWorld().provider.generateLightBrightnessTable();
+         sender.sendMessageToPlayer("Restoring light levels");
          clientWorld.getMinecraftWorld().provider.registerWorld(clientWorld.getMinecraftWorld());
       }
-      isLit ^= true; // toggle isLit
+      isLit = !isLit; // toggle isLit
    }
 
    /**

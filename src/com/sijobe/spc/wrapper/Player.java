@@ -6,6 +6,7 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EnumGameType;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.MovingObjectPosition;
+import net.minecraft.src.PotionEffect;
 import net.minecraft.src.Vec3; // for raytrace fix (note class should be called Vec3D)
 
 /**
@@ -422,5 +423,32 @@ public class Player {
 	 */
 	public EntityPlayer getMinecraftPlayer() {
 		return player;
+	}
+	
+	/**
+	 * Removes the specified potion from the player
+	 * 
+	 * @param potion - The potion ID to remove
+	 */
+	public void removePotionEffect(int potion) {
+	   player.removePotionEffect(potion);
+	}
+	
+	/**
+	 * Removes all potion effects
+	 */
+	public void removeAllPotionEffects() {
+	   player.clearActivePotions();
+	}
+	
+	/**
+	 * Adds a potion effect to the player
+	 * 
+	 * @param id - The ID of the potion
+	 * @param duration - The duration the potion should run for
+	 * @param strength - The strength of effect to add
+	 */
+	public void addPotionEffect(int id, int duration, int strength) {
+	   player.addPotionEffect(new PotionEffect(id, duration, strength));
 	}
 }

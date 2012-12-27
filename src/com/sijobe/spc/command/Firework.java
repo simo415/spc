@@ -19,7 +19,8 @@ import com.sijobe.spc.wrapper.Player;
    description = "Launches a random firework in the direction of the player",
    example = "",
    videoURL = "", // TODO
-   version = "1.4.6"
+   version = "1.4.6",
+   enabled = false
 )
 public class Firework extends StandardCommand {
 
