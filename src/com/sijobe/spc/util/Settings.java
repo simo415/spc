@@ -328,6 +328,6 @@ public class Settings extends Properties {
     */
    @Override
    public Object clone() {
-      return this.load(this.settings);
+      return new Settings(this.settings);
    }
 }

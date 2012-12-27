@@ -11,6 +11,8 @@ import com.sijobe.spc.wrapper.CommandSender;
  * in the class are specified by the getCommands() method and the current 
  * instances command name is accessed using the getName() method. 
  *
+ * TODO: Made annotation compatible
+ *
  * @see MultipleCommands#getCommands()
  * @see MultipleCommands#getName()
  * @author simo_415

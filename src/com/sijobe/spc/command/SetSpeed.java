@@ -2,6 +2,7 @@ package com.sijobe.spc.command;
 
 import com.sijobe.spc.core.IPlayerSP;
 import com.sijobe.spc.util.FontColour;
+import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
@@ -11,9 +12,7 @@ import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The set speed command allows you to set the speed that the player moves at. 
@@ -44,30 +43,31 @@ public class SetSpeed extends StandardCommand implements IPlayerSP {
     * The default speed that the player moves
     */
    private static final double DEFAULT_SPEED = 1;
-
+   
    /**
-    * The speed that the player is moving
+    * The key that is saved into the config
     */
-   private static Map<String,Double> SPEED = new HashMap<String,Double>();
+   private static final String CONFIG_KEY = "speed";
 
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#execute(com.sijobe.spc.wrapper.CommandSender, java.util.List)
     */
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
-      String playername = getSenderAsPlayer(sender).getPlayerName();
+      Settings config = super.loadSettings(super.getSenderAsPlayer(sender));
       if (((String)params.get(0)).equalsIgnoreCase("reset")) {
-         SPEED.put(playername, DEFAULT_SPEED);
+         config.set(CONFIG_KEY, DEFAULT_SPEED);
       } else {
          try {
-            SPEED.put(playername, Double.parseDouble((String)params.get(0)));
+            config.set(CONFIG_KEY, Double.parseDouble((String)params.get(0)));
          } catch (Exception e) {
             throw new CommandException("Could not parse " + (String)params.get(0) + " as a speed.");
          }
       }
+      config.save();
       sender.sendMessageToPlayer("Player speed set to " + FontColour.AQUA 
-               + SPEED.get(playername) + FontColour.WHITE + "x normal speed");
-   }
+               + config.getDouble(CONFIG_KEY, DEFAULT_SPEED) + FontColour.WHITE + "x normal speed");
+      }
 
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#getParameters()
@@ -106,7 +106,7 @@ public class SetSpeed extends StandardCommand implements IPlayerSP {
     */
    @Override
    public void movePlayer(Player player, float forward, float strafe, float speed) {
-      Double pspeed = SPEED.get(player.getPlayerName());
+      Double pspeed = super.loadSettings(player).getDouble(CONFIG_KEY, DEFAULT_SPEED);
       if (pspeed == null || pspeed == 1) {
          return;
       }

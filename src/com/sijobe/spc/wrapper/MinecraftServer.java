@@ -1,7 +1,10 @@
 package com.sijobe.spc.wrapper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sijobe.spc.core.Constants;
 
 /**
  * Wrapper around the MinecraftServer class providing.
@@ -78,5 +81,23 @@ public class MinecraftServer {
     */
    public static String runCommand(String command) {
       return getMinecraftServer().executeCommand(command);
+   }
+   
+   /**
+    * Gets the directory name of the loaded world
+    * 
+    * @return The directory name of the world
+    */
+   public static String getDirectoryName() {
+      return getMinecraftServer().getFolderName();
+   }
+   
+   /**
+    * Gets the directory that the currently loaded world is located at
+    * 
+    * @return The location where the world is located
+    */
+   public static File getWorldDirectory() {
+      return new File(Constants.SAVES_DIR, getDirectoryName());
    }
 }

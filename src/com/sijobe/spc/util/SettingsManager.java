@@ -74,6 +74,7 @@ public class SettingsManager {
          loaded = new Settings(location);
       } else {
          loaded = (Settings)defaultConfig.clone();
+         loaded.setFile(location);
       }
       cache.put(key, loaded);
       return loaded;

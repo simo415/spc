@@ -1,6 +1,7 @@
 package com.sijobe.spc.core;
 
 import com.sijobe.spc.updater.ModVersion;
+import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.wrapper.Minecraft;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public class Constants {
    /**
     * Contains the version string of the current Minecraft version
     */
-   public static final String VERSION = "4.3";
+   public static final String VERSION = "4.5";
    
    /**
     * The name of the mod
@@ -40,6 +41,16 @@ public class Constants {
          MOD_DIR.mkdirs();
       }
    }
+   
+   /**
+    * The default settings file to use
+    */
+   public static final Settings DEFAULT_SETTINGS = new Settings(new File(MOD_DIR, "default.properties"));
+   
+   /**
+    * Directory where the Minecraft level saves are located
+    */
+   public static final File SAVES_DIR = new File(Minecraft.getMinecraftDirectory(), "saves");
    
    /**
     * @return the version

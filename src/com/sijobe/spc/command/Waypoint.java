@@ -27,7 +27,7 @@ public class Waypoint extends MultipleCommands {
       }
    );
    
-   private static SettingsManager MANAGER = new SettingsManager(null);
+   //private static SettingsManager MANAGER = new SettingsManager(null);
    
    public Waypoint(String name) {
       super(name);

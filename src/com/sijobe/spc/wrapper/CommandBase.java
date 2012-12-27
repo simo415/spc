@@ -1,15 +1,20 @@
 package com.sijobe.spc.wrapper;
 
 import com.sijobe.spc.command.Command;
+import com.sijobe.spc.core.Constants;
 import com.sijobe.spc.util.FontColour;
+import com.sijobe.spc.util.Settings;
+import com.sijobe.spc.util.SettingsManager;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.validation.ValidationException;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.TileEntityCommandBlock;
 
 /**
  * Provides a base class for all custom commands to extend. All non-abstract 
@@ -19,9 +24,14 @@ import net.minecraft.src.TileEntityCommandBlock;
  * TODO: Work out how to handle multiple threads
  *
  * @author simo_415
- * @version 1.2
+ * @version 1.3
  */
 public abstract class CommandBase extends net.minecraft.src.CommandBase {
+   
+   /**
+    * A map containing all settings managers that have been loaded for worlds
+    */
+   private static Map<String, SettingsManager> MANAGER = new HashMap<String, SettingsManager>();
 
    /**
     * The Command annotation of the class that contains command attributes.
@@ -248,5 +258,45 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
     */
    public Parameters getParameters() {
       return Parameters.DEFAULT;
+   }
+     
+   /**
+    * Gets the settings for the specified player in the correct world.
+    * 
+    * @param player - The player to retrieve the settings for
+    * @return The settings associated with the user
+    */
+   public static Settings loadSettings(Player player) {
+      if (player == null) {
+         return null;
+      }
+      String directoryName = MinecraftServer.getDirectoryName();
+      SettingsManager manager = MANAGER.get(directoryName);
+      if (manager == null) {
+         File spcPlayers = new File(MinecraftServer.getWorldDirectory(), "spc/players");
+         if (!spcPlayers.exists()) {
+            spcPlayers.mkdirs();
+         }
+         manager = new SettingsManager(spcPlayers, Constants.DEFAULT_SETTINGS);
+         MANAGER.put(directoryName, manager);
+      }
+      return manager.load(player.getPlayerName());
+   }
+   
+   /**
+    * Saves the settings for the specified player
+    * 
+    * @param player - The player to save the settings for
+    * @return True if the settings get saved successfully, false otherwise
+    */
+   public static boolean saveSettings(Player player) {
+      if (player == null) {
+         return false;
+      }
+      SettingsManager manager = MANAGER.get(MinecraftServer.getDirectoryName());
+      if (manager != null) {
+         return manager.save(player.getPlayerName());
+      }
+      return false;
    }
 }
