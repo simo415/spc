@@ -460,4 +460,13 @@ public class Player {
 	public void changeDimension(int dimension) {
 	   player.travelToDimension(dimension);
 	}
+	
+	/**
+	 * Sets the quantity of air that the player has
+	 * 
+	 * @param air - The quantity of air that the player has
+	 */
+	public void setAir(int air) {
+	   player.setAir(air);
+	}
 }
