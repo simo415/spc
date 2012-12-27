@@ -451,4 +451,13 @@ public class Player {
 	public void addPotionEffect(int id, int duration, int strength) {
 	   player.addPotionEffect(new PotionEffect(id, duration, strength));
 	}
+	
+	/**
+	 * Changes the dimension that the player is in
+	 * 
+	 * @param dimension - The dimension to move the player to
+	 */
+	public void changeDimension(int dimension) {
+	   player.travelToDimension(dimension);
+	}
 }
