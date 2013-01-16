@@ -20,13 +20,14 @@ import java.util.List;
  * etc.. 
  *
  * @author simo_415
+ * @version 1.1
  */
 @Command (
    name = "setspeed",
    description = "Sets the players speed to the value specified",
    example = "2",
    videoURL = "http://www.youtube.com/watch?v=G48upLnQr-s",
-   version = "1.0",
+   version = "1.3",
    enabled = true
 )
 public class SetSpeed extends StandardCommand implements IPlayerSP {
@@ -40,7 +41,7 @@ public class SetSpeed extends StandardCommand implements IPlayerSP {
    );
 
    /**
-    * The default speed that the player moves
+    * The default speed multiplier that the player moves
     */
    private static final double DEFAULT_SPEED = 1;
    

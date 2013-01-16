@@ -12,6 +12,7 @@ import com.sijobe.spc.wrapper.CommandSender;
  * instances command name is accessed using the getName() method. 
  *
  * TODO: Made annotation compatible
+ * TODO: Need to contact mojang about passing the command name through
  *
  * @see MultipleCommands#getCommands()
  * @see MultipleCommands#getName()

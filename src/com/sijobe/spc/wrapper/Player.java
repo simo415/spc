@@ -469,4 +469,21 @@ public class Player {
 	public void setAir(int air) {
 	   player.setAir(air);
 	}
+	
+	/**
+	 * Gives the specified achievement to the player. Note that this will only
+	 * work in client mode, server cannot give achievements to the player.
+	 * 
+	 * @param name - The name of the achievement
+	 * @return If the achievement was able to be added to the player
+	 */
+	public boolean addAchievement(String name) {
+	   if (player instanceof EntityClientPlayerMP) {
+	      if (Stats.doesAchievementExist(name)) {
+	         player.triggerAchievement(Stats.getAchievementByName(name));
+	         return true;
+	      }
+	   }
+	   return false;
+	}
 }

@@ -1,6 +1,5 @@
 package com.sijobe.spc.command;
 
-import com.sijobe.spc.util.SettingsManager;
 import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
@@ -26,8 +25,6 @@ public class Waypoint extends MultipleCommands {
          new ParameterString("<NAME>",false),
       }
    );
-   
-   //private static SettingsManager MANAGER = new SettingsManager(null);
    
    public Waypoint(String name) {
       super(name);
