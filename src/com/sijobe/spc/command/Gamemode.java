@@ -31,7 +31,7 @@ public class Gamemode extends StandardCommand {
     */
    private static final Parameters PARAMETERS = new Parameters (
       new Parameter[] {
-         new ParameterString("<creative|survival|adventure>", false, new String[] {"creative","survival","adventure","0","1","2"})
+         new ParameterString("[creative|survival|adventure]", true, new String[] {"creative","survival","adventure","0","1","2"})
       }
    );
 
@@ -62,11 +62,17 @@ public class Gamemode extends StandardCommand {
          } catch (Exception e) {
          }
       } else {
-         ;
+         if (player.isCreativeMode()) {
+            value = "survival";
+         } else {
+            value = "creative";
+         }
       }
+      
       if (!player.setGameType(value)) {
          throw new CommandException("Unknown gamemode type");
       }
+      
       sender.sendMessageToPlayer("Gamemode changed to " + FontColour.AQUA + value);
    }
 

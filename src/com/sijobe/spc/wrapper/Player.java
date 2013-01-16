@@ -283,7 +283,7 @@ public class Player {
 		if ((chosen = EnumGameType.getByName(gametype)) == null) {
 			return false;
 		}
-		player.sendGameTypeToPlayer(chosen);
+		player.setGameType(chosen);
 		return true;
 	}
 
@@ -485,5 +485,35 @@ public class Player {
 	      }
 	   }
 	   return false;
+	}
+	
+	/**
+	 * Returns true if flying is permitted for the user, false otherwise
+	 * 
+	 * @return True if flying is permitted
+	 */
+	public boolean getAllowFlying() {
+	   return player.capabilities.allowFlying;
+	}
+	
+	/**
+	 * Allows and disables Minecraft flying mode 
+	 * 
+	 * @param allow - True to allow flying, false to disable it
+	 */
+	public void setAllowFlying(boolean allow) {
+	   player.capabilities.allowFlying = allow;
+	   player.capabilities.isFlying = allow;
+	   player.sendPlayerAbilities();
+	}
+	
+	/**
+	 * Returns true if the player is currently in creative mode, false if in 
+	 * survival or adventure mode.
+	 * 
+	 * @return True is in creative mode, false otherwise.
+	 */
+	public boolean isCreativeMode() {
+	   return player.capabilities.isCreativeMode;
 	}
 }
