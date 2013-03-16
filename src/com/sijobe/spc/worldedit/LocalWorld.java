@@ -11,6 +11,10 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.regions.Region;
 
+// q3 code ;)
+import net.minecraft.src.BiomeGenBase;
+import net.minecraft.src.Chunk;
+
 /**
  * Implements the WorldEdit local world class that provides necessary methods
  * required to edit the world.
@@ -79,8 +83,13 @@ public class LocalWorld extends com.sk89q.worldedit.LocalWorld {
 
    @Override
    public BiomeType getBiome(Vector2D arg0) {
-      // TODO Auto-generated method stub
-      return null;
+      BiomeGenBase biome = this.world.getMinecraftWorld().getBiomeGenForCoords(arg0.getBlockX(), arg0.getBlockZ()); // world.getWorldChunkManager().getBiomeGenAt
+      try {
+         return MinecraftBiomeType.valueOf(biome.biomeName.toUpperCase(java.util.Locale.ENGLISH)); // name
+      } catch(IllegalArgumentException e) {
+         // e.printStackTrace();
+         return BiomeType.UNKNOWN;
+      } 
    }
 
    /**
@@ -146,8 +155,26 @@ public class LocalWorld extends com.sk89q.worldedit.LocalWorld {
 
    @Override
    public void setBiome(Vector2D arg0, BiomeType arg1) {
-      // TODO Auto-generated method stub
-
+      if(arg1 instanceof MinecraftBiomeType) {
+         int biomeId = ((MinecraftBiomeType) arg1).getBiomeID();
+         
+         int x = arg0.getBlockX();
+         int z = arg0.getBlockZ();
+         
+         if(this.world.getMinecraftWorld().blockExists(x, 0, z)) { // blockExists
+            Chunk chunk = this.world.getMinecraftWorld().getChunkFromBlockCoords(x, z); // Chunk, getChunkFromBlockCoords
+            if(chunk != null) {
+               byte[] biomevals = chunk.getBiomeArray(); // getBiomeArray
+               biomevals[((z & 0xF) << 4 | x & 0xF)] = (byte)biomeId;
+               // work around for biome data not being updated on client
+               com.sijobe.spc.wrapper.Minecraft.getMinecraft().thePlayer.worldObj.getChunkFromBlockCoords(x, z).setBiomeArray(biomevals);
+            } else {
+               System.err.println("Can't set biome for null chunk.");
+            }
+         } else {
+            System.err.println("Not setting biome.");
+         }
+      }
    }
 
    @Override

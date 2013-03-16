@@ -22,6 +22,8 @@ public class WorldEditEvents extends PlayerSP {
 
    private Map<String,Coordinate> left;
    private Map<String,Coordinate> right;
+   private String lastCrash = "";
+   private int tock = 0;
 
    /**
     * The max range that the mouse methods trace the blocks for
@@ -35,6 +37,13 @@ public class WorldEditEvents extends PlayerSP {
 
    @Override
    public void onTick(Player player) {
+      if(tock == 100) {
+         // System.err.println("WorldEditEvents: ticked");
+         tock = 0;
+      } else {
+         tock++;
+      }
+
       if (Minecraft.isGuiScreenOpen()) { 
          return;
       }
@@ -45,7 +54,13 @@ public class WorldEditEvents extends PlayerSP {
          // Check right button down
          checkRightButton(player);
       } catch (Throwable e) {
-         //e.printStackTrace();
+         String currentCrash = e.toString();
+         if(currentCrash.equals(lastCrash)) {
+            return;
+         } else {
+            lastCrash = currentCrash;
+         }
+         e.printStackTrace();
       }
    }
 

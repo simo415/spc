@@ -18,17 +18,17 @@ import net.minecraft.src.WorldInfo;
  * Provides methods that interact with the Minecraft world
  *
  * @author simo_415
- * @version 1.1
+ * @version 1.2
  */
 public class World {
    /**
     * The world instance this class wraps around
     */
-   private net.minecraft.src.World world;
+   private final net.minecraft.src.World world;
    /**
     * A random instance provides random numbers for methods
     */
-   private Random random;
+   private final Random random;
    
    /**
     * Creates a new instance of this wrapper
@@ -91,6 +91,24 @@ public class World {
    }
    
    /**
+    * Returns true if cheat mode is currently enabled
+    * 
+    * @return True is returned when cheat mode is enabled
+    */
+   public boolean isCheats() {
+      return world.getWorldInfo().areCommandsAllowed();
+   }
+   
+   /**
+    * Sets the cheat mode of the game to the given boolean value
+    * 
+    * @param hardcore - True turns cheats mode on, false turns it off
+    */
+   public void setCheats(boolean cheats) {
+      changeWorldInfo("allowCommands", cheats);
+   }
+   
+   /**
     * Changes fields in the WorldInfo class 
     * 
     * @param key - The key to modify
@@ -148,7 +166,7 @@ public class World {
     * @return True if the data was set correctly
     */
    public boolean setBlock(Coordinate coord, int type) {
-      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type);
+      return world.setBlockAndMetadataWithNotify(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 0, 2);
    }
    
    /**
@@ -159,7 +177,7 @@ public class World {
     * @return True if the data was set correctly
     */
    public boolean setBlockData(Coordinate coord, int type) {
-      return world.setBlockMetadata(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type);
+      return world.setBlockMetadataWithNotify(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 4);
    }
    
    /**

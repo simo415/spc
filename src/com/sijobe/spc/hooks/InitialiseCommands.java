@@ -77,6 +77,16 @@ public class InitialiseCommands extends PlayerMP {
             // Load Commands Sets
             loadMultipleCommands();
 
+            if(com.sijobe.spc.worldedit.WorldEditCommandSet.getCurrentInstance() == null) {
+               try {
+                  Class.forName("com.sk89q.worldedit.WorldEdit");
+                  System.out.println("SPCommands: Forcing command re-load.");
+                  loadMultipleCommands();
+               } catch (Exception e) {
+                  System.out.println("SPCommands: Leaving WorldEdit support unloaded.");
+               }
+            }
+
             // Load Standard Commands
             loadStandardCommands();
             IS_LOADED = true;

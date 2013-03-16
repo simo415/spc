@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.src.EntityList;
+import net.minecraft.src.EntityLiving;
 
 /**
  * Contains methods that manage entities within the game
@@ -134,7 +135,13 @@ public class Entity {
          if (entityClass != null) {
             net.minecraft.src.Entity entityInstance = (net.minecraft.src.Entity)entityClass.getConstructor(net.minecraft.src.World.class).newInstance(world.getMinecraftWorld());
             entityInstance.setPosition(location.getX(), location.getY() + 1, location.getZ());
+            if(entityInstance instanceof EntityLiving) {
+               ((EntityLiving)entityInstance).initCreature();
+            }
             world.getMinecraftWorld().spawnEntityInWorld(entityInstance);
+            if(entityInstance instanceof EntityLiving) {
+               ((EntityLiving)entityInstance).playLivingSound();
+            }
             return true;
          }
       } catch (Exception e) { 

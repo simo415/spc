@@ -116,11 +116,19 @@ public class DynamicClassLoader {
          field.setAccessible(true);
          Vector<Class<?>> classes = (Vector<Class<?>>) field.get(getClassLoader());
          synchronized (classes) {
+            for (int i = 0; i < classes.size(); i++) {
+               Class<?> c = classes.get(i);
+               if (type.isAssignableFrom(c)) {
+                  found.add((Class<T>) c);
+               }
+            }
+            /*
             for (Class<?> c : classes) {
                if (type.isAssignableFrom(c)) {
                   found.add((Class<T>) c);
                }
             }
+            */
          }
       } catch (Exception e) {
          e.printStackTrace();

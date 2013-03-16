@@ -14,7 +14,7 @@ import java.util.Properties;
  * @version 1.1
  */
 public class Settings extends Properties {
-   
+
    /**
     * serialVersionUID used by the serialised interface 
     */
@@ -31,7 +31,7 @@ public class Settings extends Properties {
    public Settings() {
       super();
    }
-   
+
    /**
     * Loads the specified file into the instance
     * 
@@ -40,7 +40,7 @@ public class Settings extends Properties {
    public Settings(File f) {
       this(f, true);
    }
-   
+
    /**
     * Associates the file with the instance allowing the file to be loaded or 
     * not using the load parameter.
@@ -55,7 +55,7 @@ public class Settings extends Properties {
          load(f);
       }
    }
-   
+
    /**
     * Sets the specified setting to the boolean value
     * 
@@ -65,7 +65,7 @@ public class Settings extends Properties {
    public void set(String key, boolean value) {
       setProperty(key, new Boolean(value).toString());
    }
-   
+
    /**
     * Gets the specified setting as a boolean value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -82,7 +82,7 @@ public class Settings extends Properties {
          return base;
       }
    }
-   
+
    /**
     * Sets the specified setting to the integer value
     * 
@@ -92,7 +92,7 @@ public class Settings extends Properties {
    public void set(String key, int value) {
       setProperty(key,new Integer(value).toString());
    }
-   
+
    /**
     * Gets the specified setting as a integer value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -109,7 +109,7 @@ public class Settings extends Properties {
          return base;
       }
    }
-   
+
    /**
     * Sets the specified setting to the char value
     * 
@@ -119,7 +119,7 @@ public class Settings extends Properties {
    public void set(String key, char value) {
       setProperty(key,new Character(value).toString());
    }
-   
+
    /**
     * Gets the specified setting as a char value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -136,7 +136,7 @@ public class Settings extends Properties {
          return base;
       }
    }
-   
+
    /**
     * Sets the specified setting to the double value
     * 
@@ -146,7 +146,7 @@ public class Settings extends Properties {
    public void set(String key, double value) {
       setProperty(key,new Double(value).toString());
    }
-   
+
    /**
     * Gets the specified setting as a double value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -163,7 +163,7 @@ public class Settings extends Properties {
          return base;
       }
    }
-   
+
    /**
     * Sets the specified setting to the float value
     * 
@@ -173,7 +173,7 @@ public class Settings extends Properties {
    public void set(String key, float value) {
       setProperty(key,new Float(value).toString());
    }
-   
+
    /**
     * Gets the specified setting as a float value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -190,7 +190,7 @@ public class Settings extends Properties {
          return base;
       }
    }
-   
+
    /**
     * Sets the specified setting to the String value
     * 
@@ -200,7 +200,7 @@ public class Settings extends Properties {
    public void set(String key, String value) {
       setProperty(key,value);
    }
-   
+
    /**
     * Gets the specified setting as a String value, if the setting doesn't 
     * exist then the base parameter value is used
@@ -213,7 +213,7 @@ public class Settings extends Properties {
       String value = getProperty(key);
       return isEmpty(value) ? base : value;
    }
-   
+
    /**
     * Saves the settings instance back to file
     * 
@@ -222,7 +222,7 @@ public class Settings extends Properties {
    public boolean save() {
       return this.save("");
    }
-   
+
    /**
     * Saves the settings instance back to file with the specified header
     * 
@@ -232,7 +232,7 @@ public class Settings extends Properties {
    public boolean save(String header) {
       return this.save(settings,header);
    }
-   
+
    /**
     * Saves the settings instance back to the specified file, not the one 
     * associated with the instance. The header is also set in the file 
@@ -263,7 +263,7 @@ public class Settings extends Properties {
          }
       }
    }
-   
+
    /**
     * Loads the settings from disk.
     * 
@@ -272,7 +272,7 @@ public class Settings extends Properties {
    public boolean load() {
       return this.load(settings);
    }
-   
+
    /**
     * Loads the settings from disk from the specified file.
     * 
@@ -294,7 +294,7 @@ public class Settings extends Properties {
          return false;
       }
    }
-   
+
    /**
     * Gets the file that the settings are saving/loading from
     * 
@@ -303,7 +303,7 @@ public class Settings extends Properties {
    public File getFile() {
       return settings;
    }
-   
+
    /**
     * Sets the file that the settings are saving/loading from 
     * 
@@ -312,7 +312,7 @@ public class Settings extends Properties {
    public void setFile(File settings) {
       this.settings = settings;
    }
-   
+
    /**
     * Checks if the specified value is empty
     * 
@@ -322,7 +322,7 @@ public class Settings extends Properties {
    private boolean isEmpty(String value) {
       return (value == null || value.trim().equalsIgnoreCase(""));
    }
-   
+
    /**
     * @see java.util.Hashtable#clone()
     */

@@ -2,6 +2,7 @@ package com.sijobe.spc.wrapper;
 
 import com.sijobe.spc.command.Command;
 import com.sijobe.spc.core.Constants;
+import com.sijobe.spc.util.CommandBlockHelper;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.util.SettingsManager;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
 
 /**
@@ -67,16 +69,85 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
    }
 
    /**
+    * Return whether the specified command parameter index is a username parameter.
+    */
+   public boolean isUsernameIndex(int par1)
+   {
+      if(getName().equals("gamemode")) {
+         return par1 == 1;
+      } else if(getName().equals("difficulty")) {
+         return false;
+      } else if(getName().equals("help")) {
+         return false;
+      } else if(getName().equals("time")) {
+         return false;
+      } else if(getName().equals("weather")) {
+         return false;
+      } else {
+         return par1 == 0;
+      }
+   }
+
+   /**
     * @see net.minecraft.src.ICommand#processCommand(net.minecraft.src.ICommandSender, java.lang.String[])
     */
    @Override
    public void processCommand(final ICommandSender sender, final String[] var2) {
+      String cmd = "";
+      for(String s : var2) {
+         cmd += " " + s;
+      }
+      // System.out.println("DEBUG: command - " + cmd.trim());
+
+      if(CommandBlockHelper.handleCommand(getName(), sender, var2)) {
+         System.out.println("DEBUG: used native command for command block");
+         return;
+      }
+
+      CommandSender csender = null;
+      String[] args = null;
+
+      if(sender.getCommandSenderName().equals("@")) {
+         if(var2.length >= 1) {
+            System.out.println("DEBUG: using command block cmd");
+            if(getName().equals("sudo")) {
+               args = var2;
+               args[0] = func_82359_c(sender, var2[0]).getCommandSenderName();
+            } else {
+               EntityPlayerMP player;
+               try {
+                  player = func_82359_c(sender, var2[0]);
+               } catch (net.minecraft.src.PlayerNotFoundException pnfe) {
+                  pnfe.printStackTrace();
+                  throw pnfe;
+               }
+               System.out.println("DEBUG: sender - " + player.getCommandSenderName());
+               csender = new CommandSender(player);
+               args = new String[var2.length - 1];
+               for(int i = 1; i < var2.length; i++) {
+                  args[i-1] = var2[i];
+               }
+            }
+         } else {
+            System.err.println("Skipping cmd: " + getName());
+            return;
+         }
+      }
+
       if (!isEnabled()) {
          return;
       }
-      CommandSender csender = new CommandSender(sender);
+
+      if(csender == null) {
+         csender = new CommandSender(sender);
+      }
+
+      if(args == null) {
+         args = var2;
+      }
+
       try {
-         List<?> params = getParameters().validate(var2);
+         List<?> params = getParameters().validate(args);
          execute(csender,params);
       } catch (ValidationException v) {
          if (v.getMessage() == null) {

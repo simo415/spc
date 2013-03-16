@@ -11,12 +11,9 @@ import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.Item;
 import com.sijobe.spc.wrapper.Player;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-// this is probably a bad thing..
 import net.minecraft.src.MathHelper;
 
 /**
@@ -178,6 +175,7 @@ public class Path extends StandardCommand implements IPlayerMP {
     * @param type - The type (ID) of the block
     */
    private void setBlock(Player player, int i, int j, int k, int type) {
-      player.getWorld().getMinecraftWorld().setBlockWithNotify(i, j, k, type);
+      //player.getWorld().getMinecraftWorld().func_94575_c(i, j, k, type);
+      player.getWorld().setBlock(new Coordinate(i, j, k), type);
    }
 }

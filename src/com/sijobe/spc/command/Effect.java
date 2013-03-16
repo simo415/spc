@@ -1,8 +1,5 @@
 package com.sijobe.spc.command;
 
-import java.util.List;
-import java.util.Map;
-
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
@@ -12,6 +9,9 @@ import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Player;
 import com.sijobe.spc.wrapper.Potion;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Adds effects to the player
  *
@@ -19,10 +19,10 @@ import com.sijobe.spc.wrapper.Potion;
  * @version 1.0
  */
 @Command (
-   name = "effect",
-   description = "Configures potion effects on the player",
-   videoURL = "http://www.youtube.com/watch?v=mstqLPVBlwE",
-   version = "1.4.6"
+         name = "effect",
+         description = "Configures potion effects on the player",
+         videoURL = "http://www.youtube.com/watch?v=mstqLPVBlwE",
+         version = "1.4.6"
 )
 public class Effect extends StandardCommand {
 
@@ -32,7 +32,7 @@ public class Effect extends StandardCommand {
                               new String[] {"list", "add", "remove"}),
                               new ParameterString("", true, true)
             }
-            );
+   );
 
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
@@ -69,7 +69,7 @@ public class Effect extends StandardCommand {
          } else {
             player.removePotionEffect(id);
          }
-      // Adds the specified effect
+         // Adds the specified effect
       } else if (((String)params.get(0)).equalsIgnoreCase("add")) {
          int duration = 1;
          int strength = 1;

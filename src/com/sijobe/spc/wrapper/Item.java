@@ -19,7 +19,7 @@ public class Item {
       ITEM_NAMES = new ArrayList<String>();
       for (net.minecraft.src.Item item : net.minecraft.src.Item.itemsList) {
          if (item != null) {
-            ITEM_NAMES.add(translateItemName(item.getItemName()).toLowerCase());
+            ITEM_NAMES.add(translateItemName(item.getUnlocalizedName()).toLowerCase());
          } else {
             ITEM_NAMES.add(null);
          }
