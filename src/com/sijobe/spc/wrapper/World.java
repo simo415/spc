@@ -166,7 +166,7 @@ public class World {
     * @return True if the data was set correctly
     */
    public boolean setBlock(Coordinate coord, int type) {
-      return world.setBlockAndMetadataWithNotify(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 0, 2);
+      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 0, 2);
    }
    
    /**
