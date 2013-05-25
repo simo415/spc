@@ -39,7 +39,7 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
     * The Command annotation of the class that contains command attributes.
     */
    private Command annotation;
-
+   
    /**
     * Initialises the instance and sets the command annotation (if it exists)
     */
@@ -71,10 +71,11 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
    /**
     * Return whether the specified command parameter index is a username parameter.
     */
-   public boolean isUsernameIndex(int par1)
+   @Override
+   public boolean isUsernameIndex(String[] par1, int par2)
    {
       if(getName().equals("gamemode")) {
-         return par1 == 1;
+         return par2 == 1;
       } else if(getName().equals("difficulty")) {
          return false;
       } else if(getName().equals("help")) {
@@ -84,7 +85,7 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
       } else if(getName().equals("weather")) {
          return false;
       } else {
-         return par1 == 0;
+         return par2 == 0;
       }
    }
 
@@ -92,58 +93,42 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
     * @see net.minecraft.src.ICommand#processCommand(net.minecraft.src.ICommandSender, java.lang.String[])
     */
    @Override
-   public void processCommand(final ICommandSender sender, final String[] var2) {
-      String cmd = "";
-      for(String s : var2) {
-         cmd += " " + s;
-      }
-      // System.out.println("DEBUG: command - " + cmd.trim());
-
-      if(CommandBlockHelper.handleCommand(getName(), sender, var2)) {
-         System.out.println("DEBUG: used native command for command block");
+   public void processCommand(final ICommandSender sender, String[] args) {            
+      if(!isEnabled() || CommandBlockHelper.handleCommand(getName(), sender, args)) {
          return;
       }
-
-      CommandSender csender = null;
-      String[] args = null;
-
+      
+      CommandSender csender = new CommandSender(sender);
+      
       if(sender.getCommandSenderName().equals("@")) {
-         if(var2.length >= 1) {
-            System.out.println("DEBUG: using command block cmd");
+         if(args.length >= 1) {
             if(getName().equals("sudo")) {
-               args = var2;
-               args[0] = func_82359_c(sender, var2[0]).getCommandSenderName();
+               args[0] = func_82359_c(sender, args[0]).getCommandSenderName();
             } else {
+               String cmd = getCommandName();
+               for(String part : args) {
+                  cmd += " " + part;
+               }
+               cmd = cmd.trim();
+               System.out.println("SPC/CommandBlock: " + cmd);
                EntityPlayerMP player;
                try {
-                  player = func_82359_c(sender, var2[0]);
+                  player = func_82359_c(sender, args[0]);
                } catch (net.minecraft.src.PlayerNotFoundException pnfe) {
-                  pnfe.printStackTrace();
+                  System.out.println("SPC/CommandBlock: Warning - " + getCommandName() + " is a player command.");
                   throw pnfe;
                }
-               System.out.println("DEBUG: sender - " + player.getCommandSenderName());
                csender = new CommandSender(player);
-               args = new String[var2.length - 1];
-               for(int i = 1; i < var2.length; i++) {
-                  args[i-1] = var2[i];
+               String[] newArgs = new String[args.length - 1];
+               for(int i = 1; i < args.length; i++) {
+                  newArgs[i-1] = args[i];
                }
+               args = newArgs;
             }
          } else {
-            System.err.println("Skipping cmd: " + getName());
+            System.err.println("SPC/CommandBlock: Skipping cmd - " + getName());
             return;
          }
-      }
-
-      if (!isEnabled()) {
-         return;
-      }
-
-      if(csender == null) {
-         csender = new CommandSender(sender);
-      }
-
-      if(args == null) {
-         args = var2;
       }
 
       try {

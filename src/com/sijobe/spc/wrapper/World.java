@@ -180,6 +180,19 @@ public class World {
       return world.setBlockMetadataWithNotify(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 4);
    }
    
+    /**
+    * Sets the blocks data value and sets metadata
+    * 
+    * @param coord - The coordinate of the block to use
+    * @param type - The data type to change to
+    * @param meta - The metadata to set on the block
+    * @return True if the data was set correctly
+    */
+   public boolean setBlockDataWithMeta(Coordinate coord, int type, int meta) {
+      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, meta, 2);
+      // 2 = setblock, 3 = notify
+   }
+   
    /**
     * Gets the current worlds time
     * 

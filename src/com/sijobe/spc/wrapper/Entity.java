@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityList;
 import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityPlayer;
 
 /**
  * Contains methods that manage entities within the game
@@ -150,7 +152,8 @@ public class Entity {
       return false;
    }
    
-   public static int killEntities(String entity, Coordinate location, World world, double distance) {
+   public static List<net.minecraft.src.Entity> killEntities(String entity, Coordinate location, World world, double distance) {
+      List<net.minecraft.src.Entity> removedEntities = new ArrayList<net.minecraft.src.Entity>();
       Class<?> entityClass = getEntityClass(entity);
       int count = 0;
       try {
@@ -158,23 +161,59 @@ public class Entity {
             List<net.minecraft.src.Entity> toremove = new ArrayList<net.minecraft.src.Entity>();
             List<net.minecraft.src.Entity> entities = getLoadedEntities(world);
             for (net.minecraft.src.Entity loaded : entities) {
-               // TODO: Check if correct entity type
+               if(!(entityClass.isInstance(loaded))) {
+                  continue;
+               }
                if (location.getDistanceBetweenCoordinates(new Coordinate(loaded.posX,loaded.posY,loaded.posZ)) < distance) {
-                  //System.out.println(loaded.getClass().getName());
-                  //loaded.setDead();
                   toremove.add(loaded);
                }
             }
             for (net.minecraft.src.Entity remove : toremove) {
-               world.getMinecraftWorld().removeEntity(remove);
-               //remove.setDead();
+               if(remove instanceof EntityPlayer) {
+                  continue;
+               }
+               if(remove.isEntityInvulnerable()) {
+                  System.out.println(remove.toString() + " is invulnerable.");
+                  continue;
+               }
+               remove.attackEntityFrom(DamageSource.outOfWorld, 1000);
+               removedEntities.add(remove);
                count++;
             }
          }
       } catch (Exception e) {
          e.printStackTrace();
       }
-      return count;
+      // System.out.println("SPC: " + count + " entities removed.");
+      return removedEntities;
+   }
+   
+   public static List<net.minecraft.src.Entity> findEntities(String entity, Coordinate location, World world, double distance) {
+      List<net.minecraft.src.Entity> foundEntities = new ArrayList<net.minecraft.src.Entity>();
+      Class<?> entityClass = getEntityClass(entity);
+      int count = 0;
+      try {
+         if (entityClass != null) {
+            List<net.minecraft.src.Entity> found = new ArrayList<net.minecraft.src.Entity>();
+            List<net.minecraft.src.Entity> entities = getLoadedEntities(world);
+            for (net.minecraft.src.Entity loaded : entities) {
+               if(!(entityClass.isInstance(loaded))) {
+                  continue;
+               }
+               if (location.getDistanceBetweenCoordinates(new Coordinate(loaded.posX,loaded.posY,loaded.posZ)) < distance) {
+                  found.add(loaded);
+               }
+            }
+            for (net.minecraft.src.Entity foundEntity : found) {
+               // we don't currently exclude any entities
+               foundEntities.add(foundEntity);
+               count++;
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return foundEntities;
    }
    
    /**

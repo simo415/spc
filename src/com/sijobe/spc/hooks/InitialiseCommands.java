@@ -6,6 +6,7 @@ import com.sijobe.spc.core.PlayerMP;
 import com.sijobe.spc.core.SPCLoader;
 import com.sijobe.spc.util.DynamicClassLoader;
 import com.sijobe.spc.util.FontColour;
+import com.sijobe.spc.worldedit.WorldEditEvents;
 import com.sijobe.spc.wrapper.CommandBase;
 import com.sijobe.spc.wrapper.CommandManager;
 import com.sijobe.spc.wrapper.Player;
@@ -42,7 +43,11 @@ public class InitialiseCommands extends PlayerMP {
    private static final String WELCOME_MESSAGE = FontColour.GREY + 
       "Single Player Commands (" + Constants.VERSION + ") - " + FontColour.ORANGE + "http://bit.ly/spcmod";
 
-   
+   /**
+    * Pending messages
+   */
+   private static final List<String> pendingMessages = new ArrayList<String>();
+      
    public InitialiseCommands() {
       loadCommands();
    }
@@ -53,6 +58,12 @@ public class InitialiseCommands extends PlayerMP {
       if (IS_LOADED && !WELCOME_FLAG.contains(player.getPlayerName())) {
          sendStartupMessage(player);
          WELCOME_FLAG.add(player.getPlayerName());
+      }
+      if(pendingMessages.size() > 0) {
+         for(String msg : pendingMessages) {
+            player.sendChatMessage(msg);
+         }
+         pendingMessages.clear();
       }
    }
    
@@ -77,14 +88,15 @@ public class InitialiseCommands extends PlayerMP {
             // Load Commands Sets
             loadMultipleCommands();
 
-            if(com.sijobe.spc.worldedit.WorldEditCommandSet.getCurrentInstance() == null) {
-               try {
+            try {
+               if(com.sijobe.spc.worldedit.WorldEditCommandSet.getCurrentInstance() == null) {
                   Class.forName("com.sk89q.worldedit.WorldEdit");
                   System.out.println("SPCommands: Forcing command re-load.");
                   loadMultipleCommands();
-               } catch (Exception e) {
-                  System.out.println("SPCommands: Leaving WorldEdit support unloaded.");
                }
+            } catch (Throwable t) {
+               WorldEditEvents.disableHandleEvents();
+               pendingMessages.add("WorldEdit.jar not found in .minecraft/bin - WE unavailable.");
             }
 
             // Load Standard Commands
@@ -148,7 +160,7 @@ public class InitialiseCommands extends PlayerMP {
             }
          } catch (Throwable e) {
             System.err.println("Failed to load " + command.getName());
-            e.printStackTrace();
+            // e.printStackTrace();
          }
       }
    }

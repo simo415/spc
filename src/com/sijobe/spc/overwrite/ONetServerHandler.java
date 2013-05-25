@@ -1,7 +1,11 @@
 package com.sijobe.spc.overwrite;
 
+import com.sijobe.spc.command.Noclip;
+import com.sijobe.spc.util.ForgeHelper;
 import com.sijobe.spc.util.Mappings;
+import com.sijobe.spc.util.ReflectionHelper;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
@@ -14,132 +18,113 @@ import net.minecraft.src.WorldServer;
 
 /**
  * Custom server handler to allow noclip
+ * Note: use of reflection is neccessary,
+ * otherwise player cannot interact with world
  *
  * @author q3hardcore
- * @version 1.2
+ * @version 1.4
  */
-public class ONetServerHandler extends NetServerHandler {
+public final class ONetServerHandler extends NetServerHandler {
 
    private final NetServerHandler oldInstance;
    private final MinecraftServer mcServer;
-   private int criticalErrors = 0;
-
-   private static final HashMap<String, String[]> fieldMappings;
-
-   //Override
    private int ticksForFloatKick;
-   
    private double lastPosX;
    private double lastPosY;
    private double lastPosZ;
    private boolean hasMoved = true;
-   
-   // Mappings valid as of Minecraft 1.5 - this is bad, needs to be fixed.
-   static {
-      fieldMappings = new Mappings();
-      //fieldMappings.put("ticksForFloatKick", new String[]{"f", "field_72572_g"});
-      //fieldMappings.put("field_72584_h", new String[]{"g"});
-      //fieldMappings.put("lastPosX", new String[]{"n", "field_72579_o"});
-      //fieldMappings.put("lastPosY", new String[]{"o", "field_72589_p"});
-      //fieldMappings.put("lastPosZ", new String[]{"p", "field_72588_q"});
-      //fieldMappings.put("hasMoved", new String[]{"q", "field_72587_r"});
-   }
 
+   private static final HashMap<String, String[]> fieldMappings;   
+   
+   // mappings valid as of: Minecraft 1.5.2 (no changes)
+   static {
+        fieldMappings = new Mappings();
+        fieldMappings.put("lastPosX", new String[]{"n", "field_72579_o"});
+        fieldMappings.put("lastPosY", new String[]{"o", "field_72589_p"});
+        fieldMappings.put("lastPosZ", new String[]{"p", "field_72588_q"});
+        fieldMappings.put("hasMoved", new String[]{"q", "field_72587_r"});
+    }
+   
    public ONetServerHandler(MinecraftServer par1, INetworkManager par2, EntityPlayerMP par3, NetServerHandler instance) {
       super(par1, par2, par3);
+      
+      if(instance instanceof ONetServerHandler) {
+         throw new RuntimeException("SPC: Critical error encountered!");
+      }
+      
       oldInstance = instance;
       mcServer = par1;
       connectionClosed = oldInstance.connectionClosed;
    }
-
+   
    public NetServerHandler getOldInstance() {
       return oldInstance;
    }
 
-   /* <Reflection>---------------------------------------------------------- */
-
-   /*private void setTicksForFloatKick(int value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("ticksForFloatKick"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
+   private void updateHasMoved() {
+      Field field = ReflectionHelper.getField(oldInstance, fieldMappings.get("hasMoved"));
+      this.hasMoved = ReflectionHelper.getBoolean(field, oldInstance);
    }
-
-   private int getTicksForFloatKick() {
-      Field field = ReflectionHelper.getField(fieldMappings.get("ticksForFloatKick"), oldInstance);
-      return ReflectionHelper.getInt(field, oldInstance);
-   }*/
-
-   /*private void setField_72584_h(boolean value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("field_72584_h"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
-   }*/
-
-   /*private double getLastPosX() {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosX"), oldInstance);
-      return ReflectionHelper.getDouble(field, oldInstance);
+   
+   private void updatePosition() {
+      Field field;
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosX"));
+      this.lastPosX = ReflectionHelper.getDouble(field, oldInstance);
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosY"));
+      this.lastPosY = ReflectionHelper.getDouble(field, oldInstance);
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosZ"));
+      this.lastPosZ = ReflectionHelper.getDouble(field, oldInstance);
    }
-
-   private void setLastPosX(double value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosX"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
+   
+   private void setHasMoved(boolean bool) {
+      Field field = ReflectionHelper.getField(oldInstance, fieldMappings.get("hasMoved"));
+      ReflectionHelper.setField(field, oldInstance, bool);
    }
-
-   private double getLastPosY() {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosY"), oldInstance);
-      return ReflectionHelper.getDouble(field, oldInstance);
+   
+   private void setPosition(double x, double y, double z) {
+      Field field;
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosX"));
+      ReflectionHelper.setField(field, oldInstance, x);
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosY"));
+      ReflectionHelper.setField(field, oldInstance, y);
+      field = ReflectionHelper.getField(oldInstance, fieldMappings.get("lastPosZ"));
+      ReflectionHelper.setField(field, oldInstance, z);
    }
-
-   private void setLastPosY(double value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosY"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
-   }
-
-   private double getLastPosZ() {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosZ"), oldInstance);
-      return ReflectionHelper.getDouble(field, oldInstance);
-   }
-
-   private void setLastPosZ(double value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("lastPosZ"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
-   }
-
-   private boolean getHasMoved() {
-      Field field = ReflectionHelper.getField(fieldMappings.get("hasMoved"), oldInstance);
-      return ReflectionHelper.getBoolean(field, oldInstance);
-   }
-
-   private void setHasMoved(boolean value) {
-      Field field = ReflectionHelper.getField(fieldMappings.get("hasMoved"), oldInstance);
-      ReflectionHelper.setField(field, oldInstance, value);
-   }*/
-
-   /* </Reflection>--------------------------------------------------------- */
-
+   
    @Override
    public void handleFlying(Packet10Flying par1Packet10Flying)
    {
+      // we use Forge's handleFlying method
+      if(!ForgeHelper.HAS_FORGE) {
+         updateHasMoved();
+         updatePosition();
+      }
+   
+      Noclip.checkSafe(this.playerEntity);
+   
+      // Forge has Noclip support
+      if(ForgeHelper.HAS_FORGE) {
+         super.handleFlying(par1Packet10Flying);
+         return;
+      }
+   
       WorldServer var2 = this.mcServer.worldServerForDimension(oldInstance.playerEntity.dimension);
-      //setField_72584_h(true);
 
       if (!oldInstance.playerEntity.playerConqueredTheEnd)
       {
          double var3;
 
-         //if (!getHasMoved())
          if (!hasMoved)
          {
-            //var3 = par1Packet10Flying.yPosition - getLastPosY();
             var3 = par1Packet10Flying.yPosition - lastPosY;
 
-            //if (par1Packet10Flying.xPosition == getLastPosX() && var3 * var3 < 0.01D && par1Packet10Flying.zPosition == getLastPosZ())
             if (par1Packet10Flying.xPosition == lastPosX && var3 * var3 < 0.01D && par1Packet10Flying.zPosition == lastPosZ)
             {
-               //setHasMoved(true);
+               setHasMoved(true);
                hasMoved = true;
             }
          }
 
-         //if (getHasMoved())
          if (hasMoved)
          {
             double var5;
@@ -193,14 +178,12 @@ public class ONetServerHandler extends NetServerHandler {
                {
                   this.playerEntity.ridingEntity.updateRiderPosition();
                }
-
+               
                this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity);
-               //setLastPosX(this.playerEntity.posX);
                lastPosX = this.playerEntity.posX;
-               //setLastPosY(this.playerEntity.posY);
                lastPosY = this.playerEntity.posY;
-               //setLastPosZ(this.playerEntity.posZ);
                lastPosZ = this.playerEntity.posZ;
+               setPosition(lastPosX, lastPosY, lastPosZ);
                var2.updateEntity(this.playerEntity);
                return;
             }
@@ -208,19 +191,16 @@ public class ONetServerHandler extends NetServerHandler {
             if (this.playerEntity.isPlayerSleeping())
             {
                this.playerEntity.onUpdateEntity();
-               //this.playerEntity.setPositionAndRotation(getLastPosX(), getLastPosY(), getLastPosZ(), this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                this.playerEntity.setPositionAndRotation(lastPosX, lastPosY, lastPosZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                var2.updateEntity(this.playerEntity);
                return;
             }
 
             var3 = this.playerEntity.posY;
-            //setLastPosX(this.playerEntity.posX);
             lastPosX = this.playerEntity.posX;
-            //setLastPosY(this.playerEntity.posY);
             lastPosY = this.playerEntity.posY;
-            //setLastPosZ(this.playerEntity.posZ);
             lastPosZ = this.playerEntity.posZ;
+            setPosition(lastPosX, lastPosY, lastPosZ);
             var5 = this.playerEntity.posX;
             var7 = this.playerEntity.posY;
             var9 = this.playerEntity.posZ;
@@ -261,7 +241,6 @@ public class ONetServerHandler extends NetServerHandler {
 
             this.playerEntity.onUpdateEntity();
             this.playerEntity.ySize = 0.0F;
-            //this.playerEntity.setPositionAndRotation(getLastPosX(), getLastPosY(), getLastPosZ(), var11, var12);
             this.playerEntity.setPositionAndRotation(lastPosX, lastPosY, lastPosZ, var11, var12);
 
             if (!hasMoved)
@@ -280,7 +259,6 @@ public class ONetServerHandler extends NetServerHandler {
             if (var25 > 100.0D && (!this.mcServer.isSinglePlayer() || !this.mcServer.getServerOwner().equals(this.playerEntity.username)))
             {
                this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
-               //this.setPlayerLocation(getLastPosX(), getLastPosY(), getLastPosZ(), this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                this.setPlayerLocation(lastPosX, lastPosY, lastPosZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                return;
             }
@@ -292,7 +270,7 @@ public class ONetServerHandler extends NetServerHandler {
             {
                this.playerEntity.addExhaustion(0.2F);
             }
-
+            
             this.playerEntity.moveEntity(var13, var15, var17);
             this.playerEntity.onGround = par1Packet10Flying.onGround;
             this.playerEntity.addMovementStat(var13, var15, var17);
@@ -314,7 +292,7 @@ public class ONetServerHandler extends NetServerHandler {
                var31 = true;
                this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " moved wrongly!");
             }
-
+            
             this.playerEntity.setPositionAndRotation(var5, var7, var9, var11, var12);
             boolean var32 = var2.getCollidingBoundingBoxes(this.playerEntity, this.playerEntity.boundingBox.copy().contract(var27, var27, var27)).isEmpty();
 
@@ -323,21 +301,18 @@ public class ONetServerHandler extends NetServerHandler {
             }
             else if (var28 && (var31 || !var32) && !this.playerEntity.isPlayerSleeping())
             {
-               //this.setPlayerLocation(getLastPosX(), getLastPosY(), getLastPosZ(), var11, var12);
                this.setPlayerLocation(lastPosX, lastPosY, lastPosZ, var11, var12);
                return;
             }
 
             AxisAlignedBB var33 = this.playerEntity.boundingBox.copy().expand(var27, var27, var27).addCoord(0.0D, -0.55D, 0.0D);
 
-            if (!this.mcServer.isFlightAllowed() && !this.playerEntity.theItemInWorldManager.isCreative() && !var2.isAABBNonEmpty(var33))
+            if (!this.mcServer.isFlightAllowed() && !this.playerEntity.theItemInWorldManager.isCreative() && !var2.checkBlockCollision(var33))
             {
                if (var29 >= -0.03125D)
                {
-                  //setTicksForFloatKick(getTicksForFloatKick() + 1);
                   ticksForFloatKick++;
                   
-                  //if (getTicksForFloatKick() > 80)
                   if (ticksForFloatKick > 80)
                   {
                      this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " was kicked for floating too long!");
@@ -348,27 +323,11 @@ public class ONetServerHandler extends NetServerHandler {
             }
             else
             {
-               //setTicksForFloatKick(0);
                ticksForFloatKick = 0;
             }
-
+            
             this.playerEntity.onGround = par1Packet10Flying.onGround;
-
-            // if the original server handler isn't restored upon respawn, we run into problems
-            try {
-               this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity);
-            } catch (IllegalStateException ise) {
-               criticalErrors++;
-               if(criticalErrors == 1) {
-                  System.err.println("SPC Server Handler encountered critical error.");
-                  ise.printStackTrace();
-               } else if(criticalErrors > 3) {
-                  System.err.println("Restoring default server handler.");
-                  this.netManager.setNetHandler(oldInstance);
-                  this.playerEntity.playerNetServerHandler = oldInstance;
-               }
-            }
-
+            this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity);
             this.playerEntity.updateFlyingState(this.playerEntity.posY - var3, par1Packet10Flying.onGround);
          }
       }

@@ -1,13 +1,15 @@
 package com.sijobe.spc.worldedit;
 
+import com.sijobe.spc.core.ICUIEventHandler;
 import com.sijobe.spc.util.FontColour;
+import com.sijobe.spc.util.WorldEditCUIHelper;
 import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.Player;
 import com.sk89q.worldedit.ServerInterface;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldVector;
 import com.sk89q.worldedit.bags.BlockBag;
-
+import com.sk89q.worldedit.cui.CUIEvent;
 
 public class LocalPlayer extends com.sk89q.worldedit.LocalPlayer  {
 
@@ -17,7 +19,7 @@ public class LocalPlayer extends com.sk89q.worldedit.LocalPlayer  {
       super(server);
       this.player = player;
    }
-
+   
    @Override
    public String[] getGroups() {
       // TODO Auto-generated method stub
@@ -105,5 +107,14 @@ public class LocalPlayer extends com.sk89q.worldedit.LocalPlayer  {
          return ((LocalPlayer)object).getName().equals(getName());
       }
       return false;
+   }
+   
+   @Override
+   public void dispatchCUIEvent(CUIEvent event) {
+      for (ICUIEventHandler hook : WorldEditCUIHelper.getCUIHooks()) {
+         if (hook.isEnabled()) {
+            hook.handleCUIEvent(event.getTypeId(), event.getParameters());
+         }
+      }      
    }
 }

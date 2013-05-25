@@ -23,7 +23,7 @@ public class WorldEditEvents extends PlayerSP {
    private Map<String,Coordinate> left;
    private Map<String,Coordinate> right;
    private String lastCrash = "";
-   private int tock = 0;
+   private static boolean handleEvents = true;
 
    /**
     * The max range that the mouse methods trace the blocks for
@@ -35,16 +35,29 @@ public class WorldEditEvents extends PlayerSP {
       right = new HashMap<String,Coordinate>();
    }
 
+   /*
+    * Disable WorldEdit event handling. This is done when WorldEdit
+    * hasn't been loaded, so that possible exceptions are avoided.
+   */
+   public static void disableHandleEvents() {
+      handleEvents = false;
+   }
+   
+   /**
+    * Returns whether or not WorldEdit event handling is enabled
+    * 
+    * @return True if WE event handling enabled, false otherwise
+    */
+   public static boolean getHandleEvents() {
+      return handleEvents;
+   }
+   
    @Override
    public void onTick(Player player) {
-      if(tock == 100) {
-         // System.err.println("WorldEditEvents: ticked");
-         tock = 0;
-      } else {
-         tock++;
-      }
-
       if (Minecraft.isGuiScreenOpen()) { 
+         return;
+      }
+      if(!handleEvents) {
          return;
       }
       try {
@@ -53,14 +66,14 @@ public class WorldEditEvents extends PlayerSP {
 
          // Check right button down
          checkRightButton(player);
-      } catch (Throwable e) {
-         String currentCrash = e.toString();
+      } catch (Throwable t) {
+         String currentCrash = t.toString();
          if(currentCrash.equals(lastCrash)) {
             return;
          } else {
             lastCrash = currentCrash;
          }
-         e.printStackTrace();
+         t.printStackTrace();
       }
    }
 

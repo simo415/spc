@@ -48,8 +48,8 @@ public class Teleport extends StandardCommand {
       player.setPosition(new Coordinate((Double)params.get(0), (Double)params.get(1), (Double)params.get(2)));
       sender.sendMessageToPlayer("Moved from " + 
                FontColour.AQUA + c.getBlockX() + FontColour.WHITE + ", " + 
-               FontColour.AQUA + c.getBlockX() + FontColour.WHITE + ", " + 
-               FontColour.AQUA + c.getBlockX() + FontColour.WHITE + " to " + 
+               FontColour.AQUA + c.getBlockY() + FontColour.WHITE + ", " + 
+               FontColour.AQUA + c.getBlockZ() + FontColour.WHITE + " to " + 
                FontColour.AQUA + player.getPosition().getBlockX() + FontColour.WHITE + ", " + 
                FontColour.AQUA + player.getPosition().getBlockY() + FontColour.WHITE + ", " + 
                FontColour.AQUA + player.getPosition().getBlockZ()

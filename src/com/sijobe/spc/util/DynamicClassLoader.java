@@ -1,7 +1,6 @@
 package com.sijobe.spc.util;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,6 +37,11 @@ public class DynamicClassLoader {
     * @see DynamicClassLoader#populateClassLoaderWithClasses()
     */
    private static boolean POPULATED = false;
+   
+   /*
+    * A vector used to store all SPC classes
+   */
+   private static Vector<Class<?>> spcClasses = new Vector<Class<?>>();
    
    /**
     * Gets the class loader used by this class (and generally all base classes)
@@ -109,103 +113,91 @@ public class DynamicClassLoader {
     * occurs attempting to retrieve the loaded classes, null will be returned.
     */
    @SuppressWarnings("unchecked")
-   public static <T> List<Class<T>> getClasses(Class<T> type) {
+   public static synchronized <T> List<Class<T>> getClasses(Class<T> type) {
       Vector<Class<T>> found = new Vector<Class<T>>();
       try {
-         Field field = ClassLoader.class.getDeclaredField("classes");
-         field.setAccessible(true);
-         Vector<Class<?>> classes = (Vector<Class<?>>) field.get(getClassLoader());
-         synchronized (classes) {
-            for (int i = 0; i < classes.size(); i++) {
-               Class<?> c = classes.get(i);
-               if (type.isAssignableFrom(c)) {
-                  found.add((Class<T>) c);
-               }
+         Vector<Class<?>> classes = getSPCClasses();
+         for(Class<?> c : classes) {
+            if(c == null) {
+               //System.out.println("Skipping null class.");
+               continue;
             }
-            /*
-            for (Class<?> c : classes) {
-               if (type.isAssignableFrom(c)) {
-                  found.add((Class<T>) c);
-               }
+            if(type.isAssignableFrom(c)) {
+               found.add((Class<T>) c);
             }
-            */
          }
       } catch (Exception e) {
          e.printStackTrace();
-         return null;
       }
       return found;
    }
-   
    /**
-    * Method designates whether the populateClassLoaderWithClasses method has 
-    * been called yet or not. 
     * 
-    * @return True if the populateClassLoaderWithClasses method has been called
-    * @see DynamicClassLoader#populateClassLoaderWithClasses()
-    */
-   @Deprecated
-   public static boolean hasBeenPopulated() {
-      return POPULATED;
-   }
-
-   /**
-    * This method searches over everything in the classpath and adds all the 
-    * classes that are encountered into memory. As this method can search 
-    * through thousands of files it is recommended that it is called sparingly.
-    * <br><br>
-    * Warning: This method may fail to load classes that don't have the correct
-    * dependencies setup on the classpath. To add things to the classpath 
-    * refer to the addFile(File) or addURL(URL) methods.
     * 
-    * @see DynamicClassLoader#addFile(File)
-    * @see DynamicClassLoader#addFile(String)
-    * @see DynamicClassLoader#addURL(URL)
-    */
-   @Deprecated
-   public static void populateClassLoaderWithClasses() {
-      POPULATED = true;
-      File files[] = getClasspath();
-      for (File f : files) {
-         if (f == null || !f.exists()) {
-            continue;
+    * @return A Vector that contains all classes in SPC's package
+   */
+   private static Vector<Class<?>> getSPCClasses() throws Exception {
+      if(spcClasses.size() == 0) {
+         String className = DynamicClassLoader.class.getName().replace(".", "/");
+         URL location = DynamicClassLoader.class.getResource("/" + className + ".class");
+         if(location == null) {
+            throw new RuntimeException("SPC: Couldn't find SPC classes!");
          }
-         System.out.println("Loading classes from... " + f.getAbsolutePath());
-
-         if (f.getAbsolutePath().endsWith(".jar")) {
-            loadClassesFromJAR(f);
+         final List<Class<?>> tempSPCClasses;
+         if(location.toString().toLowerCase().startsWith("jar")) {
+            String jarLocation = location.toString().replaceAll("jar:", "").split("!")[0];
+            File root = new File((new URL(jarLocation)).toURI());
+            System.out.println("SPC: " + root);
+            tempSPCClasses = loadSPCClassesFromJAR(root);
          } else {
-            if (f.isDirectory()) {
-               loadClassesFromDirectory(f);
+            File dynamicClassLoader = new File(location.getFile());
+            File parentDir = getSPCParent(dynamicClassLoader);
+            if(parentDir == null) {
+               System.out.println("SPC: Not loading.");
+               tempSPCClasses = new Vector<Class<?>>();
+               tempSPCClasses.add(DynamicClassLoader.class);
             } else {
-               try {
-                  loadClass(f.getName(),null);
-               } catch (Exception e) {
-               }
+               System.out.println("SPC: " + parentDir);
+               tempSPCClasses = loadSPCClassesFromDirectory(parentDir, "com/sijobe/spc/");
             }
          }
+         spcClasses.addAll(tempSPCClasses);
+         return spcClasses;
+      }
+      else {
+         return spcClasses;
       }
    }
-
+   
    /**
-    * Loads all the classes within the specified directory
+    * Get the parent SPC folder
     * 
-    * @param directory - The directory to load all of the classes from
-    * @return A Vector containing all of the loaded classes is returned
-    */
-   public static List<Class<?>> loadClassesFromDirectory(File directory) {
-      return loadClassesFromDirectory(directory,"");
+    * @parameter file - The base file
+    * @return The parent directory
+   */
+   private static File getSPCParent(File file) {
+      File parent = file;
+      while((parent = parent.getParentFile()) != null) {
+         if(parent.getPath().endsWith("spc") && parent.isDirectory()) {
+            return parent;
+         }
+      }
+      return null; // Hopefully, this is impossible
    }
-
+   
    /**
-    * Loads all the classes within the specified directory
+    * Loads all of SPC's classes within the specified directory
     * 
     * @param directory - The directory to load all of the classes from
     * @param parent - The path of the parent directory(s). This parent is used
     * as the package name of the classes that are loaded.
     * @return A Vector containing all of the loaded classes is returned
     */
-   public static List<Class<?>> loadClassesFromDirectory(File directory, String parent) {
+   public static List<Class<?>> loadSPCClassesFromDirectory(File directory, String parent) {
+      if(directory.toString().indexOf("sijobe") == -1) {
+         System.out.println("Nope: " + directory);
+         return new Vector<Class<?>>();
+      }
       Vector<Class<?>> classes = new Vector<Class<?>>();
       try {
          File files[] = directory.listFiles();
@@ -214,26 +206,26 @@ public class DynamicClassLoader {
                if (file.isFile()) {
                   classes.add(loadClass(file.getName(),parent));
                } else {
-                  classes.addAll(loadClassesFromDirectory(file,parent + file.getName() + "/"));
+                  classes.addAll(loadSPCClassesFromDirectory(file,parent + file.getName() + "/"));
                }
             } catch (Exception e) {
+               e.printStackTrace();
             }
          }
       } catch (Exception e) {
-         return null;
+         e.printStackTrace();
       }
       return classes;
    }
 
    /**
-    * Loads all of the classes that are contained within the specified JAR 
-    * file.
+    * Loads all of SPC's classes that are contained within the specified JAR file.
     * 
     * @param jar - The location of the JAR file
     * @return A Vector containing all of the classes that are part of this JAR
     * that were loaded
     */
-   public static List<Class<?>> loadClassesFromJAR(File jar) {
+   public static List<Class<?>> loadSPCClassesFromJAR(File jar) {
       Vector<Class<?>> classes = new Vector<Class<?>>();
       try {
          JarFile jf = new JarFile(jar);
@@ -242,7 +234,11 @@ public class DynamicClassLoader {
          while (em.hasMoreElements()) {
             JarEntry je = em.nextElement();
             try {
-               classes.add(loadClass(je.getName(), null));
+               String entry = je.getName();
+               if(!entry.startsWith("com/sijobe/spc/")) {
+                  continue;
+               }
+               classes.add(loadClass(entry, null));
             } catch (Throwable t) {
             }
          }
@@ -275,14 +271,23 @@ public class DynamicClassLoader {
       }
       clazz = pack == null ? clazz : pack + "." + clazz;
       clazz = clazz.replaceAll("/", ".");
-
+      if(clazz.startsWith(".")) {
+         clazz = clazz.substring(1);
+      }
+      
       URLClassLoader loader = getClassLoader();
       Class<?> c;
       //System.out.print(clazz + " loading... ");
       try {
          c = loader.loadClass(clazz);
-      } catch (Throwable e) {
-         //e.printStackTrace();
+      } catch (Throwable t) {
+         String message = t.getMessage();
+         if(message != null && message.startsWith("com/sk89q/worldedit/")) {
+            //System.out.println("Couldn't find WorldEdit class: " + message + ".class");
+            //System.out.println("Skipping SPC class: " + clazz + ".class");
+         } else {
+            t.printStackTrace();
+         }
          return null;
       }
       //System.out.println("loaded.");      

@@ -27,38 +27,6 @@ public class SPCLoader {
       if (!IS_LOADED) {
          IS_LOADED = true;
          loadClasspath();
-         populateClassLoader();
-      }
-   }
-
-   /**
-    * Populates the ClassLoader with all classes that are contained within the
-    * same package as the current class. This allows Minecraft.jar to have its 
-    * classes dynamically loaded into memory.
-    */
-   private static void populateClassLoader() {
-      String classname = SPCLoader.class.getName();
-      int depth = classname.split("\\.").length;
-      classname = classname.split("\\.")[depth - 1];
-      String location = SPCLoader.class.getResource(classname + ".class").toString();
-      if (location.startsWith("jar")) {
-         try {
-            location = location.replaceAll("jar:", "").split("!")[0];
-            File root = (new File((new URL(location)).toURI())); 
-            DynamicClassLoader.loadClassesFromJAR(root);
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      } else {
-         try {
-            File root = (new File((new URL(location)).toURI()));
-            for (int i = 0; i < depth; i++) {
-               root = root.getParentFile();
-            }
-            DynamicClassLoader.loadClassesFromDirectory(root);
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
       }
    }
 
@@ -83,6 +51,12 @@ public class SPCLoader {
                   }
                }
                if (!found) {
+                  String fileName = file.toString();
+                  if(!fileName.toLowerCase().endsWith("worldedit.jar")) {
+                     //System.out.println("Skipping: " + fileName);
+                     continue;
+                  }
+                  System.out.println("Loading: " + fileName);
                   DynamicClassLoader.addFile(file);
                }
             }

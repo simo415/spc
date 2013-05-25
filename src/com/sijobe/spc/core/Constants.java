@@ -18,7 +18,7 @@ public class Constants {
    /**
     * Contains the version string of the current Minecraft version
     */
-   public static final String VERSION = "4.7";
+   public static final String VERSION = "4.8";
    
    /**
     * The name of the mod

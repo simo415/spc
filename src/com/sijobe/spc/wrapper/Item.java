@@ -135,6 +135,9 @@ public class Item {
       if (item == null) {
          return;
       }
+      if (item.getHasSubtypes() || !item.isItemDamaged()) {
+         return;
+      }
       item.setItemDamage(0);
    }
 }

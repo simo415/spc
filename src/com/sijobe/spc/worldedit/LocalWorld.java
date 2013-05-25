@@ -12,6 +12,19 @@ import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.regions.Region;
 
 // q3 code ;)
+import java.util.List;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.DamageSource;
+import net.minecraft.src.Entity;
+import net.minecraft.src.EntityAnimal;
+import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityMob;
+import net.minecraft.src.EntityPig;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EntityTameable;
+import net.minecraft.src.EntityVillager;
 import net.minecraft.src.BiomeGenBase;
 import net.minecraft.src.Chunk;
 
@@ -19,7 +32,7 @@ import net.minecraft.src.Chunk;
  * Implements the WorldEdit local world class that provides necessary methods
  * required to edit the world.
  *
- * TODO: 
+ * TODO: (can this still happen?)
  * java.util.ConcurrentModificationException
    at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
    at java.util.AbstractList$Itr.next(AbstractList.java:343)
@@ -32,7 +45,7 @@ import net.minecraft.src.Chunk;
    at net.minecraft.src.ThreadServerApplication.run(ThreadServerApplication.java:17)
  *
  * @author simo_415
- * @version 1.1
+ * @version 1.2
  */
 public class LocalWorld extends com.sk89q.worldedit.LocalWorld {
 
@@ -150,7 +163,7 @@ public class LocalWorld extends com.sk89q.worldedit.LocalWorld {
    @Override
    public int removeEntities(EntityType entity, Vector pos, int area) {
       // TODO Auto-generated method stub
-      return 1;
+      return 0;
    }
 
    @Override
@@ -225,12 +238,58 @@ public class LocalWorld extends com.sk89q.worldedit.LocalWorld {
       return world.generateBirchTree(getCoordinate(pos));
    }
 
-   @Override
-   @Deprecated
-   public int killMobs(Vector pos, int radius) {
-      return 1;
+   @SuppressWarnings("unchecked")
+   public int killMobsDo(Vector pos, double radius, boolean withLightning, boolean killAnimals, boolean killNPCs, boolean killPets) {
+      List<Entity> entities = this.world.getMinecraftWorld().getEntitiesWithinAABBExcludingEntity(null,
+         AxisAlignedBB.getBoundingBox(pos.getX() - (double)radius, pos.getY() - (double)radius, pos.getZ() - (double)radius,
+         pos.getX() + (double)radius, pos.getY() + (double)radius, pos.getZ() + (double)radius));
+      int count = 0;
+      EntityPlayerMP owner;
+      try {
+         String firstPlayer = MinecraftServer.getServer().getServerOwner();
+         owner = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(firstPlayer);
+      } catch (Exception e) {
+         owner = null;
+         e.printStackTrace();
+      }
+      for(Entity entity : entities) {
+         if(entity instanceof EntityLiving) {
+            if(entity instanceof EntityPlayer) {
+               continue; // don't 'kill' players (it causes issues..)
+            }
+            if(!killAnimals && entity instanceof EntityAnimal) {
+               continue;
+            }
+            if(!killNPCs && entity instanceof EntityVillager) {
+               continue;
+            }
+            if(!killPets && entity instanceof EntityTameable) {
+               continue;
+            }
+            boolean isPig = entity instanceof EntityPig;
+            Coordinate entityPos = new Coordinate(entity.posX, entity.posY, entity.posZ);
+            if(withLightning && !isPig) {
+               world.useLightning(entityPos);
+            }
+            ((EntityLiving)entity).setEntityHealth(0);
+            if(owner != null) {
+               owner.destroyedItemsNetCache.add(entity.entityId);
+            }
+            count++;
+         }
+      }
+      return count;
    }
 
+   @Override
+   public int killMobs(Vector origin, double radius, int flags) {
+      boolean killPets = (flags & 0x1) != 0;
+      boolean killNPCs = (flags & 0x2) != 0;
+      boolean killAnimals = (flags & 0x4) != 0;
+      boolean withLightning = (flags & 0x100000) != 0;
+      return killMobsDo(origin, radius, withLightning, killAnimals, killNPCs, killPets);
+   }
+   
    /**
     * Gets the coordinate object that the specified Vector object represents
     * 

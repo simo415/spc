@@ -18,7 +18,8 @@ import java.util.List;
    description = "Turns damage on/off",
    example = "enable",
    videoURL = "http://www.youtube.com/watch?v=_nIre9Wxq_0",
-   version = "1.0"
+   version = "1.0",
+   alias = {"god"}
 )
 public class Damage extends StandardCommand {   
    /**
