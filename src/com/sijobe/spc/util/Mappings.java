@@ -32,9 +32,24 @@ public class Mappings extends HashMap<String, String[]> {
    }
 
    /**
+    * Gets mappings for the specified value
+    *
+    * @see java.util.HashMap#get(java.lang.Object)
+    */
+   @Override
+   public String[] get(Object key) {
+      String[] mappings = super.get(key);
+      if(mappings == null) {
+         return new String[]{ key.toString() };
+      } else {
+         return mappings;
+      }
+   }
+   
+   /**
     * @param mcpName
     * @param mappings
-    * @return
+    * @return mappings with mcpName prepended
     */
    private String[] makeMapping(String mcpName, String[] mappings) {
       String[] newMappings = new String[mappings.length + 1];

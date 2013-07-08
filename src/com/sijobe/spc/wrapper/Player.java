@@ -355,9 +355,28 @@ public class Player {
     * @return True if the player can stand in the specified location
     */
    public boolean isClear(Coordinate location) {
-      return getWorld().getBlockId(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == 0 && getWorld().getBlockId(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == 0 && !(getWorld().getBlockId(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == 0);
+      return getWorld().getBlockId(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == 0
+      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == 0
+      && !(getWorld().getBlockId(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == 0);
    }
 
+   /**
+    * Checks if the specified position is able to contain a player. This
+    * involves two squares at the player's height that are empty and one block
+    * below the player being empty.
+    * 
+    * @param player - The player object
+    * @param x - The X coordinate
+    * @param y - The Y coordinate
+    * @param z - The Z coordinate
+    * @return True if the player can fall in the specified location
+    */
+   public boolean isClearBelow(Coordinate location) {
+      return getWorld().getBlockId(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == 0
+      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == 0
+      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == 0;
+   }
+   
    /**
     * Gets the movement forward. This is a value between -1 and 1. -1 is when
     * the player is moving backward, 1 is that player moving forward. The value
@@ -367,7 +386,7 @@ public class Player {
     */
    public float getMovementForward() {
       if (player instanceof EntityPlayerMP) {
-         return ((EntityPlayerMP) player).getMovementForward();
+         return ((EntityPlayerMP) player).getMoveForwardField();
       } else if (player instanceof EntityClientPlayerMP) {
          return ((EntityClientPlayerMP) player).getMovementForward();
       } else {
@@ -384,7 +403,7 @@ public class Player {
     */
    public float getMovementStrafe() {
       if (player instanceof EntityPlayerMP) {
-         return ((EntityPlayerMP) player).getMovementStrafe();
+         return ((EntityPlayerMP) player).getMoveStrafingField();
       } else if (player instanceof EntityClientPlayerMP) {
          return ((EntityClientPlayerMP) player).getMovementStrafe();
       } else {

@@ -46,18 +46,25 @@ public class Path extends StandardCommand implements IPlayerMP {
    private static HashMap<String, int[]> playerConfig = new HashMap<String, int[]>();
 
    /**
+    * Name of the current world
+   */
+   private static String worldName = "";
+   
+   /**
     * @see com.sijobe.spc.wrapper.CommandBase#execute(com.sijobe.spc.wrapper.CommandSender, java.util.List)
     */
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = getSenderAsPlayer(sender);
       String playerName = player.getPlayerName();
+      checkWorld(player);
       
       if (params.size() >= 1) {
          String args[] = ((String)params.get(0)).split("(\\^|:)");
          int block = -1;
          int size = 3;
-
+         int meta = 0;
+         
          try {
             block = Integer.parseInt(args[0]);
          } catch (NumberFormatException e) {
@@ -76,6 +83,19 @@ public class Path extends StandardCommand implements IPlayerMP {
             throw new CommandException("Unknown block: " + args[0]);
          }
          
+         if(args.length > 1) {
+            try {
+               meta = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+               sender.sendMessageToPlayer("Invalid metadata value specified, using default.");
+               meta = 0;
+            }
+            if(meta < 0 || meta > 15) {
+               sender.sendMessageToPlayer("Using default metadata value.");
+               meta = 0;
+            }
+         }
+         
          if (params.size() > 1) {
             size = (Integer)params.get(1);
             if(size < 1) {
@@ -87,8 +107,15 @@ public class Path extends StandardCommand implements IPlayerMP {
             }
          }
 
+         if(playerConfig.containsKey(playerName)) {
+            int[] plrData = playerConfig.get(playerName);
+            if(plrData[0] == block && plrData[1] == meta && plrData[2] == size) {
+               throw new CommandException("Already making specified type of path!");
+            }
+         }
+         
          sender.sendMessageToPlayer("Path mode enabled.");
-         playerConfig.put(playerName, new int[]{block, size, -1, -1, -1});
+         playerConfig.put(playerName, new int[]{block, meta, size, -1, -1, -1});
       } else if(playerConfig.containsKey(playerName) && playerConfig.get(playerName)[0] > -1) {
          sender.sendMessageToPlayer("Path mode disabled.");
          playerConfig.get(playerName)[0] = -1;
@@ -98,6 +125,15 @@ public class Path extends StandardCommand implements IPlayerMP {
 
    }
 
+   private void checkWorld(Player player) {
+      String currentWorldName = player.getWorld().getName();
+      if(!worldName.equals(currentWorldName)) {
+         System.out.println("SPC: Clearing path settings.");
+         playerConfig.clear();
+         worldName = currentWorldName;
+      }
+   }
+   
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#getParameters()
     */
@@ -118,6 +154,7 @@ public class Path extends StandardCommand implements IPlayerMP {
     */
    @Override
    public void onTick(Player player) {
+      checkWorld(player);
       String playerName = player.getPlayerName();
       if (playerConfig.containsKey(playerName)) {
          int[] plrData = playerConfig.get(playerName);
@@ -140,24 +177,24 @@ public class Path extends StandardCommand implements IPlayerMP {
          int x = MathHelper.floor_double(position.getX());
          int y = MathHelper.floor_double(position.getY()); // used to take away 1
          int z = MathHelper.floor_double(position.getZ());
-         if (x != data[2] || y != data[3] || z != data[4]) { // prevx, prevy, prevz
-            int start = data[1] * -1 + 1; // size
+         if (x != data[3] || y != data[4] || z != data[5]) { // prevx, prevy, prevz
+            int start = data[2] * -1 + 1; // size
 
-            for (int i = start; i < data[1]; i++) {
-               for (int j = -1; j < data[1]; j++) {
-                  for (int k = start; k < data[1]; k++) {
+            for (int i = start; i < data[2]; i++) {
+               for (int j = -1; j < data[2]; j++) {
+                  for (int k = start; k < data[2]; k++) {
                      if (j == -1) {
-                        this.setBlock(player, x + i, y + j, z + k, data[0]);
+                        this.setBlock(player, x + i, y + j, z + k, data[0], data[1]);
                      } else {
-                        this.setBlock(player, x + i, y + j, z + k, 0);
+                        this.setBlock(player, x + i, y + j, z + k, 0, 0);
                      }
                   }
                }
             }
 
-            data[2] = x;
-            data[3] = y;
-            data[4] = z;
+            data[3] = x;
+            data[4] = y;
+            data[5] = z;
          }
       }
    }
@@ -174,8 +211,8 @@ public class Path extends StandardCommand implements IPlayerMP {
     * @param k - The Z position of the block
     * @param type - The type (ID) of the block
     */
-   private void setBlock(Player player, int i, int j, int k, int type) {
+   private void setBlock(Player player, int i, int j, int k, int type, int meta) {
       //player.getWorld().getMinecraftWorld().func_94575_c(i, j, k, type);
-      player.getWorld().setBlock(new Coordinate(i, j, k), type);
+      player.getWorld().setBlockDataWithMeta(new Coordinate(i, j, k), type, meta);
    }
 }

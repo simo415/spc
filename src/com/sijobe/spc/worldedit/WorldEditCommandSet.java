@@ -1,6 +1,8 @@
 package com.sijobe.spc.worldedit;
 
 import com.sijobe.spc.command.MultipleCommands;
+import com.sijobe.spc.core.IHook;
+import com.sijobe.spc.util.WorldEditCUIHelper;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.MinecraftServer;
@@ -12,7 +14,7 @@ import java.util.List;
  * The class that provides connection to WorldEdit. 
  *
  * @author simo_415
- * @version 1.0
+ * @version 1.2
  */
 public class WorldEditCommandSet extends MultipleCommands {
 
@@ -114,9 +116,31 @@ public class WorldEditCommandSet extends MultipleCommands {
     * @param command - The arguments (command) that the player sent
     */
    public void handleCommand(Player player, String command[]) {
-      WORLDEDIT.handleCommand(new LocalPlayer(player, SERVER), command);
+      LocalPlayer localPlayer = getLocalPlayer(player);
+      WORLDEDIT.handleCommand(localPlayer, command);
    }
 
+   private static LocalPlayer getLocalPlayer(Player player) {
+      LocalPlayer localPlayer = new LocalPlayer(player, SERVER);
+      if(player.getPlayerName().equals(MinecraftServer.getMinecraftServer().getServerOwner())) {
+         if(hasCUIHooks()) {
+            WORLDEDIT.getSession(localPlayer).setCUISupport(true);
+            WORLDEDIT.getSession(localPlayer).dispatchCUISetup(localPlayer);
+         }
+      }
+      return localPlayer;
+   }
+   
+   private static boolean hasCUIHooks() {
+      int cuiHooks = 0;
+      for(IHook hook : WorldEditCUIHelper.getCUIHooks()) {
+         if(hook.isEnabled()) {
+            cuiHooks++;
+         }
+      }
+      return (cuiHooks > 0);
+   }
+   
    /**
     * Handles a player arm swing event
     * 
@@ -124,7 +148,8 @@ public class WorldEditCommandSet extends MultipleCommands {
     */
    public void handleArmSwing(Player player) {
       if (leftClick + CLICK_DELAY < System.currentTimeMillis()) {
-         WORLDEDIT.handleArmSwing(new LocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()), SERVER));
+         LocalPlayer localPlayer = getLocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()));
+         WORLDEDIT.handleArmSwing(localPlayer);
          leftClick = System.currentTimeMillis();
       }
    }
@@ -136,7 +161,8 @@ public class WorldEditCommandSet extends MultipleCommands {
     */
    public void handleRightClick(Player player) {
       if (rightClick + CLICK_DELAY < System.currentTimeMillis()) {
-         WORLDEDIT.handleRightClick(new LocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()), SERVER));
+         LocalPlayer localPlayer = getLocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()));
+         WORLDEDIT.handleRightClick(localPlayer);
          rightClick = System.currentTimeMillis();
       }
    }
@@ -149,9 +175,9 @@ public class WorldEditCommandSet extends MultipleCommands {
     */
    public void handleBlockLeftClick(Player player, Coordinate block) {
       if (leftBlock + CLICK_DELAY < System.currentTimeMillis()) {
-         LocalPlayer local = new LocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()), SERVER);
-         com.sk89q.worldedit.WorldVector vector = new com.sk89q.worldedit.WorldVector(local.getWorld(), block.getBlockX(), block.getBlockY(), block.getBlockZ());
-         WORLDEDIT.handleBlockLeftClick(local, vector);
+         LocalPlayer localPlayer = getLocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()));
+         com.sk89q.worldedit.WorldVector vector = new com.sk89q.worldedit.WorldVector(localPlayer.getWorld(), block.getBlockX(), block.getBlockY(), block.getBlockZ());
+         WORLDEDIT.handleBlockLeftClick(localPlayer, vector);
          leftBlock = System.currentTimeMillis();
       }
    }
@@ -164,9 +190,9 @@ public class WorldEditCommandSet extends MultipleCommands {
     */
    public void handleBlockRightClick(Player player, Coordinate block) {
       if (rightBlock + CLICK_DELAY < System.currentTimeMillis()) {
-         LocalPlayer local = new LocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()), SERVER);
-         com.sk89q.worldedit.WorldVector vector = new com.sk89q.worldedit.WorldVector(local.getWorld(), block.getBlockX(), block.getBlockY(), block.getBlockZ());
-         WORLDEDIT.handleBlockRightClick(local, vector);
+         LocalPlayer localPlayer = getLocalPlayer(MinecraftServer.getPlayerByUsername(player.getPlayerName()));
+         com.sk89q.worldedit.WorldVector vector = new com.sk89q.worldedit.WorldVector(localPlayer.getWorld(), block.getBlockX(), block.getBlockY(), block.getBlockZ());
+         WORLDEDIT.handleBlockRightClick(localPlayer, vector);
          rightBlock = System.currentTimeMillis();
       }
    }

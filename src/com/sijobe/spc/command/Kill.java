@@ -1,6 +1,9 @@
 package com.sijobe.spc.command;
 
 import com.sijobe.spc.wrapper.CommandSender;
+import com.sijobe.spc.wrapper.Player;
+
+import net.minecraft.src.DamageSource;
 
 import java.util.List;
 
@@ -22,6 +25,9 @@ public class Kill extends StandardCommand {
     */
    @Override
    public void execute(CommandSender sender, List<?> params) {
-      super.getSenderAsPlayer(sender).setHealth(0);
+      Player player = super.getSenderAsPlayer(sender);
+      player.setHealth(0);
+      player.getMinecraftPlayer().onDeath(DamageSource.generic);
+      sender.sendMessageToPlayer("Ouch. That looks like it hurt.");
    }
 }

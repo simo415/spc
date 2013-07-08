@@ -61,6 +61,9 @@ public class Effect extends StandardCommand {
       if (id == null && !(args[0].equalsIgnoreCase("all"))) {
          throw new CommandException("Could not find specified effect.");
       }
+      if (id != null && id < 1) {
+         throw new CommandException("Invalid effect specified.");
+      }
       Player player = super.getSenderAsPlayer(sender);
       // Removes the specified effect
       if (((String)params.get(0)).equalsIgnoreCase("remove")) {
