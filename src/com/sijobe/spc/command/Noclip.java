@@ -35,9 +35,10 @@ public class Noclip extends StandardCommand {
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = CommandBase.getSenderAsPlayer(sender);
 
-      if(!player.getMinecraftPlayer().username.equals(MinecraftServer.getServer().getServerOwner())) {
+      System.out.println(player.getUsername() + " " + MinecraftServer.getServer().getServerOwner());
+      /*if(!player.getUsername().equals(MinecraftServer.getServer().getServerOwner())) {
          throw new CommandException("Must be server host");
-      }
+      }*/
       if(!player.getMinecraftPlayer().capabilities.isFlying && !player.getMinecraftPlayer().noClip) {
          throw new CommandException("Must be flying");
       }
@@ -67,7 +68,7 @@ public class Noclip extends StandardCommand {
    public Parameters getParameters() {
       return Parameters.DEFAULT_BOOLEAN;
    }
-   
+
    private static boolean hasXCommands() {
       try {
          NetServerHandler.class.getDeclaredField("clientHasXCommands");
@@ -76,22 +77,22 @@ public class Noclip extends StandardCommand {
          return false;
       }
    }
-   
+
    /**
     * Changes server handler to SPC's server handler if noclip is enabled,
     * otherwise restores the default server handler.
-   */
+    */
    private static void updateServerHandler(EntityPlayerMP playerEntity) {
       if(hasXCommands()) {
          return;
       }
-   
+
       NetServerHandler handler = playerEntity.playerNetServerHandler;
 
       if(playerEntity.noClip) {
          if(!(handler instanceof ONetServerHandler)) {
             playerEntity.playerNetServerHandler = new ONetServerHandler(MinecraftServer.getServer(),
-               handler.netManager, handler.playerEntity, handler);
+                     handler.netManager, handler.playerEntity, handler);
          }
       } else {
          if(handler instanceof ONetServerHandler) {
@@ -103,22 +104,22 @@ public class Noclip extends StandardCommand {
          }
       }
    }
-   
+
    public static void checkSafe(EntityPlayerMP player) {
       if(player.noClip && !player.capabilities.isFlying) {
          player.noClip = false;
          Minecraft.getMinecraft().thePlayer.noClip = false;
-			player.addChatMessage("Noclip auto-disabled. (Player not flying)");
+         player.addChatMessage("Noclip auto-disabled. (Player not flying)");
          updateServerHandler(player);
-			ascendPlayer(new Player(player));
-		}
+         ascendPlayer(new Player(player));
+      }
    }
-   
+
    private static boolean ascendPlayer(Player player) {
       Coordinate playerPos = player.getPosition();
       if(player.isClearBelow(playerPos) && playerPos.getY() > 0) {
          return false;
-		}
+      }
       double y = playerPos.getY() - 1; // in case player was standing on ground
       while (y < 260) {
          if(player.isClear(new Coordinate(playerPos.getX(), y++, playerPos.getZ()))) {
@@ -133,6 +134,6 @@ public class Noclip extends StandardCommand {
             break;
          }
       }
-		return true;
-	}
+      return true;
+   }
 }

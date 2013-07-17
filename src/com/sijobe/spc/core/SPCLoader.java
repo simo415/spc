@@ -4,7 +4,6 @@ import com.sijobe.spc.util.DynamicClassLoader;
 import com.sijobe.spc.wrapper.Minecraft;
 
 import java.io.File;
-import java.net.URL;
 
 /**
  * Specific implementation designed to initialise SPC to run any custom JARs, 
@@ -37,7 +36,11 @@ public class SPCLoader {
     */
    private static void loadClasspath() {
       File classpath[] = DynamicClassLoader.getClasspath();
+      //System.out.println("Minecraft: " + Minecraft.getMinecraftDirectory().getAbsolutePath());
       File files[] = (new File(Minecraft.getMinecraftDirectory(),"bin")).listFiles();
+      if (files == null) {
+         return;
+      }
       for (File file : files) {
          try {
             if (file.isFile() && file.getName().endsWith(".jar")) {

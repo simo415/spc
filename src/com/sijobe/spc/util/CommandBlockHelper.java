@@ -2,8 +2,22 @@ package com.sijobe.spc.util;
 
 import java.util.HashMap;
 import java.util.List;
+
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.*;
+import net.minecraft.src.CommandBase;
+import net.minecraft.src.CommandDifficulty;
+import net.minecraft.src.CommandEffect;
+import net.minecraft.src.CommandEnchant;
+import net.minecraft.src.CommandException;
+import net.minecraft.src.CommandGameMode;
+import net.minecraft.src.CommandGive;
+import net.minecraft.src.CommandHelp;
+import net.minecraft.src.CommandTime;
+import net.minecraft.src.CommandWeather;
+import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EnumChatFormatting;
+import net.minecraft.src.ICommandSender;
+import net.minecraft.src.StatCollector;
 
 /**
  * Helper to make command blocks execute vanilla commands
@@ -24,10 +38,10 @@ public class CommandBlockHelper {
             // sends command error to opped creative players
             MinecraftServer mcServer = MinecraftServer.getServer();
             List<EntityPlayerMP> players =
-               (List<EntityPlayerMP>)mcServer.getConfigurationManager().playerEntityList;
+               mcServer.getConfigurationManager().playerEntityList;
             for(EntityPlayerMP plr : players) {
                if(plr.canCommandSenderUseCommand(2, "") && plr.capabilities.isCreativeMode) {
-                  String cmdErr = plr.translateString(ce.getMessage(), ce.getErrorOjbects());
+                  String cmdErr = StatCollector.translateToLocalFormatted(ce.getMessage(), ce.getErrorOjbects());
                   plr.addChatMessage(EnumChatFormatting.RED + cmdErr);
                }
             }

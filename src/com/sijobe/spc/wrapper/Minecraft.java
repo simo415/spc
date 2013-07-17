@@ -16,7 +16,7 @@ public class Minecraft {
     * @return The Minecraft installation directory
     */
    public static File getMinecraftDirectory() {
-      return net.minecraft.client.Minecraft.getMinecraftDir();
+      return getMinecraft().mcDataDir;
    }
 
    /**
@@ -24,8 +24,8 @@ public class Minecraft {
     * 
     * @return The Minecraft instance
     */
-   public static net.minecraft.client.Minecraft getMinecraft() {
-      return net.minecraft.client.Minecraft.getMinecraft();
+   public static net.minecraft.src.Minecraft getMinecraft() {
+      return net.minecraft.src.Minecraft.getMinecraft();
    }
 
    /**

@@ -144,8 +144,8 @@ public class Player {
     * 
     * @return The value of the players health
     */
-   public int getHealth() {
-      return player.getHealth();
+   public float getHealth() {
+      return player.func_110143_aJ();
    }
 
    /**
@@ -153,7 +153,7 @@ public class Player {
     * 
     * @param health - The health amount
     */
-   public void setHealth(int health) {
+   public void setHealth(float health) {
       player.setEntityHealth(health);
    }
 
@@ -163,7 +163,7 @@ public class Player {
     * 
     * @param quantity - The ammount to heal the player
     */
-   public void heal(int quantity) {
+   public void heal(float quantity) {
       setHealth(getHealth() + quantity);
    }
 
@@ -247,7 +247,7 @@ public class Player {
       Vec3 positionVec = getPositionVec(partialTickTime);
       Vec3 lookVec = player.getLook(partialTickTime);
       Vec3 hitVec = positionVec.addVector(lookVec.xCoord * distance, lookVec.yCoord * distance, lookVec.zCoord * distance);
-      return player.worldObj.rayTraceBlocks(positionVec, hitVec);
+      return player.worldObj.rayTraceBlocks_do_do(positionVec, hitVec, false, true); // TODO: Validate correct params
    }
 
    /**
@@ -289,7 +289,7 @@ public class Player {
     * @return The players name
     */
    public String getPlayerName() {
-      return player.username;
+      return player.getEntityName();
    }
 
    /**
@@ -320,7 +320,7 @@ public class Player {
     * @param URL - The URL the skin is taken from
     */
    public void setSkin(String URL) {
-      player.skinUrl = URL;
+      //TODO: Set username? AbstractClientPlayer - player.skinUrl = URL;
    }
 
    /**
@@ -528,5 +528,19 @@ public class Player {
     */
    public boolean isCreativeMode() {
       return player.capabilities.isCreativeMode;
+   }
+   
+   /**
+    * Gets the players username
+    * 
+    * @return The players username
+    */
+   public String getUsername() {
+      if (player instanceof EntityClientPlayerMP) {
+         return ((EntityClientPlayerMP) player).getUsername();
+      } else if (player instanceof EntityPlayerMP) {
+         ((EntityPlayerMP) player).getUsername();
+      }
+      return "";
    }
 }

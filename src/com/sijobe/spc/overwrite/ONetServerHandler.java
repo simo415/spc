@@ -153,7 +153,7 @@ public final class ONetServerHandler extends NetServerHandler {
                {
                   if (Math.abs(par1Packet10Flying.xPosition) > 1.0D || Math.abs(par1Packet10Flying.zPosition) > 1.0D)
                   {
-                     System.err.println(oldInstance.playerEntity.username + " was caught trying to crash the server with an invalid position.");
+                     System.err.println(oldInstance.playerEntity.getUsername() + " was caught trying to crash the server with an invalid position.");
                      this.kickPlayerFromServer("Nope!");
                      return;
                   }
@@ -169,10 +169,10 @@ public final class ONetServerHandler extends NetServerHandler {
                this.playerEntity.motionX = var35;
                this.playerEntity.motionZ = var13;
 
-               if (this.playerEntity.ridingEntity != null)
+               /*TODO if (this.playerEntity.ridingEntity != null)
                {
                   var2.uncheckedUpdateEntity(this.playerEntity.ridingEntity, true);
-               }
+               }*/
 
                if (this.playerEntity.ridingEntity != null)
                {
@@ -222,7 +222,7 @@ public final class ONetServerHandler extends NetServerHandler {
                if (!this.playerEntity.isPlayerSleeping() && (var13 > 1.65D || var13 < 0.1D))
                {
                   this.kickPlayerFromServer("Illegal stance");
-                  this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " had an illegal stance: " + var13);
+                  this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " had an illegal stance: " + var13);
                   return;
                }
 
@@ -256,9 +256,9 @@ public final class ONetServerHandler extends NetServerHandler {
             double var23 = Math.min(Math.abs(var17), Math.abs(this.playerEntity.motionZ));
             double var25 = var19 * var19 + var21 * var21 + var23 * var23;
 
-            if (var25 > 100.0D && (!this.mcServer.isSinglePlayer() || !this.mcServer.getServerOwner().equals(this.playerEntity.username)))
+            if (var25 > 100.0D && (!this.mcServer.isSinglePlayer() || !this.mcServer.getServerOwner().equals(this.playerEntity.getUsername())))
             {
-               this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
+               this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
                this.setPlayerLocation(lastPosX, lastPosY, lastPosZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                return;
             }
@@ -290,7 +290,7 @@ public final class ONetServerHandler extends NetServerHandler {
             if (var25 > 0.0625D && !this.playerEntity.isPlayerSleeping() && !this.playerEntity.theItemInWorldManager.isCreative())
             {
                var31 = true;
-               this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " moved wrongly!");
+               this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " moved wrongly!");
             }
             
             this.playerEntity.setPositionAndRotation(var5, var7, var9, var11, var12);
@@ -315,7 +315,7 @@ public final class ONetServerHandler extends NetServerHandler {
                   
                   if (ticksForFloatKick > 80)
                   {
-                     this.mcServer.getLogAgent().logWarning(this.playerEntity.username + " was kicked for floating too long!");
+                     this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " was kicked for floating too long!");
                      this.kickPlayerFromServer("Flying is not enabled on this server");
                      return;
                   }

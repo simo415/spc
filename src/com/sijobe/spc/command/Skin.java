@@ -48,6 +48,7 @@ public class Skin extends StandardCommand {
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       super.getSenderAsPlayer(sender).setSkin(URL_PREFIX + (String)params.get(0) + URL_POSTFIX);
+      throw new CommandException("This command is currently broken. Sorry for the inconvenience.");
    }
 
    /**

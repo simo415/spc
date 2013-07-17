@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.src.ChatMessageComponent;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
 
@@ -38,7 +39,7 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
    /**
     * The Command annotation of the class that contains command attributes.
     */
-   private Command annotation;
+   private final Command annotation;
    
    /**
     * Initialises the instance and sets the command annotation (if it exists)
@@ -136,16 +137,20 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
          execute(csender,params);
       } catch (ValidationException v) {
          if (v.getMessage() == null) {
-            sender.sendChatToPlayer(FontColour.RED + "Usage: " + getUsage(csender));
+            sendChatMessage(sender, FontColour.RED + "Usage: " + getUsage(csender));
          } else {
-            sender.sendChatToPlayer(FontColour.RED + "Error: " + v.getMessage());
+            sendChatMessage(sender, FontColour.RED + "Error: " + v.getMessage());
          }
       } catch (CommandException e) {
-         sender.sendChatToPlayer(FontColour.RED + e.getMessage());
+         sendChatMessage(sender, FontColour.RED + e.getMessage());
       } catch (Exception e) {
          e.printStackTrace();
-         sender.sendChatToPlayer(FontColour.RED + e.getMessage());
+         sendChatMessage(sender, FontColour.RED + e.getMessage());
       }
+   }
+   
+   private void sendChatMessage(ICommandSender sender, String message) {
+      sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(message));
    }
 
    /**
@@ -178,7 +183,8 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
       try {
          return "/" + getName() + " " + getParameters().getUsage();
       } catch (Exception e) {
-         return super.getCommandUsage(sender.getMinecraftISender());
+         //return super.getCommandUsage(sender.getMinecraftISender());
+         return "";
       }
    }
 

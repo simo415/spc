@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityList;
 import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityLivingData;
 import net.minecraft.src.EntityPlayer;
 
 /**
@@ -138,7 +139,7 @@ public class Entity {
             net.minecraft.src.Entity entityInstance = (net.minecraft.src.Entity)entityClass.getConstructor(net.minecraft.src.World.class).newInstance(world.getMinecraftWorld());
             entityInstance.setPosition(location.getX(), location.getY() + 1, location.getZ());
             if(entityInstance instanceof EntityLiving) {
-               ((EntityLiving)entityInstance).initCreature();
+               ((EntityLiving)entityInstance).func_110161_a((EntityLivingData)null);
             }
             world.getMinecraftWorld().spawnEntityInWorld(entityInstance);
             if(entityInstance instanceof EntityLiving) {

@@ -1,7 +1,9 @@
 package com.sijobe.spc.wrapper;
 
+import net.minecraft.src.ChatMessageComponent;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.StatCollector;
 
 /**
  * Provides a wrapper around the ICommandSender interface
@@ -9,7 +11,7 @@ import net.minecraft.src.ICommandSender;
  * @author simo_415
  */
 public class CommandSender {
-   private ICommandSender sender;
+   private final ICommandSender sender;
    
    /**
     * Standard constructor that accepts the sender to wrap
@@ -55,7 +57,7 @@ public class CommandSender {
     * @param message - The message to display
     */
    public void sendMessageToPlayer(String message) {
-      sender.sendChatToPlayer(message);
+      sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(message));
    }
    
    /**
@@ -66,7 +68,7 @@ public class CommandSender {
     * @return The translated String
     */
    public String translateString(String translate, Object ... params) {
-      return sender.translateString(translate, params);
+      return StatCollector.translateToLocalFormatted(translate, params);
    }
    
    /**

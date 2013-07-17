@@ -7,7 +7,6 @@ import java.util.List;
 import net.minecraft.src.Enchantment;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.StringTranslate;
 
 public class Item {
 
@@ -19,7 +18,7 @@ public class Item {
       ITEM_NAMES = new ArrayList<String>();
       for (net.minecraft.src.Item item : net.minecraft.src.Item.itemsList) {
          if (item != null) {
-            ITEM_NAMES.add(translateItemName(item.getUnlocalizedName()).toLowerCase());
+            ITEM_NAMES.add(StatCollector.translateToLocal(item.getUnlocalizedName()));
          } else {
             ITEM_NAMES.add(null);
          }
@@ -32,9 +31,9 @@ public class Item {
     * @param toTranslate - The item name to translate
     * @return The display name of the item
     */
-   public static String translateItemName(String toTranslate) {
+   /*public static String translateItemName(String toTranslate) {
       return StringTranslate.getInstance().translateNamedKey(toTranslate).toString().trim();
-   }
+   }*/
 
    /**
     * Gets the item id of the specified item denoted by the string name
