@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ServerCommandManager;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ServerCommandManager;
 
 /**
  * Provides methods to allow easy access to the server command manager and its

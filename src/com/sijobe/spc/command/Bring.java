@@ -8,7 +8,7 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
-import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 
 @Command (
@@ -65,14 +66,14 @@ public class Bring extends StandardCommand {
       if(radius <=0 || radius > 256) {
          throw new CommandException("Radius should be between 0 and 256.");
       }
-      List<net.minecraft.src.Entity> foundEntities = Entity.findEntities(entityType, player.getPosition(), player.getWorld(), radius);
-      net.minecraft.src.Vec3 vec3d = player.getMinecraftPlayer().getLook(1.0F);
+      List<net.minecraft.entity.Entity> foundEntities = Entity.findEntities(entityType, player.getPosition(), player.getWorld(), radius);
+      net.minecraft.util.Vec3 vec3d = player.getMinecraftPlayer().getLook(1.0F);
       double d = 5.0D;
       double offsetY = player.getMinecraftPlayer().posY + player.getMinecraftPlayer().getEyeHeight();
       double d1 = player.getMinecraftPlayer().posX + vec3d.xCoord * d;
       double d2 = offsetY + vec3d.yCoord * d;
       double d3 = player.getMinecraftPlayer().posZ + vec3d.zCoord * d;
-      for(net.minecraft.src.Entity entity : foundEntities) {
+      for(net.minecraft.entity.Entity entity : foundEntities) {
          if(entity == player.getMinecraftPlayer()) {
             continue; // don't allow the player to bring themselves
          }

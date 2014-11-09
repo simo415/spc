@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.src.Achievement;
-import net.minecraft.src.AchievementList;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.AchievementList;
 
 /**
  * Contains methods that interact with the Minecraft statistics engine 

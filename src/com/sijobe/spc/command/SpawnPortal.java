@@ -8,10 +8,10 @@ import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.Player;
 import java.lang.reflect.Method;
-import net.minecraft.src.EntityDragon;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.Teleporter;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.Teleporter;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.0
+ * @survived 1.7.2 update but end portal doesn't work
  */
 @Command (
    name = "spawnportal",

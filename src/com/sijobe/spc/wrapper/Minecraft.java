@@ -24,8 +24,8 @@ public class Minecraft {
     * 
     * @return The Minecraft instance
     */
-   public static net.minecraft.src.Minecraft getMinecraft() {
-      return net.minecraft.src.Minecraft.getMinecraft();
+   public static net.minecraft.client.Minecraft getMinecraft() {
+      return net.minecraft.client.Minecraft.getMinecraft();
    }
 
    /**

@@ -16,6 +16,7 @@ import com.sijobe.spc.wrapper.Player;
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "longerlegs",

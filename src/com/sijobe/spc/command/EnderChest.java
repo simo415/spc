@@ -3,7 +3,7 @@ package com.sijobe.spc.command;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.4.2
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "enderchest",

@@ -8,11 +8,12 @@ import com.sijobe.spc.wrapper.Player;
 import java.util.List;
 
 /**
- * Sets the players spawn based on the player position or the arguments 
+ * Sets the players spawn based on the player position or the arguments  //TODO make doc correct
  * provided
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command ( 
    name = "jump",

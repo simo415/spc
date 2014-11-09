@@ -14,6 +14,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.4
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "light",

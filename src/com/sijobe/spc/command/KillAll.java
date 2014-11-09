@@ -8,7 +8,7 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
-import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 
 @Command (
@@ -65,7 +66,7 @@ public class KillAll extends StandardCommand {
       if(radius <=0 || radius > 256) {
          throw new CommandException("Radius should be between 0 and 256.");
       }
-      List<net.minecraft.src.Entity> removedEntities =
+      List<net.minecraft.entity.Entity> removedEntities =
          Entity.killEntities(entityType, player.getPosition(), player.getWorld(), radius);
       sender.sendMessageToPlayer(removedEntities.size() + " entity(s) removed.");
    }

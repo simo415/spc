@@ -1,9 +1,9 @@
 package com.sijobe.spc.wrapper;
 
-import net.minecraft.src.ChatMessageComponent;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.StatCollector;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 
 /**
  * Provides a wrapper around the ICommandSender interface
@@ -57,7 +57,7 @@ public class CommandSender {
     * @param message - The message to display
     */
    public void sendMessageToPlayer(String message) {
-      sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(message));
+      sender.addChatMessage(new ChatComponentText(message));
    }
    
    /**

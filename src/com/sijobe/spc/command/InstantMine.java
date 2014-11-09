@@ -9,13 +9,14 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
-import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Command to toggle instant mining
  *
  * @author q3hardcore
  * @version 1.0
+ * @status broken through 1.7.2 update
  */
 @Command (
    name = "instantmine",

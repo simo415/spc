@@ -14,6 +14,7 @@ import com.sijobe.spc.wrapper.Player;
  *
  * @author simo_415
  * @version 1.0
+ * @status broken through 1.7.2 update
  */
 @Command (
    name = "useportal",

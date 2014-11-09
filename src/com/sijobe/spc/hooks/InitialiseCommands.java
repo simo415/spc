@@ -6,7 +6,6 @@ import com.sijobe.spc.core.PlayerMP;
 import com.sijobe.spc.core.SPCLoader;
 import com.sijobe.spc.util.DynamicClassLoader;
 import com.sijobe.spc.util.FontColour;
-import com.sijobe.spc.worldedit.WorldEditEvents;
 import com.sijobe.spc.wrapper.CommandBase;
 import com.sijobe.spc.wrapper.CommandManager;
 import com.sijobe.spc.wrapper.Player;
@@ -17,10 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * back in 1.6.2...
+ * 
  * Initialises SPC by adding the commands to the system. The class is 
  * dynamically loaded by the HookManager when hooks of type PlayerMP are 
  * loaded, this is done by the Minecraft class EntityPlayerMP when it is 
  * first referenced using static invokes.
+ * 
+ * Now this happens through ModSpc.init
  *
  * @author simo_415
  * @version 1.0
@@ -41,15 +44,22 @@ public class InitialiseCommands extends PlayerMP {
     * The welcome message to send
     */
    private static final String WELCOME_MESSAGE = FontColour.GREY + 
-      "Single Player Commands (" + Constants.VERSION + ") - " + FontColour.ORANGE + "http://bit.ly/spcmod";
+      "Single Player Commands (" + Constants.VERSION + ") - " + FontColour.ORANGE + "http://bit.ly/spcmod <-- link to simo_415 website, not the updater's\n" +
+		   FontColour.WHITE +
+		   "This version of SPC is untested and may contain bugs\n" +
+			"or cause minecraft to crash.\n" +
+			"Use at your own risk\n" +
+			"Also, SPC will not notify you if there is another update;\n" +
+			"you must check manually.\n" +
+			"Now SPC does not contain World Edit;\n" +
+			"you must download it manually.";
 
    /**
     * Pending messages
    */
-   private static final List<String> pendingMessages = new ArrayList<String>();
+   public static final List<String> pendingMessages = new ArrayList<String>();
       
    public InitialiseCommands() {
-      loadCommands();
    }
    
    @Override
@@ -71,14 +81,17 @@ public class InitialiseCommands extends PlayerMP {
     * Sends the startup message when the mod has loaded
     */
    private void sendStartupMessage(Player player) {
-      player.sendChatMessage(WELCOME_MESSAGE);
+	   for(String line : WELCOME_MESSAGE.split("\n"))
+	   {
+		   player.sendChatMessage(line);
+	   }
    }
 
    /**
     * Loads standard and multiple commands into the game. This method is run 
     * as a thread to keep execution time to a minimum.
     */
-   private void loadCommands() {
+   public void loadCommands() {
       (new Thread() {
          @Override
          public void run() {
@@ -87,17 +100,6 @@ public class InitialiseCommands extends PlayerMP {
             
             // Load Commands Sets
             loadMultipleCommands();
-
-            try {
-               if(com.sijobe.spc.worldedit.WorldEditCommandSet.getCurrentInstance() == null) {
-                  Class.forName("com.sk89q.worldedit.WorldEdit");
-                  System.out.println("SPCommands: Forcing command re-load.");
-                  loadMultipleCommands();
-               }
-            } catch (Throwable t) {
-               WorldEditEvents.disableHandleEvents();
-               pendingMessages.add("WorldEdit.jar not found in .minecraft/bin - WE unavailable.");
-            }
 
             // Load Standard Commands
             loadStandardCommands();
@@ -120,9 +122,11 @@ public class InitialiseCommands extends PlayerMP {
             if (!cmd.isEnabled()) {
                continue;
             }
+            
             if (doesCommandExist(cmd)) { // TODO: review this
                System.out.println("Overwriting existing command named: " + cmd.getName());
             }
+            
             CommandManager.registerCommand(cmd);
          } catch (Exception e) {
             System.err.println("There was an issue initialising class " + 

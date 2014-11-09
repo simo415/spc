@@ -5,16 +5,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import net.minecraft.src.ChunkCoordIntPair;
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemInWorldManager;
-import net.minecraft.src.WorldProvider;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ItemInWorldManager;
+import net.minecraft.world.WorldProvider;
 
 /**
  * Helper for compatiblity with Minecraft Forge

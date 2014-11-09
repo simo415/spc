@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import net.minecraft.src.BaseMod;
 
 public class WorldEditCUI implements ICUIEventHandler {
 
@@ -99,12 +98,17 @@ public class WorldEditCUI implements ICUIEventHandler {
       if(WorldEditCUIMod == null && hasModLoader) {
          try {
             Method method = mlClass.getMethod("getLoadedMods");
-            List<BaseMod> mods = (List<BaseMod>)method.invoke(null);
-            for(BaseMod mod : mods) {
-               if(mod.getName().equals("mod_WorldEditCUI")) {
-                  loadedWorldEditCUI = true;
-                  return mod;
-               }
+            List<Object> mods = (List<Object>)method.invoke(null);
+            for(Object mod : mods) {
+            	if(mod.getClass().getName() == "BaseMod")
+            	{
+            		Method meth = mod.getClass().getMethod("getName");
+            		if(meth.invoke(mod).equals("mod_WorldEditCUI"))
+            		{
+            			loadedWorldEditCUI = true;
+           				return mod;
+            		}
+            	}
             }
          } catch (Throwable t) {
             t.printStackTrace();

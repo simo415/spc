@@ -2,29 +2,48 @@ package com.sijobe.spc.wrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import net.minecraft.src.Enchantment;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.StatCollector;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistryNamespaced;
+import net.minecraft.util.StatCollector;
 
 public class Item {
 
    /**
     * A list of item names that are loaded in the game
     */
-   private static final List<String> ITEM_NAMES;
-   static {
-      ITEM_NAMES = new ArrayList<String>();
-      for (net.minecraft.src.Item item : net.minecraft.src.Item.itemsList) {
-         if (item != null) {
-            ITEM_NAMES.add(StatCollector.translateToLocal(item.getUnlocalizedName()));
-         } else {
-            ITEM_NAMES.add(null);
-         }
-      }
+	public static final RegistryNamespaced itemRegistry = new RegistryNamespaced();
+	public static final Map<net.minecraft.item.Item, Item> conversionRegistry = new HashMap<net.minecraft.item.Item, Item>();
+	public static final RegistryNamespaced realItemRegistry = net.minecraft.item.Item.itemRegistry;
+	
+	public static void init()
+	{
+		for (Object i : net.minecraft.item.Item.itemRegistry)
+		{
+			net.minecraft.item.Item item = (net.minecraft.item.Item) i;
+			Item wrapped = new Item(item);
+			itemRegistry.putObject(realItemRegistry.getNameForObject(item), wrapped);
+			conversionRegistry.put(item, wrapped);
+		}
+	}
+   
+   protected net.minecraft.item.Item item;
+   
+   public Item(net.minecraft.item.Item item)
+   {
+	   this.item = item;
    }
-
+   
+   /*convert a wrapped item into a minecraft item*/
+   public net.minecraft.item.Item convert()
+   {
+	   return this.item;
+   }
+   
    /**
     * Translates the item code name into the item display name
     * 
@@ -35,14 +54,27 @@ public class Item {
       return StringTranslate.getInstance().translateNamedKey(toTranslate).toString().trim();
    }*/
 
-   /**
+/**
     * Gets the item id of the specified item denoted by the string name
     * 
     * @param itemName - The name of the item 
-    * @return the id of the item. If the item doesn't exist -1 is returned
+    * @return the id of the item. If the item doesn't exist null is returned
     */
-   public static int getItemId(String itemName) {
-      return ITEM_NAMES.indexOf(itemName.toLowerCase());
+   public static Item getItem(String itemName) {
+      if(itemRegistry.containsKey(itemName))
+      {
+    	  return (Item) itemRegistry.getObject(itemName);
+      }
+      else
+      {
+    	  return null;
+      }
+   }
+   
+   /*returns the converts the item to a minecraft item*/
+   public static Item getItem(net.minecraft.item.Item item)
+   {
+	   return conversionRegistry.get(item);
    }
 
    /**
@@ -51,24 +83,18 @@ public class Item {
     * @param id - The id of the item to check
     * @return true is returned if the id is valid, false otherwise
     */
-   public static boolean isValidItem(int id) {
-      if (id < 0 || id > ITEM_NAMES.size()) {
-         return false;
-      }
-      return ITEM_NAMES.get(id) != null;
+   public static boolean isValidItem(Item item) {
+	   return itemRegistry.containsKey(item);
    }
 
-   /**
+   /**TODO: remove arguement
     * Gets the maximum stack size of the specified item
     * 
-    * @param id - The id of the item 
+    * @param id - does nothing
     * @return The stack size of the item, or 0 if not valid
     */
-   public static int getMaxStack(int id) {
-      if (isValidItem(id)) {
-         return net.minecraft.src.Item.itemsList[id].getItemStackLimit();
-      }
-      return 0;
+   public int getMaxStack(Item id) {
+	   return this.item.getItemStackLimit();
    }
 
    /**

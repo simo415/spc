@@ -80,7 +80,7 @@ public class MinecraftServer {
     * @see CommandManager#runCommand(CommandSender, String)
     */
    public static String runCommand(String command) {
-      return getMinecraftServer().executeCommand(command);
+      return getMinecraftServer().handleRConCommand(command);
    }
    
    /**

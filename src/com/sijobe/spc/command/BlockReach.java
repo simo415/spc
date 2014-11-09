@@ -8,7 +8,7 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
-import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.0
+ * @status broken through 1.7.2 update
  */
 @Command (
    name = "blockreach",
@@ -53,7 +54,7 @@ public class BlockReach extends StandardCommand {
             throw new CommandException("Reach distance must be between 4.5 and 255.");
          }
          ForgeHelper.setBlockReachDistance(playerEntity.theItemInWorldManager, newReach);
-         Minecraft.getMinecraft().thePlayer.setClientReach(newReach);
+         //Minecraft.getMinecraft().thePlayer.setClientReach(newReach); //removed since spc 1.7.2 update now needs forge anyway
          sender.sendMessageToPlayer("Set block reach distance to: " + newReach);
       }
    }

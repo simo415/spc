@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "repair",

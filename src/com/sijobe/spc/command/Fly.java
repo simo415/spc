@@ -9,6 +9,11 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
+/**
+ * TODO add doc
+ * @status survived 1.7.2 update
+ */
+
 @Command (
    name = "fly",
    description = "Enables and disables the ability to fly for the player",

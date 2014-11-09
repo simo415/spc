@@ -3,16 +3,17 @@ package com.sijobe.spc.wrapper;
 import java.lang.reflect.Field;
 import java.util.Random;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityLightningBolt;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.WorldGenBigTree;
-import net.minecraft.src.WorldGenForest;
-import net.minecraft.src.WorldGenTaiga1;
-import net.minecraft.src.WorldGenTaiga2;
-import net.minecraft.src.WorldGenTrees;
-import net.minecraft.src.WorldInfo;
+
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.gen.feature.WorldGenBigTree;
+import net.minecraft.world.gen.feature.WorldGenForest;
+import net.minecraft.world.gen.feature.WorldGenTaiga1;
+import net.minecraft.world.gen.feature.WorldGenTaiga2;
+import net.minecraft.world.gen.feature.WorldGenTrees;
+import net.minecraft.world.storage.WorldInfo;
 
 /**
  * Provides methods that interact with the Minecraft world
@@ -24,7 +25,7 @@ public class World {
    /**
     * The world instance this class wraps around
     */
-   private final net.minecraft.src.World world;
+   private final net.minecraft.world.World world;
    /**
     * A random instance provides random numbers for methods
     */
@@ -35,7 +36,7 @@ public class World {
     * 
     * @param world - The world instance to wrap around
     */
-   public World(net.minecraft.src.World world) {
+   public World(net.minecraft.world.World world) {
       this.world = world;
       random = new Random();
    }
@@ -46,10 +47,10 @@ public class World {
     * @param x - The X coordinate of the block to get
     * @param y - The Y coordinate of the block to get
     * @param z - The Z coordinate of the block to get
-    * @return The ID of the block
+    * @return the block at (x, y, z)
     */
-   public int getBlockId(int x, int y, int z) {
-      return world.getBlockId(x, y, z);
+   public Block getBlock(int x, int y, int z) {
+      return Block.fromMinecraftBlock(this.getMinecraftWorld().getBlock(x, y, z));
    }
    
    /**
@@ -58,8 +59,8 @@ public class World {
     * @param coord - The coordinate of the block to get
     * @return The ID of the block
     */
-   public int getBlockId(Coordinate coord) {
-      return world.getBlockId(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ());
+   public Block getBlock(Coordinate coord) {
+      return this.getBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ());
    }
    
    /**
@@ -127,7 +128,7 @@ public class World {
       } 
       WorldInfo info = new WorldInfo(nbt);
       try {
-         Field fields[] = net.minecraft.src.World.class.getDeclaredFields();
+         Field fields[] = net.minecraft.world.World.class.getDeclaredFields();
          for (Field field : fields) {
             field.setAccessible(true);
             if (field.get(this.world) instanceof WorldInfo) {
@@ -145,7 +146,7 @@ public class World {
     * 
     * @return The difficulty of the world
     */
-   public int getDifficulty() {
+   public EnumDifficulty getDifficulty() {
       return world.difficultySetting;
    }
    
@@ -154,7 +155,7 @@ public class World {
     * 
     * @param difficulty - The difficulty of the world
     */
-   public void setDifficulty(int difficulty) {
+   public void setDifficulty(EnumDifficulty difficulty) {
       world.difficultySetting = difficulty;
    }
    
@@ -165,8 +166,8 @@ public class World {
     * @param type - The BlockID to change the specified location to
     * @return True if the data was set correctly
     */
-   public boolean setBlock(Coordinate coord, int type) {
-      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, 0, 2);
+   public boolean setBlock(Coordinate coord, Block type) {
+      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type.convert(), 0, 2);
    }
    
    /**
@@ -188,8 +189,8 @@ public class World {
     * @param meta - The metadata to set on the block
     * @return True if the data was set correctly
     */
-   public boolean setBlockDataWithMeta(Coordinate coord, int type, int meta) {
-      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type, meta, 2);
+   public boolean setBlockDataWithMeta(Coordinate coord, Block type, int meta) {
+      return world.setBlock(coord.getBlockX(), coord.getBlockY(), coord.getBlockZ(), type.convert(), meta, 2);
       // 2 = setblock, 3 = notify
    }
    
@@ -287,7 +288,7 @@ public class World {
     */
    public boolean emptyContainer(Coordinate coordinate) {
       try {
-         IInventory i = (IInventory)world.getBlockTileEntity(coordinate.getBlockX(), coordinate.getBlockY(), coordinate.getBlockZ());
+         IInventory i = (IInventory)world.getTileEntity(coordinate.getBlockX(), coordinate.getBlockY(), coordinate.getBlockZ());
          for (int j = 0; j < i.getSizeInventory(); j++) {
             i.setInventorySlotContents(j, null);
          }
@@ -345,7 +346,8 @@ public class World {
     * @return True if the generation was successful, false otherwise
     */
    public boolean generateBirchTree(Coordinate coordinate) {
-      return (new WorldGenForest(true)).generate(world, random, coordinate.getBlockX(), coordinate.getBlockY(), coordinate.getBlockZ());
+	   //second arg for WorldGenForest constructor might need to be true 
+      return (new WorldGenForest(true, false)).generate(world, random, coordinate.getBlockX(), coordinate.getBlockY(), coordinate.getBlockZ());
    }
    
    /**
@@ -389,11 +391,8 @@ public class World {
     * @param type - The type of block
     * @return True if it is a valid block type
     */
-   public boolean isValidBlockType(int type) {
-      if (type < 0 || type >= Block.blocksList.length) {
-         return false;
-      }
-      return Block.blocksList[type] != null;
+   public boolean isValidBlockType(Block type) {
+	   return Block.blockRegistry.containsKey(type);
    }
    
    /**
@@ -401,7 +400,7 @@ public class World {
     * 
     * @return The Minecraft World object
     */
-   public net.minecraft.src.World getMinecraftWorld() {
+   public net.minecraft.world.World getMinecraftWorld() {
       return world;
    }
 }

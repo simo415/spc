@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status broken through 1.7.2 update
  */
 @Command (
    name = "give",
@@ -54,16 +55,9 @@ public class Give extends StandardCommand {
          }
       }
       
-      // Get the item id
-      int code = -1;
-      try {
-         code = Integer.parseInt(split[0]);
-      } catch (NumberFormatException e) {
-         code = -1;
-      }
-      if (code <= 0) {
-         code = Item.getItemId((split[0]).replace('_', ' '));
-      }
+      // Get the item
+      Item code = null;
+      code = Item.getItem((split[0]));
       if (!Item.isValidItem(code)) {
          throw new CommandException("Cannot find specified item: " + split[0]);
       }
@@ -72,7 +66,7 @@ public class Give extends StandardCommand {
       int quantity = params.size() > 1 ? (Integer)params.get(1) : 0;
       damage = params.size() > 2 ? (Integer)params.get(2) : damage;
       if (quantity == 0) {
-         super.getSenderAsPlayer(sender).givePlayerItem(code);
+         super.getSenderAsPlayer(sender).givePlayerItemWithDrop(code);
       } else if (damage == 0) {
          super.getSenderAsPlayer(sender).givePlayerItem(code, quantity);
       } else {

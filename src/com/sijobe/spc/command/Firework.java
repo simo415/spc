@@ -9,10 +9,11 @@ import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
 
 /**
- * Creates an endercrystal where the player is pointing
+ * Creates an endercrystal where the player is pointing //TODO why does it say endercrystal?
  *
  * @author simo_415
  * @version 1.0
+ * @status broken through 1.7.2 update (worked before?)
  */
 @Command (
    name = "firework",

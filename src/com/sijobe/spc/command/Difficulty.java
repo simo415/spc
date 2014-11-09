@@ -8,6 +8,8 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.World;
 
+import net.minecraft.world.EnumDifficulty;
+
 import java.util.List;
 
 /**
@@ -15,6 +17,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status broken through 1.7.2 update
  */
 @Command (
    name = "difficulty",
@@ -40,23 +43,34 @@ public class Difficulty extends StandardCommand {
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       World world = super.getSenderAsPlayer(sender).getWorld();
+      int change;
       if (params.size() > 0) {
-         world.setDifficulty((Integer)params.get(0));
+    	  switch((Integer)params.get(0))
+    	  {
+    	  	case 0:
+    	  		world.setDifficulty(EnumDifficulty.PEACEFUL);
+    	  	case 1:
+    	  		world.setDifficulty(EnumDifficulty.EASY);
+    	  	case 2:
+    	  		world.setDifficulty(EnumDifficulty.NORMAL);
+    	  	case 3:
+    	  		world.setDifficulty(EnumDifficulty.HARD);
+    	  }
       } else {
-         world.setDifficulty((world.getDifficulty() + 1) % 4);
+         world.setDifficulty(EnumDifficulty.getDifficultyEnum((world.getDifficulty().getDifficultyId() + 1) % 4));
       }
       String difficulty = "";
       switch (world.getDifficulty()) {
-         case 0:
+         case PEACEFUL:
             difficulty = FontColour.GREEN + "peaceful";
             break;
-         case 1:
+         case EASY:
             difficulty = FontColour.YELLOW + "easy";
             break;
-         case 2:
+         case NORMAL:
             difficulty = FontColour.ORANGE + "normal";
             break;
-         case 3:
+         case HARD:
             difficulty = FontColour.RED + "hard";
             break;
       }

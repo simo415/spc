@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.src.ChatMessageComponent;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Provides a base class for all custom commands to extend. All non-abstract 
@@ -29,7 +29,7 @@ import net.minecraft.src.ICommandSender;
  * @author simo_415
  * @version 1.3
  */
-public abstract class CommandBase extends net.minecraft.src.CommandBase {
+public abstract class CommandBase extends net.minecraft.command.CommandBase {
    
    /**
     * A map containing all settings managers that have been loaded for worlds
@@ -104,7 +104,7 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
       if(sender.getCommandSenderName().equals("@")) {
          if(args.length >= 1) {
             if(getName().equals("sudo")) {
-               args[0] = func_82359_c(sender, args[0]).getCommandSenderName();
+               args[0] = getPlayer(sender, args[0]).getCommandSenderName();
             } else {
                String cmd = getCommandName();
                for(String part : args) {
@@ -114,8 +114,8 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
                System.out.println("SPC/CommandBlock: " + cmd);
                EntityPlayerMP player;
                try {
-                  player = func_82359_c(sender, args[0]);
-               } catch (net.minecraft.src.PlayerNotFoundException pnfe) {
+                  player = getPlayer(sender, args[0]);
+               } catch (net.minecraft.command.PlayerNotFoundException pnfe) {
                   System.out.println("SPC/CommandBlock: Warning - " + getCommandName() + " is a player command.");
                   throw pnfe;
                }
@@ -150,7 +150,7 @@ public abstract class CommandBase extends net.minecraft.src.CommandBase {
    }
    
    private void sendChatMessage(ICommandSender sender, String message) {
-      sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(message));
+      sender.addChatMessage(new ChatComponentText(message));
    }
 
    /**

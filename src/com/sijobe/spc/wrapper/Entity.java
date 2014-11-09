@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityList;
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityLivingData;
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.util.DamageSource;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Contains methods that manage entities within the game
@@ -136,10 +136,10 @@ public class Entity {
       Class<?> entityClass = getEntityClass(entity);
       try {
          if (entityClass != null) {
-            net.minecraft.src.Entity entityInstance = (net.minecraft.src.Entity)entityClass.getConstructor(net.minecraft.src.World.class).newInstance(world.getMinecraftWorld());
+            net.minecraft.entity.Entity entityInstance = (net.minecraft.entity.Entity)entityClass.getConstructor(net.minecraft.world.World.class).newInstance(world.getMinecraftWorld());
             entityInstance.setPosition(location.getX(), location.getY() + 1, location.getZ());
             if(entityInstance instanceof EntityLiving) {
-               ((EntityLiving)entityInstance).func_110161_a((EntityLivingData)null);
+               ((EntityLiving)entityInstance).onSpawnWithEgg((IEntityLivingData)null); //func_110161_a in 1.6.2, I don't know if I changed it to the right method
             }
             world.getMinecraftWorld().spawnEntityInWorld(entityInstance);
             if(entityInstance instanceof EntityLiving) {
@@ -153,15 +153,15 @@ public class Entity {
       return false;
    }
    
-   public static List<net.minecraft.src.Entity> killEntities(String entity, Coordinate location, World world, double distance) {
-      List<net.minecraft.src.Entity> removedEntities = new ArrayList<net.minecraft.src.Entity>();
+   public static List<net.minecraft.entity.Entity> killEntities(String entity, Coordinate location, World world, double distance) {
+      List<net.minecraft.entity.Entity> removedEntities = new ArrayList<net.minecraft.entity.Entity>();
       Class<?> entityClass = getEntityClass(entity);
       int count = 0;
       try {
          if (entityClass != null) {
-            List<net.minecraft.src.Entity> toremove = new ArrayList<net.minecraft.src.Entity>();
-            List<net.minecraft.src.Entity> entities = getLoadedEntities(world);
-            for (net.minecraft.src.Entity loaded : entities) {
+            List<net.minecraft.entity.Entity> toremove = new ArrayList<net.minecraft.entity.Entity>();
+            List<net.minecraft.entity.Entity> entities = getLoadedEntities(world);
+            for (net.minecraft.entity.Entity loaded : entities) {
                if(!(entityClass.isInstance(loaded))) {
                   continue;
                }
@@ -169,7 +169,7 @@ public class Entity {
                   toremove.add(loaded);
                }
             }
-            for (net.minecraft.src.Entity remove : toremove) {
+            for (net.minecraft.entity.Entity remove : toremove) {
                if(remove instanceof EntityPlayer) {
                   continue;
                }
@@ -189,15 +189,15 @@ public class Entity {
       return removedEntities;
    }
    
-   public static List<net.minecraft.src.Entity> findEntities(String entity, Coordinate location, World world, double distance) {
-      List<net.minecraft.src.Entity> foundEntities = new ArrayList<net.minecraft.src.Entity>();
+   public static List<net.minecraft.entity.Entity> findEntities(String entity, Coordinate location, World world, double distance) {
+      List<net.minecraft.entity.Entity> foundEntities = new ArrayList<net.minecraft.entity.Entity>();
       Class<?> entityClass = getEntityClass(entity);
       int count = 0;
       try {
          if (entityClass != null) {
-            List<net.minecraft.src.Entity> found = new ArrayList<net.minecraft.src.Entity>();
-            List<net.minecraft.src.Entity> entities = getLoadedEntities(world);
-            for (net.minecraft.src.Entity loaded : entities) {
+            List<net.minecraft.entity.Entity> found = new ArrayList<net.minecraft.entity.Entity>();
+            List<net.minecraft.entity.Entity> entities = getLoadedEntities(world);
+            for (net.minecraft.entity.Entity loaded : entities) {
                if(!(entityClass.isInstance(loaded))) {
                   continue;
                }
@@ -205,7 +205,7 @@ public class Entity {
                   found.add(loaded);
                }
             }
-            for (net.minecraft.src.Entity foundEntity : found) {
+            for (net.minecraft.entity.Entity foundEntity : found) {
                // we don't currently exclude any entities
                foundEntities.add(foundEntity);
                count++;
@@ -223,7 +223,7 @@ public class Entity {
     * @param world - The world to get the loaded entities from
     * @return A List of loaded entities
     */
-   private static List<net.minecraft.src.Entity> getLoadedEntities(World world) {
+   private static List<net.minecraft.entity.Entity> getLoadedEntities(World world) {
       return world.getMinecraftWorld().loadedEntityList;
    }
 }

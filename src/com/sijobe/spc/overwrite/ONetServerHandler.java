@@ -8,13 +8,13 @@ import com.sijobe.spc.util.ReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.INetworkManager;
-import net.minecraft.src.NetServerHandler;
-import net.minecraft.src.Packet10Flying;
-import net.minecraft.src.WorldServer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 
 /**
  * Custom server handler to allow noclip
@@ -24,9 +24,9 @@ import net.minecraft.src.WorldServer;
  * @author q3hardcore
  * @version 1.4
  */
-public final class ONetServerHandler extends NetServerHandler {
+public final class ONetServerHandler extends NetHandlerPlayServer {
 
-   private final NetServerHandler oldInstance;
+   private final NetHandlerPlayServer oldInstance;
    private final MinecraftServer mcServer;
    private int ticksForFloatKick;
    private double lastPosX;
@@ -45,7 +45,7 @@ public final class ONetServerHandler extends NetServerHandler {
         fieldMappings.put("hasMoved", new String[]{"q", "field_72587_r"});
     }
    
-   public ONetServerHandler(MinecraftServer par1, INetworkManager par2, EntityPlayerMP par3, NetServerHandler instance) {
+   public ONetServerHandler(MinecraftServer par1, NetworkManager par2, EntityPlayerMP par3, NetHandlerPlayServer instance) {
       super(par1, par2, par3);
       
       if(instance instanceof ONetServerHandler) {
@@ -54,10 +54,10 @@ public final class ONetServerHandler extends NetServerHandler {
       
       oldInstance = instance;
       mcServer = par1;
-      connectionClosed = oldInstance.connectionClosed;
+      //connectionClosed = oldInstance.connectionClosed; //probably unnecessary for 1.7.2
    }
    
-   public NetServerHandler getOldInstance() {
+   public NetHandlerPlayServer getOldInstance() {
       return oldInstance;
    }
 
@@ -92,10 +92,10 @@ public final class ONetServerHandler extends NetServerHandler {
    }
    
    @Override
-   public void handleFlying(Packet10Flying par1Packet10Flying)
+   public void processPlayer(C03PacketPlayer packet) //don't know equivalant packet in 1.7.2
    {
       // we use Forge's handleFlying method
-      if(!ForgeHelper.HAS_FORGE) {
+      if(!ForgeHelper.HAS_FORGE) { //TODO remove this
          updateHasMoved();
          updatePosition();
       }
@@ -104,10 +104,11 @@ public final class ONetServerHandler extends NetServerHandler {
    
       // Forge has Noclip support
       if(ForgeHelper.HAS_FORGE) {
-         super.handleFlying(par1Packet10Flying);
+         super.processPlayer(packet);
          return;
       }
-   
+      
+      /* removed since spc now needs forge
       WorldServer var2 = this.mcServer.worldServerForDimension(oldInstance.playerEntity.dimension);
 
       if (!oldInstance.playerEntity.playerConqueredTheEnd)
@@ -116,9 +117,9 @@ public final class ONetServerHandler extends NetServerHandler {
 
          if (!hasMoved)
          {
-            var3 = par1Packet10Flying.yPosition - lastPosY;
+            var3 = packet.yPosition - lastPosY;
 
-            if (par1Packet10Flying.xPosition == lastPosX && var3 * var3 < 0.01D && par1Packet10Flying.zPosition == lastPosZ)
+            if (packet.xPosition == lastPosX && var3 * var3 < 0.01D && packet.zPosition == lastPosZ)
             {
                setHasMoved(true);
                hasMoved = true;
@@ -143,26 +144,26 @@ public final class ONetServerHandler extends NetServerHandler {
                double var35 = 0.0D;
                var13 = 0.0D;
 
-               if (par1Packet10Flying.rotating)
+               if (packet.rotating)
                {
-                  var34 = par1Packet10Flying.yaw;
-                  var4 = par1Packet10Flying.pitch;
+                  var34 = packet.yaw;
+                  var4 = packet.pitch;
                }
 
-               if (par1Packet10Flying.moving && par1Packet10Flying.yPosition == -999.0D && par1Packet10Flying.stance == -999.0D)
+               if (packet.moving && packet.yPosition == -999.0D && packet.stance == -999.0D)
                {
-                  if (Math.abs(par1Packet10Flying.xPosition) > 1.0D || Math.abs(par1Packet10Flying.zPosition) > 1.0D)
+                  if (Math.abs(packet.xPosition) > 1.0D || Math.abs(packet.zPosition) > 1.0D)
                   {
-                     System.err.println(oldInstance.playerEntity.getUsername() + " was caught trying to crash the server with an invalid position.");
+                     System.err.println(oldInstance.playerEntity.getGameProfile().getName() + " was caught trying to crash the server with an invalid position.");
                      this.kickPlayerFromServer("Nope!");
                      return;
                   }
 
-                  var35 = par1Packet10Flying.xPosition;
-                  var13 = par1Packet10Flying.zPosition;
+                  var35 = packet.xPosition;
+                  var13 = packet.zPosition;
                }
 
-               this.playerEntity.onGround = par1Packet10Flying.onGround;
+               this.playerEntity.onGround = packet.onGround;
                this.playerEntity.onUpdateEntity();
                this.playerEntity.moveEntity(var35, 0.0D, var13);
                this.playerEntity.setPositionAndRotation(var5, var7, var9, var34, var4);
@@ -172,14 +173,14 @@ public final class ONetServerHandler extends NetServerHandler {
                /*TODO if (this.playerEntity.ridingEntity != null)
                {
                   var2.uncheckedUpdateEntity(this.playerEntity.ridingEntity, true);
-               }*/
+               }*
 
                if (this.playerEntity.ridingEntity != null)
                {
                   this.playerEntity.ridingEntity.updateRiderPosition();
                }
                
-               this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity);
+               this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity); //can't find equivalant function in 1.7.2
                lastPosX = this.playerEntity.posX;
                lastPosY = this.playerEntity.posY;
                lastPosZ = this.playerEntity.posZ;
@@ -207,36 +208,36 @@ public final class ONetServerHandler extends NetServerHandler {
             float var11 = this.playerEntity.rotationYaw;
             float var12 = this.playerEntity.rotationPitch;
 
-            if (par1Packet10Flying.moving && par1Packet10Flying.yPosition == -999.0D && par1Packet10Flying.stance == -999.0D)
+            if (packet.moving && packet.yPosition == -999.0D && packet.stance == -999.0D)
             {
-               par1Packet10Flying.moving = false;
+               packet.moving = false;
             }
 
-            if (par1Packet10Flying.moving)
+            if (packet.moving)
             {
-               var5 = par1Packet10Flying.xPosition;
-               var7 = par1Packet10Flying.yPosition;
-               var9 = par1Packet10Flying.zPosition;
-               var13 = par1Packet10Flying.stance - par1Packet10Flying.yPosition;
+               var5 = packet.xPosition;
+               var7 = packet.yPosition;
+               var9 = packet.zPosition;
+               var13 = packet.stance - packet.yPosition;
 
                if (!this.playerEntity.isPlayerSleeping() && (var13 > 1.65D || var13 < 0.1D))
                {
                   this.kickPlayerFromServer("Illegal stance");
-                  this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " had an illegal stance: " + var13);
+                  this.mcServer.logWarning(this.playerEntity.getCommandSenderName() + " had an illegal stance: " + var13);
                   return;
                }
 
-               if (Math.abs(par1Packet10Flying.xPosition) > 3.2E7D || Math.abs(par1Packet10Flying.zPosition) > 3.2E7D)
+               if (Math.abs(packet.xPosition) > 3.2E7D || Math.abs(packet.zPosition) > 3.2E7D)
                {
                   this.kickPlayerFromServer("Illegal position");
                   return;
                }
             }
 
-            if (par1Packet10Flying.rotating)
+            if (packet.rotating)
             {
-               var11 = par1Packet10Flying.yaw;
-               var12 = par1Packet10Flying.pitch;
+               var11 = packet.yaw;
+               var12 = packet.pitch;
             }
 
             this.playerEntity.onUpdateEntity();
@@ -256,9 +257,9 @@ public final class ONetServerHandler extends NetServerHandler {
             double var23 = Math.min(Math.abs(var17), Math.abs(this.playerEntity.motionZ));
             double var25 = var19 * var19 + var21 * var21 + var23 * var23;
 
-            if (var25 > 100.0D && (!this.mcServer.isSinglePlayer() || !this.mcServer.getServerOwner().equals(this.playerEntity.getUsername())))
+            if (var25 > 100.0D && (!this.mcServer.isSinglePlayer() || !this.mcServer.getServerOwner().equals(this.playerEntity.getCommandSenderName())))
             {
-               this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
+               this.mcServer.logWarning(this.playerEntity.getCommandSenderName() + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
                this.setPlayerLocation(lastPosX, lastPosY, lastPosZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
                return;
             }
@@ -266,13 +267,13 @@ public final class ONetServerHandler extends NetServerHandler {
             float var27 = 0.0625F;
             boolean var28 = var2.getCollidingBoundingBoxes(this.playerEntity, this.playerEntity.boundingBox.copy().contract(var27, var27, var27)).isEmpty();
 
-            if (this.playerEntity.onGround && !par1Packet10Flying.onGround && var15 > 0.0D)
+            if (this.playerEntity.onGround && !packet.onGround && var15 > 0.0D)
             {
                this.playerEntity.addExhaustion(0.2F);
             }
             
             this.playerEntity.moveEntity(var13, var15, var17);
-            this.playerEntity.onGround = par1Packet10Flying.onGround;
+            this.playerEntity.onGround = packet.onGround;
             this.playerEntity.addMovementStat(var13, var15, var17);
             double var29 = var15;
             var13 = var5 - this.playerEntity.posX;
@@ -290,7 +291,7 @@ public final class ONetServerHandler extends NetServerHandler {
             if (var25 > 0.0625D && !this.playerEntity.isPlayerSleeping() && !this.playerEntity.theItemInWorldManager.isCreative())
             {
                var31 = true;
-               this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " moved wrongly!");
+               this.mcServer.logWarning(this.playerEntity.getCommandSenderName() + " moved wrongly!");
             }
             
             this.playerEntity.setPositionAndRotation(var5, var7, var9, var11, var12);
@@ -315,7 +316,7 @@ public final class ONetServerHandler extends NetServerHandler {
                   
                   if (ticksForFloatKick > 80)
                   {
-                     this.mcServer.getLogAgent().logWarning(this.playerEntity.getUsername() + " was kicked for floating too long!");
+                     this.mcServer.logWarning(this.playerEntity.getCommandSenderName() + " was kicked for floating too long!");
                      this.kickPlayerFromServer("Flying is not enabled on this server");
                      return;
                   }
@@ -326,10 +327,11 @@ public final class ONetServerHandler extends NetServerHandler {
                ticksForFloatKick = 0;
             }
             
-            this.playerEntity.onGround = par1Packet10Flying.onGround;
-            this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity);
-            this.playerEntity.updateFlyingState(this.playerEntity.posY - var3, par1Packet10Flying.onGround);
+            this.playerEntity.onGround = packet.onGround;
+            this.mcServer.getConfigurationManager().serverUpdateMountedMovingPlayer(this.playerEntity); //can't find equivalant function in 1.7.2
+            this.playerEntity.updateFlyingState(this.playerEntity.posY - var3, packet.onGround);
          }
       }
+     */
    }
 }

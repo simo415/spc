@@ -12,15 +12,18 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.NetServerHandler;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 
 /**
  * Command for disabling clipping
  *
  * @author q3hardcore
  * @version 1.2
+ * @status survived 1.7.2 update but can't see anything while inside blocks
  */
 @Command (
          name = "noclip",
@@ -71,7 +74,7 @@ public class Noclip extends StandardCommand {
 
    private static boolean hasXCommands() {
       try {
-         NetServerHandler.class.getDeclaredField("clientHasXCommands");
+         NetHandlerPlayServer.class.getDeclaredField("clientHasXCommands");
          return true;
       } catch (Throwable t) {
          return false;
@@ -87,7 +90,7 @@ public class Noclip extends StandardCommand {
          return;
       }
 
-      NetServerHandler handler = playerEntity.playerNetServerHandler;
+      NetHandlerPlayServer handler = playerEntity.playerNetServerHandler;
 
       if(playerEntity.noClip) {
          if(!(handler instanceof ONetServerHandler)) {
@@ -96,7 +99,7 @@ public class Noclip extends StandardCommand {
          }
       } else {
          if(handler instanceof ONetServerHandler) {
-            NetServerHandler oldInstance = ((ONetServerHandler)handler).getOldInstance();
+        	 NetHandlerPlayServer oldInstance = ((ONetServerHandler)handler).getOldInstance();
             if(oldInstance != null) {
                handler.netManager.setNetHandler(oldInstance);
                playerEntity.playerNetServerHandler = oldInstance;
@@ -109,7 +112,7 @@ public class Noclip extends StandardCommand {
       if(player.noClip && !player.capabilities.isFlying) {
          player.noClip = false;
          Minecraft.getMinecraft().thePlayer.noClip = false;
-         player.addChatMessage("Noclip auto-disabled. (Player not flying)");
+         player.addChatMessage(new ChatComponentText("Noclip auto-disabled. (Player not flying)"));
          updateServerHandler(player);
          ascendPlayer(new Player(player));
       }

@@ -8,16 +8,17 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
-import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.World;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.world.World;
 
 /**
  * Command to clear item drops
  *
  * @author q3hardcore
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
          name = "cleardrops",

@@ -14,9 +14,9 @@ public class Potion {
     */
    private static Map<String, Integer> retrievePotions() {
       Map<String, Integer> potions = new HashMap<String, Integer>();
-      for (int i = 0; i < net.minecraft.src.Potion.potionTypes.length; i++) {
-         if (net.minecraft.src.Potion.potionTypes[i] != null) {
-            potions.put(net.minecraft.src.StatCollector.translateToLocal(net.minecraft.src.Potion.potionTypes[i].getName()).replace(' ', '_').toLowerCase(), i);
+      for (int i = 0; i < net.minecraft.potion.Potion.potionTypes.length; i++) {
+         if (net.minecraft.potion.Potion.potionTypes[i] != null) {
+            potions.put(net.minecraft.util.StatCollector.translateToLocal(net.minecraft.potion.Potion.potionTypes[i].getName()).replace(' ', '_').toLowerCase(), i);
          }
       }
       return potions;

@@ -14,11 +14,10 @@ import java.util.Date;
  * @version 1.0
  */
 public class Constants {
-
-   /**
+	/**
     * Contains the version string of the current Minecraft version
     */
-   public static final String VERSION = "4.9";
+   public static final String VERSION = "1.7.2";
    
    /**
     * The name of the mod
@@ -28,7 +27,7 @@ public class Constants {
    /**
     * The current version of the mod
     */
-   public static final ModVersion SPC_VERSION = new ModVersion(NAME, VERSION, new Date(1374315917859L)); // 2013-07-20 20:25:17
+   public static final ModVersion SPC_VERSION = new ModVersion(NAME, VERSION, new Date(1415419100)); // November 7, 2014 9:58 pm
 
    /**
     * The directory that the mod saves/loads global settings from

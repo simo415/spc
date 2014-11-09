@@ -14,6 +14,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status disabled
  */
 @Command (
    name = "skin",

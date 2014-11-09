@@ -1,13 +1,16 @@
 package com.sijobe.spc.wrapper;
 
-import net.minecraft.src.EntityClientPlayerMP;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumGameType;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.MovingObjectPosition;
-import net.minecraft.src.PotionEffect;
-import net.minecraft.src.Vec3;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldSettings.GameType;
+
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.Vec3;
 
 /**
  * Provides a wrapper around the Minecraft player classes.
@@ -103,7 +106,7 @@ public class Player {
     * @param message - The message to send to the user
     */
    public void sendChatMessage(String message) {
-      player.addChatMessage(message);
+      player.addChatMessage(new ChatComponentText(message));
    }
 
    /**
@@ -111,8 +114,8 @@ public class Player {
     * 
     * @param id - The item id
     */
-   public void givePlayerItem(int id) {
-      givePlayerItem(id, Item.getMaxStack(id));
+   public void givePlayerItem(Item item) {
+      givePlayerItem(item, item.getMaxStack(item));
    }
 
    /**
@@ -121,7 +124,7 @@ public class Player {
     * @param id - The item id
     * @param quantity - The quantity of the item
     */
-   public void givePlayerItem(int id, int quantity) {
+   public void givePlayerItem(Item id, int quantity) {
       givePlayerItem(id, quantity, 0);
    }
 
@@ -132,11 +135,20 @@ public class Player {
     * @param quantity - The quantity of the item
     * @param damage - The "damage" (metadata) value of the item
     */
-   public void givePlayerItem(int id, int quantity, int damage) {
-      ItemStack itemStack = new ItemStack(id, quantity, damage);
+   public void givePlayerItem(Item item, int quantity, int damage) {
+      ItemStack itemStack = new ItemStack(item.convert(), quantity, damage);
       if (!player.inventory.addItemStackToInventory(itemStack)) {
-         player.dropPlayerItem(itemStack);
+         player.dropPlayerItemWithRandomChoice(itemStack, false);
       }
+   }
+   
+   /*in 1.6.2 givePlayerItem(Item)
+    * gives the player the item but the player will drop something their inventory is full*/
+   public void givePlayerItemWithDrop(Item item) {
+	   ItemStack itemStack = new ItemStack(item.convert());
+	   if (!player.inventory.addItemStackToInventory(itemStack)) {
+		   player.dropPlayerItemWithRandomChoice(itemStack, false);
+	   }
    }
 
    /**
@@ -145,7 +157,7 @@ public class Player {
     * @return The value of the players health
     */
    public float getHealth() {
-      return player.func_110143_aJ();
+      return player.getHealth();
    }
 
    /**
@@ -154,7 +166,7 @@ public class Player {
     * @param health - The health amount
     */
    public void setHealth(float health) {
-      player.setEntityHealth(health);
+      player.setHealth(health);
    }
 
    /**
@@ -212,17 +224,17 @@ public class Player {
     * @param damage - The item "damage" value
     * @return True if the slot was correctly set, false otherwise
     */
-   public boolean setInventorySlot(int slot, int id, int quantity, int damage) {
+   public boolean setInventorySlot(int slot, Item item, int quantity, int damage) {
       if (slot < 0 || slot >= player.inventory.mainInventory.length) {
          return false;
-      } else if (!Item.isValidItem(id)) {
-         if (id == 0) {
+      } else if (!Item.isValidItem(item)) {
+         if (item == null) {
             player.inventory.mainInventory[slot] = null;
             return true;
          }
          return false;
       }
-      player.inventory.mainInventory[slot] = new ItemStack(id, quantity, damage);
+      player.inventory.mainInventory[slot] = new ItemStack(item.convert(), quantity, damage);
       return true;
    }
 
@@ -244,10 +256,11 @@ public class Player {
    }
 
    public MovingObjectPosition rayTrace(double distance, float partialTickTime) {
+	   //was this rayTrace supposed to include liquids or not? //probably not liquids
       Vec3 positionVec = getPositionVec(partialTickTime);
       Vec3 lookVec = player.getLook(partialTickTime);
       Vec3 hitVec = positionVec.addVector(lookVec.xCoord * distance, lookVec.yCoord * distance, lookVec.zCoord * distance);
-      return player.worldObj.rayTraceBlocks_do_do(positionVec, hitVec, false, true); // TODO: Validate correct params
+      return player.worldObj.rayTraceBlocks(positionVec, hitVec, false); // TODO: Validate correct params
    }
 
    /**
@@ -275,8 +288,8 @@ public class Player {
     * @return True if the specified gametype was found
     */
    public boolean setGameType(String gametype) {
-      EnumGameType chosen = null;
-      if ((chosen = EnumGameType.getByName(gametype)) == null) {
+      GameType chosen = null;
+      if ((chosen = GameType.getByName(gametype)) == null) {
          return false;
       }
       player.setGameType(chosen);
@@ -289,7 +302,7 @@ public class Player {
     * @return The players name
     */
    public String getPlayerName() {
-      return player.getEntityName();
+      return player.getCommandSenderName();
    }
 
    /**
@@ -297,11 +310,11 @@ public class Player {
     * 
     * @return The ID of the currently held item
     */
-   public int getCurrentItem() {
+   public Item getCurrentItem() {
       try {
-         return player.inventory.mainInventory[getCurrentSlot()].itemID;
+         return new Item(player.inventory.mainInventory[getCurrentSlot()].getItem());
       } catch (NullPointerException e) {
-         return 0;
+         return null;
       }
    }
 
@@ -355,9 +368,9 @@ public class Player {
     * @return True if the player can stand in the specified location
     */
    public boolean isClear(Coordinate location) {
-      return getWorld().getBlockId(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == 0
-      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == 0
-      && !(getWorld().getBlockId(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == 0);
+      return getWorld().getBlock(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == Blocks.air
+      && getWorld().getBlock(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == Blocks.air
+      && !(getWorld().getBlock(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == Blocks.air);
    }
 
    /**
@@ -372,9 +385,9 @@ public class Player {
     * @return True if the player can fall in the specified location
     */
    public boolean isClearBelow(Coordinate location) {
-      return getWorld().getBlockId(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == 0
-      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == 0
-      && getWorld().getBlockId(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == 0;
+      return getWorld().getBlock(location.getBlockX(), location.getBlockY(), location.getBlockZ()) == Blocks.air
+      && getWorld().getBlock(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()) == Blocks.air
+      && getWorld().getBlock(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()) == Blocks.air;
    }
    
    /**
@@ -386,9 +399,9 @@ public class Player {
     */
    public float getMovementForward() {
       if (player instanceof EntityPlayerMP) {
-         return ((EntityPlayerMP) player).getMoveForwardField();
+         return ((EntityPlayerMP) player).moveForward;
       } else if (player instanceof EntityClientPlayerMP) {
-         return ((EntityClientPlayerMP) player).getMovementForward();
+         return ((EntityClientPlayerMP) player).moveForward;
       } else {
          return 0F;
       }
@@ -403,9 +416,9 @@ public class Player {
     */
    public float getMovementStrafe() {
       if (player instanceof EntityPlayerMP) {
-         return ((EntityPlayerMP) player).getMoveStrafingField();
+         return ((EntityPlayerMP) player).moveStrafing;
       } else if (player instanceof EntityClientPlayerMP) {
-         return ((EntityClientPlayerMP) player).getMovementStrafe();
+         return ((EntityClientPlayerMP) player).moveStrafing;
       } else {
          return 0F;
       }
@@ -537,9 +550,9 @@ public class Player {
     */
    public String getUsername() {
       if (player instanceof EntityClientPlayerMP) {
-         return ((EntityClientPlayerMP) player).getUsername();
+         return ((EntityClientPlayerMP) player).getCommandSenderName();
       } else if (player instanceof EntityPlayerMP) {
-         ((EntityPlayerMP) player).getUsername();
+         ((EntityPlayerMP) player).getCommandSenderName();
       }
       return "";
    }

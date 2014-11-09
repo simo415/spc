@@ -4,20 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandDifficulty;
-import net.minecraft.src.CommandEffect;
-import net.minecraft.src.CommandEnchant;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.CommandGameMode;
-import net.minecraft.src.CommandGive;
-import net.minecraft.src.CommandHelp;
-import net.minecraft.src.CommandTime;
-import net.minecraft.src.CommandWeather;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumChatFormatting;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.StatCollector;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandDifficulty;
+import net.minecraft.command.CommandEffect;
+import net.minecraft.command.CommandEnchant;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandGameMode;
+import net.minecraft.command.CommandGive;
+import net.minecraft.command.CommandHelp;
+import net.minecraft.command.CommandTime;
+import net.minecraft.command.CommandWeather;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.StatCollector;
 
 /**
  * Helper to make command blocks execute vanilla commands
@@ -42,7 +43,7 @@ public class CommandBlockHelper {
             for(EntityPlayerMP plr : players) {
                if(plr.canCommandSenderUseCommand(2, "") && plr.capabilities.isCreativeMode) {
                   String cmdErr = StatCollector.translateToLocalFormatted(ce.getMessage(), ce.getErrorOjbects());
-                  plr.addChatMessage(EnumChatFormatting.RED + cmdErr);
+                  plr.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + cmdErr));
                }
             }
          }

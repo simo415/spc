@@ -14,6 +14,7 @@ import java.util.List;
  * Provides methods of changing the current Minecraft time
  *
  * @author simo_415
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "time",

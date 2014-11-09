@@ -17,6 +17,7 @@ import java.util.Map;
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 updaets
  */
 @Command (
          name = "effect",

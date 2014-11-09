@@ -1,9 +1,12 @@
 package com.sijobe.spc.command;
 
+import com.sijobe.spc.wrapper.Block;
+import com.sijobe.spc.wrapper.Blocks;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
 import com.sijobe.spc.wrapper.Player;
+
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
  *
  * @author simo_415 
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "platform",
@@ -26,7 +30,7 @@ public class Platform extends StandardCommand {
    /**
     * The block ID of glass
     */
-   public static final int BLOCK_GLASS = 20;
+   public static final Block BLOCK_GLASS = Blocks.glass;
    
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#execute(com.sijobe.spc.wrapper.CommandSender, java.util.List)

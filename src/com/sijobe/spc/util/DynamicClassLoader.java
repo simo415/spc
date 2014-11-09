@@ -150,7 +150,7 @@ public class DynamicClassLoader {
             System.out.println("SPC: " + root);
             tempSPCClasses = loadSPCClassesFromJAR(root);
          } else {
-            File dynamicClassLoader = new File(location.getFile());
+            File dynamicClassLoader = new File(location.getFile().replace("%20", " ")); //added replace for paths with spaces
             File parentDir = getSPCParent(dynamicClassLoader);
             if(parentDir == null) {
                System.out.println("SPC: Not loading.");

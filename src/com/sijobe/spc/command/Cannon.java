@@ -8,14 +8,15 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
-import net.minecraft.src.EntityTNTPrimed;
-import net.minecraft.src.MathHelper;
+import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.util.MathHelper;
 
 /**
  * Shoots a piece of cannon in the direction the player is facing
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "cannon",

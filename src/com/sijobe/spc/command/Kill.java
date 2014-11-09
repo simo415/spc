@@ -3,7 +3,7 @@ package com.sijobe.spc.command;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Player;
 
-import net.minecraft.src.DamageSource;
+import net.minecraft.util.DamageSource;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
+ * @status survived 1.7.2 update
  */
 @Command (
    name = "kill",

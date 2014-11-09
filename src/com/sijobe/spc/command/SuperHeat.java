@@ -5,19 +5,21 @@ import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
+import com.sijobe.spc.wrapper.Item;
 import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.src.FurnaceRecipes;
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.ItemStack;
 
 /**
  * Cooks player's current item or all items
  *
  * @author q3hardcore
  * @version 1.0
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
          name = "superheat",
@@ -58,13 +60,13 @@ public class SuperHeat extends StandardCommand {
          if (oldStack == null) {
             continue;
          }
-         int key = oldStack.itemID;
-         if (smelt.containsKey(key) && smelt.get(key) != null) {
+         
+         net.minecraft.item.Item key = oldStack.getItem();
+         ItemStack newStack = FurnaceRecipes.smelting().getSmeltingResult(oldStack);
+         if (newStack != null) {
             int amt = oldStack.stackSize;
-            ItemStack temp = smelt.get(key);
-            int id = temp.itemID;
-            int damage = temp.getItemDamage();
-            ItemStack item = new ItemStack(id, amt, damage);
+            int damage = newStack.getItemDamage();
+            ItemStack item = new ItemStack(newStack.getItem(), amt, damage);
             mainInventory[i] = item;
          }
       }

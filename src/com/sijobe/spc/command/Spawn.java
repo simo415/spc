@@ -17,7 +17,10 @@ import java.util.List;
  * the player is looking at. If no position it specified the mobs will spawn 
  * nearby (under 5 blocks from) the player.
  *
+ * note: spawning falling sand crashes game
  * @author simo_415
+ * @status survived 1.7.2 update
+ * @deprecated use summon command instead
  */
 @Command (
    name = "spawn",
