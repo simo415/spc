@@ -26,12 +26,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
    enabled = true
 )
 public class InstantMine extends StandardCommand {
-
-	@Override
-	public boolean isEnabled() {
-		return !ForgeHelper.HAS_FORGE;
-	}
-
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = super.getSenderAsPlayer(sender);

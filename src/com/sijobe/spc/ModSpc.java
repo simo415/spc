@@ -29,7 +29,7 @@ import com.sijobe.spc.core.IPlayerSP;
 import com.sijobe.spc.core.ICUIEventHandler;
 import com.sijobe.spc.hooks.InitialiseCommands;
 
-@Mod(useMetadata=true, modid="spc", version="2.0")
+@Mod(useMetadata=true, modid="spc", version="5.0")
 public class ModSpc
 {
 	protected HookManager hookManager;

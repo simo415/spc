@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.0
- * @status broken through 1.7.2 update
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
    name = "cheats",
@@ -41,5 +41,9 @@ public class Cheats extends StandardCommand {
    public Parameters getParameters() {
       return Parameters.DEFAULT_BOOLEAN;
    }
-
+   
+   @Override
+   public boolean hasPermission(CommandSender sender) {
+	   return true;
+   }
 }

@@ -14,8 +14,4 @@ public abstract class StandardCommand extends CommandBase {
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#hasPermission(com.sijobe.spc.wrapper.CommandSender)
     */
-   @Override
-   public boolean hasPermission(CommandSender sender) {
-      return true;
-   }
 }

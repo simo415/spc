@@ -14,10 +14,11 @@ import java.util.List;
 
 /**
  * Changes block reach distance
+ * TODO make this work in multiplayer (refers to PlayerControllerMP)
  *
  * @author q3hardcore
  * @version 1.0
- * @status broken through 1.7.2 update
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
    name = "blockreach",
@@ -34,6 +35,8 @@ public class BlockReach extends StandardCommand {
          new ParameterDouble("[DISTANCE]", true),
       }
    );
+   
+   public static float reachDistance = 4.5F; //refered to through ASM modifications
    
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#execute(com.sijobe.spc.wrapper.CommandSender, java.util.List)
@@ -53,8 +56,10 @@ public class BlockReach extends StandardCommand {
          if(newReach < 4.5D || newReach > 255.0D) {
             throw new CommandException("Reach distance must be between 4.5 and 255.");
          }
-         ForgeHelper.setBlockReachDistance(playerEntity.theItemInWorldManager, newReach);
+         //ForgeHelper.setBlockReachDistance(playerEntity.theItemInWorldManager, newReach);
          //Minecraft.getMinecraft().thePlayer.setClientReach(newReach); //removed since spc 1.7.2 update now needs forge anyway
+         playerEntity.theItemInWorldManager.setBlockReachDistance(newReach);
+         reachDistance = (float) newReach;
          sender.sendMessageToPlayer("Set block reach distance to: " + newReach);
       }
    }

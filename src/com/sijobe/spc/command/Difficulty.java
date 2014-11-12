@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author simo_415
  * @version 1.0
- * @status broken through 1.7.2 update
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
    name = "difficulty",
@@ -45,17 +45,7 @@ public class Difficulty extends StandardCommand {
       World world = super.getSenderAsPlayer(sender).getWorld();
       int change;
       if (params.size() > 0) {
-    	  switch((Integer)params.get(0))
-    	  {
-    	  	case 0:
-    	  		world.setDifficulty(EnumDifficulty.PEACEFUL);
-    	  	case 1:
-    	  		world.setDifficulty(EnumDifficulty.EASY);
-    	  	case 2:
-    	  		world.setDifficulty(EnumDifficulty.NORMAL);
-    	  	case 3:
-    	  		world.setDifficulty(EnumDifficulty.HARD);
-    	  }
+    	  world.setDifficulty(EnumDifficulty.getDifficultyEnum((Integer)params.get(0)));
       } else {
          world.setDifficulty(EnumDifficulty.getDifficultyEnum((world.getDifficulty().getDifficultyId() + 1) % 4));
       }

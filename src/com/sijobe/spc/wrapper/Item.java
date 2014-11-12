@@ -84,7 +84,7 @@ public class Item {
     * @return true is returned if the id is valid, false otherwise
     */
    public static boolean isValidItem(Item item) {
-	   return itemRegistry.containsKey(item);
+	   return itemRegistry.containsKey(itemRegistry.getNameForObject(item));
    }
 
    /**TODO: remove arguement

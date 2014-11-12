@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Random;
 
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
@@ -147,7 +148,8 @@ public class World {
     * @return The difficulty of the world
     */
    public EnumDifficulty getDifficulty() {
-      return world.difficultySetting;
+	  GameSettings settings = Minecraft.getMinecraft().gameSettings;
+	  return settings.difficulty;
    }
    
    /**
@@ -156,7 +158,8 @@ public class World {
     * @param difficulty - The difficulty of the world
     */
    public void setDifficulty(EnumDifficulty difficulty) {
-      world.difficultySetting = difficulty;
+	  GameSettings settings = Minecraft.getMinecraft().gameSettings;
+      settings.setOptionValue(GameSettings.Options.DIFFICULTY, difficulty.getDifficultyId()-this.getDifficulty().getDifficultyId());
    }
    
    /**
