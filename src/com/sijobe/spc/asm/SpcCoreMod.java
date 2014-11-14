@@ -11,7 +11,7 @@ public class SpcCoreMod implements IFMLLoadingPlugin
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[]{Transformer.class.getName()};
+		return new String[]{Transformer.class.getName(), SpcAccessTransformer.class.getName()};
 	}
 
 	@Override

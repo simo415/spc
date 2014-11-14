@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -19,11 +21,14 @@ import com.google.common.eventbus.Subscribe;
 
 import com.sijobe.spc.core.Constants;
 import com.sijobe.spc.core.HookManager;
+import com.sijobe.spc.core.IBlockBroken;
+import com.sijobe.spc.core.IBreakSpeed;
 import com.sijobe.spc.core.IHook;
 import com.sijobe.spc.util.DynamicClassLoader;
 import com.sijobe.spc.wrapper.Block;
 import com.sijobe.spc.wrapper.Item;
 import com.sijobe.spc.wrapper.Player;
+import com.sijobe.spc.wrapper.World;
 import com.sijobe.spc.core.IPlayerMP;
 import com.sijobe.spc.core.IPlayerSP;
 import com.sijobe.spc.core.ICUIEventHandler;
@@ -49,6 +54,8 @@ public class ModSpc
 		this.hookManager.loadHooks(IPlayerMP.class);
 		this.hookManager.loadHooks(IPlayerSP.class);
 		this.hookManager.loadHooks(ICUIEventHandler.class);
+		this.hookManager.loadHooks(IBreakSpeed.class);
+		this.hookManager.loadHooks(IBlockBroken.class);
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLCommonHandler.instance().bus().register(this);
 	}
@@ -60,6 +67,7 @@ public class ModSpc
 		this.commands.loadCommands();
 	}
 	
+	//TODO make void handleHook<T>()
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event)
 	{
@@ -91,6 +99,31 @@ public class ModSpc
 						hook.onTick(player);
 					}
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBreakSpeed(BreakSpeed event)
+	{
+		for(IBreakSpeed hook : this.hookManager.getHooks(IBreakSpeed.class))
+		{
+			if(hook.isEnabled())
+			{
+				//TODO pass same player instance instead of creating a new one each time
+				event.newSpeed = hook.getBreakSpeed(new Player(event.entityPlayer), Block.fromMinecraftBlock(event.block), event.metadata, event.originalSpeed, event.x, event.y, event.z);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockBreak(BreakEvent event)
+	{
+		for(IBlockBroken hook : this.hookManager.getHooks(IBlockBroken.class))
+		{
+			if(hook.isEnabled())
+			{
+				hook.onBreakBroken(event.x, event.y, event.z, new World(event.world), Block.fromMinecraftBlock(event.block), event.blockMetadata, new Player(event.getPlayer()));
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -74,4 +75,21 @@ public class MethodOverwriter extends MethodVisitor
 		mv.visitMaxs(1, 1);
 		mv.visitEnd();
 	}
+	
+	/*
+	@Replacer("net.minecraft.block.Block:getPlayerRelativeBlockHardness:(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F")
+	protected void getPlayerRelativeBlockHardness()
+	{
+		MethodVisitor mv = this.writer;
+		mv.visitCode();
+		mv.visitFieldInsn(Opcodes.GETSTATIC, "com/sijobe/spc/command/InstantMine", "instantMiningEnabled", "Z");
+		Label l0 = new Label();
+		mv.visitJumpInsn(Opcodes.IFEQ, l0);
+		mv.visitLdcInsn(new Float("1.1"));
+		mv.visitInsn(Opcodes.FRETURN);
+		mv.visitLabel(l0);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		this.mv = mv; //so the MethodWriter instance gets its visit methods called 
+	}
+	*/
 }

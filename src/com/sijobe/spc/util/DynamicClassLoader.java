@@ -203,7 +203,7 @@ public class DynamicClassLoader {
          File files[] = directory.listFiles();
          for (File file : files) {
             try {
-               if (file.isFile()) {
+               if (file.isFile() && file.getPath().endsWith(".class")) { //TODO add class file type check to loadSPCClassesFromJar
                   classes.add(loadClass(file.getName(),parent));
                } else {
                   classes.addAll(loadSPCClassesFromDirectory(file,parent + file.getName() + "/"));
