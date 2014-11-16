@@ -46,10 +46,12 @@ public class MovePlayer extends StandardCommand {
       Player player = super.getSenderAsPlayer(sender);
       Coordinate c = player.getPosition();
       int distance = 0;
-      try {
-         distance = Integer.parseInt((String)params.get(0));
-      } catch (NumberFormatException e) {
-         throw new CommandException("Could not parse disance specified as integer: " + params.get(0));
+      System.out.println(params.get(0).getClass());
+      if(params.get(0) instanceof Integer){
+    	  distance = (Integer)params.get(0);
+      }
+      else{
+    	  throw new CommandException("Could not parse disance specified as integer: " + params.get(0));
       }
       
       if (((String)params.get(1)).toUpperCase().startsWith("N")) {
