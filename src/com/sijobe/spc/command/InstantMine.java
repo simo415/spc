@@ -33,7 +33,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 		enabled = true
 		)
 public class InstantMine extends StandardCommand implements IBreakSpeed, IBlockBroken{
-	public static boolean instantMiningEnabled;
+	public static boolean instantMiningEnabled; //TODO load initial value from config
 
 	@Override
 	public void execute(CommandSender sender, List<?> params) throws CommandException {

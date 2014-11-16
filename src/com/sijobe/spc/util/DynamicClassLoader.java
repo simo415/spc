@@ -205,7 +205,7 @@ public class DynamicClassLoader {
             try {
                if (file.isFile() && file.getPath().endsWith(".class")) { //TODO add class file type check to loadSPCClassesFromJar
                   classes.add(loadClass(file.getName(),parent));
-               } else {
+               } else if(file.isDirectory()){
                   classes.addAll(loadSPCClassesFromDirectory(file,parent + file.getName() + "/"));
                }
             } catch (Exception e) {
