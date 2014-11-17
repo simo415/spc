@@ -76,20 +76,20 @@ public class MethodOverwriter extends MethodVisitor
 		mv.visitEnd();
 	}
 	
-	/*
-	@Replacer("net.minecraft.block.Block:getPlayerRelativeBlockHardness:(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F")
-	protected void getPlayerRelativeBlockHardness()
+	@Replacer("net.minecraft.client.renderer.ItemRenderer:renderInsideOfBlock:(FLnet/minecraft/util/IIcon;)V")
+	protected void renderInsideOfBlock()
 	{
 		MethodVisitor mv = this.writer;
 		mv.visitCode();
-		mv.visitFieldInsn(Opcodes.GETSTATIC, "com/sijobe/spc/command/InstantMine", "instantMiningEnabled", "Z");
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/sijobe/spc/wrapper/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;");
+		mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
+		mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/entity/EntityClientPlayerMP", "noClip", "Z");
 		Label l0 = new Label();
 		mv.visitJumpInsn(Opcodes.IFEQ, l0);
 		mv.visitLdcInsn(new Float("1.1"));
-		mv.visitInsn(Opcodes.FRETURN);
+		mv.visitInsn(Opcodes.RETURN);
 		mv.visitLabel(l0);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		this.mv = mv; //so the MethodWriter instance gets its visit methods called 
 	}
-	*/
 }

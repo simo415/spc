@@ -23,7 +23,7 @@ import net.minecraft.network.NetHandlerPlayServer;
  *
  * @author q3hardcore
  * @version 1.2
- * @status survived 1.7.2 update but can't see anything while inside blocks
+ * @status survived 1.7.2 update but can't see anything while inside blocks -> fixed
  */
 @Command (
          name = "noclip",
