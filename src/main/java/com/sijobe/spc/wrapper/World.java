@@ -389,13 +389,20 @@ public class World {
    }
    
    /**
-    * Checks if the specified block type (block ID) is valid in Minecraft
+    * Checks if the specified block type is valid in Minecraft
     * 
     * @param type - The type of block
     * @return True if it is a valid block type
     */
    public boolean isValidBlockType(Block type) {
-	   return Block.blockRegistry.containsKey(type);
+	   if(type == null)
+	   {
+		   return false;
+	   }
+	   else
+	   {
+		   return Block.blockRegistry.getNameForObject(type) != null;
+	   }
    }
    
    /**

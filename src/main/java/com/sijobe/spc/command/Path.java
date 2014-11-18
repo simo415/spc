@@ -24,7 +24,7 @@ import net.minecraft.util.MathHelper;
  *
  * @author q3hardcore
  * @version 1.4
- * @status broken through 1.7.2 update
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
    name = "path",
@@ -83,7 +83,7 @@ public class Path extends StandardCommand implements IPlayerMP {
             block = null;
          }
 
-         if (!player.getWorld().isValidBlockType(block) && block != null) { // isValidBlockType should be static
+         if (!player.getWorld().isValidBlockType(block)) { // isValidBlockType should be static
             throw new CommandException("Unknown block: " + args[0]);
          }
          
@@ -216,7 +216,6 @@ public class Path extends StandardCommand implements IPlayerMP {
     * @param type - The type (ID) of the block
     */
    private void setBlock(Player player, int i, int j, int k, Block type, int meta) {
-      //player.getWorld().getMinecraftWorld().func_94575_c(i, j, k, type);
       player.getWorld().setBlockDataWithMeta(new Coordinate(i, j, k), type, meta);
    }
 }
