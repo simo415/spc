@@ -395,14 +395,7 @@ public class World {
     * @return True if it is a valid block type
     */
    public boolean isValidBlockType(Block type) {
-	   if(type == null)
-	   {
-		   return false;
-	   }
-	   else
-	   {
-		   return Block.blockRegistry.getNameForObject(type) != null;
-	   }
+	   return Block.blockRegistry.getNameForObject(type) != null;
    }
    
    /**
