@@ -16,6 +16,7 @@ import java.util.List;
  *
  * @author q3hardcore
  * @version 1.0
+ * @status broken through 1.7.2 update -> fixed
  */
 @Command (
    name = "prefixslash",
@@ -25,7 +26,8 @@ import java.util.List;
    enabled = true
 )
 public class PrefixSlash extends StandardCommand {
-
+	public static boolean prefixSlashEnabled = false;
+	
 	@Override
 	public boolean isEnabled() {
 		return Minecraft.isSinglePlayer();
@@ -35,7 +37,8 @@ public class PrefixSlash extends StandardCommand {
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = CommandBase.getSenderAsPlayer(sender);
       Settings config = super.loadSettings(player);
-      boolean prefixSlash = config.getBoolean("prefixSlash", true);
+      //boolean prefixSlash = config.getBoolean("prefixSlash", true);
+      boolean prefixSlash = prefixSlashEnabled;
       if (params.size() == 0) {
          prefixSlash ^= true;
       } else {
@@ -43,6 +46,7 @@ public class PrefixSlash extends StandardCommand {
       }
       config.set("prefixSlash", prefixSlash);
       super.saveSettings(player);
+      prefixSlashEnabled = prefixSlash;
       player.sendChatMessage("Slash prefixing is now " + FontColour.AQUA
                + (prefixSlash ? "enabled" : "disabled"));
    }

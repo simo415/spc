@@ -13,6 +13,7 @@ public class Transformer implements IClassTransformer
 	public Transformer()
 	{
 		Processor.getInstance().registerMethodTransformers(MethodTransformer.generateFromFunctions(SimpleHooked.class));
+		Processor.getInstance().registerMethodTransformer(new SlashPrefixer());
 	}
 	
 	@Override
