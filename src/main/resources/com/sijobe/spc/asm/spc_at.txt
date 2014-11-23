@@ -1,1 +1,2 @@
-public int blockHitDelay
+#public int blockHitDelay
+#public net.minecraft.entity.Player.PlayerCapabilities walkSpeed
