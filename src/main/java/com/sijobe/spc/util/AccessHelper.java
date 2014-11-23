@@ -11,4 +11,12 @@ public class AccessHelper
 		field.setAccessible(true);
 		field.setInt(obj, value);
 	}
+	
+	public static void setFloat(Object obj, String name, float value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		Class clazz = obj.getClass();
+		Field field = clazz.getDeclaredField(name);
+		field.setAccessible(true);
+		field.setFloat(obj, value);
+	}
 }
