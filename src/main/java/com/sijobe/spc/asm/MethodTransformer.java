@@ -33,11 +33,6 @@ abstract class MethodTransformer extends MethodVisitor
 		{
 			if(Modifier.isStatic(method.getModifiers()))
 			{
-				System.out.println(method.getName()+":");
-				for(Annotation i : method.getDeclaredAnnotations())
-				{
-					System.out.println(i);
-				}
 				if(method.isAnnotationPresent(MethodReplacer.Hook.class))
 				{
 					String annotation = method.getAnnotation(MethodReplacer.Hook.class).value();

@@ -46,7 +46,6 @@ public class MovePlayer extends StandardCommand {
       Player player = super.getSenderAsPlayer(sender);
       Coordinate c = player.getPosition();
       int distance = 0;
-      System.out.println(params.get(0).getClass());
       if(params.get(0) instanceof Integer){
     	  distance = (Integer)params.get(0);
       }

@@ -38,8 +38,7 @@ public class Noclip extends StandardCommand {
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = CommandBase.getSenderAsPlayer(sender);
 
-      System.out.println(player.getUsername() + " " + MinecraftServer.getServer().getServerOwner());
-      /*if(!player.getUsername().equals(MinecraftServer.getServer().getServerOwner())) {
+     /*if(!player.getUsername().equals(MinecraftServer.getServer().getServerOwner())) {
          throw new CommandException("Must be server host");
       }*/
       if(!player.getMinecraftPlayer().capabilities.isFlying && !player.getMinecraftPlayer().noClip) {

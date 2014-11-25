@@ -66,13 +66,11 @@ public class InstantMine extends StandardCommand implements IBreakSpeed, IBlockB
 
 	@Override
 	public float getBreakSpeed(Player player, Block block, int metadata, float orginalSpeed, int x, int y, int z) {
-		System.out.println("getting break speed...");
 		return instantMiningEnabled ? 50000000.0F : orginalSpeed;
 	}
 
 	@Override
 	public void onBreakBroken(int x, int y, int z, World world, Block block, int metadata, Player player) {
-		System.out.println("setting blockHitDelay");
 		try {
 			AccessHelper.setInt(Minecraft.getMinecraft().playerController, "blockHitDelay", 5);
 		} catch (NoSuchFieldException e) {

@@ -7,6 +7,7 @@ import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
+import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
 
 /**
@@ -41,14 +42,14 @@ public class UsePortal extends StandardCommand {
       Player player = super.getSenderAsPlayer(sender);
       String type = (String)params.get(0);
       if (type.equalsIgnoreCase("normal")) {
-         player.changeDimension(DIMENSION_NORMAL);
-      } else if (type.equalsIgnoreCase("nether")) {
-         player.changeDimension(DIMENSION_NETHER);
-      } else if (type.equalsIgnoreCase("end")) {
-         player.changeDimension(DIMENSION_END);
-      } else {
-         throw new CommandException("Unknown dimension specified");
-      }
+          player.changeDimension(DIMENSION_NORMAL);
+       } else if (type.equalsIgnoreCase("nether")) {
+          player.changeDimension(DIMENSION_NETHER);
+       } else if (type.equalsIgnoreCase("end")) {
+          player.changeDimension(DIMENSION_END);
+       } else {
+          throw new CommandException("Unknown dimension specified");
+       }
    }
    
    @Override

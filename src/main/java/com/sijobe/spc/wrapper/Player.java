@@ -485,6 +485,7 @@ public class Player {
     */
    public void changeDimension(int dimension) {
       player.travelToDimension(dimension);
+      player.timeUntilPortal = player.getPortalCooldown();
    }
 
    /**
