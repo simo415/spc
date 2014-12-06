@@ -20,12 +20,11 @@ public class SimpleHooked
 	public static void renderInsideOfBlock(MethodVisitor mv)
 	{
 		mv.visitCode();
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/sijobe/spc/wrapper/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;");
-		mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
-		mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/entity/EntityClientPlayerMP", "noClip", "Z");
+		mv.visitFieldInsn(Opcodes.GETSTATIC, "com/sijobe/spc/ModSpc", "instance", "Lcom/sijobe/spc/ModSpc;");
+		mv.visitFieldInsn(Opcodes.GETFIELD, "com/sijobe/spc/ModSpc", "proxy", "Lcom/sijobe/spc/proxy/Proxy;");
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "com/sijobe/spc/proxy/Proxy", "shouldNotRenderInsideOfBlock", "()Z");
 		Label l0 = new Label();
 		mv.visitJumpInsn(Opcodes.IFEQ, l0);
-		mv.visitLdcInsn(new Float("1.1"));
 		mv.visitInsn(Opcodes.RETURN);
 		mv.visitLabel(l0);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);

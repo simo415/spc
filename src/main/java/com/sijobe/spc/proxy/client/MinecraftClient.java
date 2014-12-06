@@ -1,6 +1,8 @@
-package com.sijobe.spc.wrapper;
+package com.sijobe.spc.proxy.client;
 
 import java.io.File;
+
+import com.sijobe.spc.wrapper.Player;
 
 /**
  * Provides a wrapper around the Minecraft class
@@ -8,7 +10,7 @@ import java.io.File;
  * @author simo_415
  * @version 1.0
  */
-public class Minecraft {
+public class MinecraftClient {
 
    /**
     * Gets the directory that Minecraft is installed in

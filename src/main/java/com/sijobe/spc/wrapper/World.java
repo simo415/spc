@@ -3,6 +3,9 @@ package com.sijobe.spc.wrapper;
 import java.lang.reflect.Field;
 import java.util.Random;
 
+import com.sijobe.spc.ModSpc;
+import com.sijobe.spc.util.AccessHelper;
+
 
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -108,6 +111,21 @@ public class World {
     */
    public void setCheats(boolean cheats) {
       changeWorldInfo("allowCommands", cheats);
+      try {
+		AccessHelper.setBoolean(MinecraftServer.getMinecraftServer().getConfigurationManager(), "commandsAllowedForAll", cheats);
+	} catch (NoSuchFieldException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (SecurityException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IllegalArgumentException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IllegalAccessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
    }
    
    /**
@@ -148,8 +166,7 @@ public class World {
     * @return The difficulty of the world
     */
    public EnumDifficulty getDifficulty() {
-	  GameSettings settings = Minecraft.getMinecraft().gameSettings;
-	  return settings.difficulty;
+	   return MinecraftServer.getMinecraftServer().func_147135_j();
    }
    
    /**
@@ -158,8 +175,8 @@ public class World {
     * @param difficulty - The difficulty of the world
     */
    public void setDifficulty(EnumDifficulty difficulty) {
-	  GameSettings settings = Minecraft.getMinecraft().gameSettings;
-      settings.setOptionValue(GameSettings.Options.DIFFICULTY, difficulty.getDifficultyId()-this.getDifficulty().getDifficultyId());
+	   MinecraftServer.getMinecraftServer().func_147139_a(difficulty);
+	   ModSpc.instance.proxy.setDifficulty(difficulty);
    }
    
    /**

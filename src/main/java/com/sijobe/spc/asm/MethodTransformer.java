@@ -1,6 +1,5 @@
 package com.sijobe.spc.asm;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;

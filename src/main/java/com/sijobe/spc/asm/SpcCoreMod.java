@@ -4,8 +4,12 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.Name;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 @MCVersion("1.7.2")
+@Name("spc Coremod")
+@TransformerExclusions("com.sijobe.spc.asm")
 public class SpcCoreMod implements IFMLLoadingPlugin
 {
 	@Override

@@ -44,6 +44,6 @@ public class SlashPrefixer extends MethodTransformer
 
 	public static boolean isCommand(String s)
 	{
-		return s.startsWith("/") || PrefixSlash.prefixSlashEnabled;
+		return s.startsWith("/") || PrefixSlash.prefixSlash;
 	}
 }

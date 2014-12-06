@@ -5,7 +5,7 @@ import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.Minecraft;
+import com.sijobe.spc.wrapper.MinecraftServer;
 import com.sijobe.spc.wrapper.Player;
 import com.sijobe.spc.wrapper.Stats;
 
@@ -48,7 +48,7 @@ public class Achievement extends StandardCommand {
          achievements = achievements.substring(0, achievements.length() - 2);
          sender.sendMessageToPlayer(achievements);
       } else if (((String)params.get(0)).equalsIgnoreCase("unlock")) {
-         Player player = Minecraft.getPlayer();
+         Player player = getSenderAsPlayer(sender);
          if (params.size() == 2) {
             if (player.addAchievement((String)params.get(1))) {
                player.sendChatMessage("The " + FontColour.AQUA + (String)params.get(1) 
@@ -68,10 +68,5 @@ public class Achievement extends StandardCommand {
    @Override
    public Parameters getParameters() {
       return PARAMETERS;
-   }
-   
-   @Override
-   public boolean isEnabled() {
-      return Minecraft.isSinglePlayer();
    }
 }

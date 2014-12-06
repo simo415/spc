@@ -1,7 +1,7 @@
 package com.sijobe.spc.core;
 
 import com.sijobe.spc.util.DynamicClassLoader;
-import com.sijobe.spc.wrapper.Minecraft;
+import com.sijobe.spc.wrapper.MinecraftServer;
 
 import java.io.File;
 
@@ -36,8 +36,8 @@ public class SPCLoader {
     */
    private static void loadClasspath() {
       File classpath[] = DynamicClassLoader.getClasspath();
-      //System.out.println("Minecraft: " + Minecraft.getMinecraftDirectory().getAbsolutePath());
-      File files[] = (new File(Minecraft.getMinecraftDirectory(),"bin")).listFiles();
+      System.out.println("Minecraft: " + MinecraftServer.getDirectoryName());
+      File files[] = (new File(MinecraftServer.getDirectoryName(),"bin")).listFiles();
       if (files == null) {
          return;
       }

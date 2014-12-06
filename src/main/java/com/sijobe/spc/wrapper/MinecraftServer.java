@@ -1,10 +1,15 @@
 package com.sijobe.spc.wrapper;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sijobe.spc.ModSpc;
 import com.sijobe.spc.core.Constants;
+import com.sijobe.spc.util.AccessHelper;
+
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Wrapper around the MinecraftServer class providing.
@@ -12,7 +17,7 @@ import com.sijobe.spc.core.Constants;
  * @author simo_415
  */
 public class MinecraftServer {
-
+   
    /**
     * Gets the instance of the Minecraft server that is running
     * 
@@ -88,7 +93,7 @@ public class MinecraftServer {
     * 
     * @return The directory name of the world
     */
-   public static String getDirectoryName() {
+   public static String getDirectoryName_() {
       return getMinecraftServer().getFolderName();
    }
    
@@ -98,6 +103,47 @@ public class MinecraftServer {
     * @return The location where the world is located
     */
    public static File getWorldDirectory() {
-      return new File(Constants.SAVES_DIR, getDirectoryName());
+      return new File(Constants.SAVES_DIR, getWorldFolder());
+   }
+   
+   public static String getWorldFolder() {
+      return getMinecraftServer().getFolderName();
+   }
+   
+   public static String getDirectoryName() {
+      if(ModSpc.instance.side == Side.SERVER) {
+         String dir = null;
+         try {
+            dir = ((File) AccessHelper.callMethod(getMinecraftServer(), "getDataDirectory")).getAbsolutePath();
+         } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         if(dir == null) {
+            return dir;
+         }
+         if(dir.endsWith(".")) {
+            dir = dir.substring(0, dir.length()-1);
+         }
+         return dir;
+      }
+      else if(ModSpc.instance.side == Side.CLIENT){
+         return ModSpc.instance.proxy.getDataDirectory().getAbsolutePath();
+      }
+      else {
+         return null;
+      }
    }
 }

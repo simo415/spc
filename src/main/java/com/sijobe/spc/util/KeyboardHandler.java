@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
  * @see org.lwjgl.input.Keyboard
  */
 public class KeyboardHandler extends Thread {
-
+   
    /**
     * The delay in milliseconds that the keyboard events are checked
     */
@@ -36,12 +36,12 @@ public class KeyboardHandler extends Thread {
    public static KeyboardHandler getInstance() {
       return KEYBOARD;
    }
-
+   
    /**
     * Holds the value of whether the instance is currently listening or not
     */
    private boolean listening;
-
+   
    /**
     * A List of keys that are currently registered with this listener
     */
@@ -50,7 +50,7 @@ public class KeyboardHandler extends Thread {
     * A List of keys that have currently been pressed
     */
    private List<Integer> pressed;
-
+   
    /**
     * A Map containing the registered pressed event listeners
     */
@@ -59,7 +59,7 @@ public class KeyboardHandler extends Thread {
     * A Map containing the registered released event listeners
     */
    private Map<Integer, List<KeyListener>> registeredReleased;
-
+   
    /**
     * Default private constructor sets up the instance
     */
@@ -70,7 +70,7 @@ public class KeyboardHandler extends Thread {
       keys = new CopyOnWriteArrayList<Integer>();
       listening = false;
    }
-
+   
    /**
     * Checks for key press and key release events
     * 
@@ -106,7 +106,7 @@ public class KeyboardHandler extends Thread {
          listening = false;
       }
    }
-
+   
    /**
     * Calls all of the necessary listeners based off the key pressed
     * 
@@ -121,7 +121,7 @@ public class KeyboardHandler extends Thread {
          listener.keyPressed(key);
       }
    }
-
+   
    /**
     * Calls all of the necessary listeners based off the key released
     * 
@@ -136,14 +136,14 @@ public class KeyboardHandler extends Thread {
          listener.keyReleased(key);
       }
    }
-
+   
    /**
     * Stops the instance from listening
     */
    public void stopListening() {
       listening = false;
    }
-
+   
    /**
     * Adds a key press listener to the specified key. See the Keyboard class 
     * for details on the key codes.
@@ -156,7 +156,7 @@ public class KeyboardHandler extends Thread {
    public boolean addKeyPressedListener(int key, KeyListener listener) {
       return addListener(key, listener, registeredPressed);
    }
-
+   
    /**
     * Adds a key release listener to the specified key. See the Keyboard class 
     * for details on the key codes.
@@ -169,7 +169,7 @@ public class KeyboardHandler extends Thread {
    public boolean addKeyReleasedListener(int key, KeyListener listener) {
       return addListener(key, listener, registeredReleased);
    }
-
+   
    /**
     * Generic implementation that adds the specified key and listener to the 
     * provided internal listener map.
@@ -220,7 +220,7 @@ public class KeyboardHandler extends Thread {
    public void removeKeyReleasedListener(int key, KeyListener listener) {
       removeListener(key, listener, registeredReleased);
    }   
-
+   
    /**
     * Removes the specified key and listener instance from the specified Map 
     * listener. 
@@ -242,7 +242,7 @@ public class KeyboardHandler extends Thread {
       // Check if the key is referenced anywhere
       checkKeyUsage(key);
    }
-
+   
    /**
     * Checks the specified key whether it is still used by a listener or not. 
     * If the key is not used it is removed from the instance so that it isn't 
@@ -268,7 +268,7 @@ public class KeyboardHandler extends Thread {
          pressed.remove((Object)key);
       }
    }
-
+   
    /**
     * Gets the ID of the specified key string, this ID can be used to register
     * key listeners. If the specified String is an invalid key type then -1 is
@@ -282,5 +282,11 @@ public class KeyboardHandler extends Thread {
          return -1;
       }
       return Keyboard.getKeyIndex(key.toUpperCase()) == Keyboard.KEY_NONE ? -1 : Keyboard.getKeyIndex(key.toUpperCase());
+   }
+   
+   public static void removeAllKeys(KeyListener listener) {
+      for(int key : getInstance().keys) {
+         getInstance().removeKeyPressedListener(key, listener);
+      }
    }
 }

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sijobe.spc.util.RegistryIdCompatible;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryNamespaced;
@@ -16,7 +18,7 @@ public class Item {
    /**
     * A list of item names that are loaded in the game
     */
-	public static final RegistryNamespaced itemRegistry = new RegistryNamespaced();
+	public static final RegistryNamespaced itemRegistry = new RegistryIdCompatible();
 	public static final Map<net.minecraft.item.Item, Item> conversionRegistry = new HashMap<net.minecraft.item.Item, Item>();
 	public static final RegistryNamespaced realItemRegistry = net.minecraft.item.Item.itemRegistry;
 	
@@ -25,8 +27,9 @@ public class Item {
 		for (Object i : net.minecraft.item.Item.itemRegistry)
 		{
 			net.minecraft.item.Item item = (net.minecraft.item.Item) i;
+			int id = realItemRegistry.getIDForObject(item);
 			Item wrapped = new Item(item);
-			itemRegistry.putObject(realItemRegistry.getNameForObject(item), wrapped);
+			itemRegistry.addObject(id, realItemRegistry.getNameForObject(item), wrapped);
 			conversionRegistry.put(item, wrapped);
 		}
 	}
@@ -61,14 +64,7 @@ public class Item {
     * @return the id of the item. If the item doesn't exist null is returned
     */
    public static Item getItem(String itemName) {
-      if(itemRegistry.containsKey(itemName))
-      {
-    	  return (Item) itemRegistry.getObject(itemName);
-      }
-      else
-      {
-    	  return null;
-      }
+	   return (Item) itemRegistry.getObject(itemName);
    }
    
    /*returns the converts the item to a minecraft item*/
@@ -84,7 +80,7 @@ public class Item {
     * @return true is returned if the id is valid, false otherwise
     */
    public static boolean isValidItem(Item item) {
-	   return itemRegistry.containsKey(itemRegistry.getNameForObject(item));
+	   return !(item == null) && itemRegistry.containsKey(itemRegistry.getNameForObject(item));
    }
 
    /**TODO: remove arguement

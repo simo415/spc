@@ -1,5 +1,9 @@
 package com.sijobe.spc.command;
 
+import com.sijobe.spc.ModSpc;
+import com.sijobe.spc.network.Config;
+import com.sijobe.spc.network.IClientConfig;
+import com.sijobe.spc.network.PacketConfig;
 import com.sijobe.spc.overwrite.ONetServerHandler;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.validation.Parameters;
@@ -7,7 +11,6 @@ import com.sijobe.spc.wrapper.CommandBase;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
-import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
@@ -26,31 +29,31 @@ import net.minecraft.network.NetHandlerPlayServer;
  * @status survived 1.7.2 update but can't see anything while inside blocks -> fixed
  */
 @Command (
-         name = "noclip",
-         description = "Enables and disables the ability to clip for the player",
-         example = "",
-         videoURL = "http://www.youtube.com/watch?v=4ZOvu3hf7k0", // video for fly command
-         enabled = true
-)
-public class Noclip extends StandardCommand {
-
+      name = "noclip",
+      description = "Enables and disables the ability to clip for the player",
+      example = "",
+      videoURL = "http://www.youtube.com/watch?v=4ZOvu3hf7k0", // video for fly command
+      enabled = true
+      )
+public class Noclip extends StandardCommand implements IClientConfig<Boolean> {
+   
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = CommandBase.getSenderAsPlayer(sender);
-
-     /*if(!player.getUsername().equals(MinecraftServer.getServer().getServerOwner())) {
+      
+      /*if(!player.getUsername().equals(MinecraftServer.getServer().getServerOwner())) {
          throw new CommandException("Must be server host");
       }*/
       if(!player.getMinecraftPlayer().capabilities.isFlying && !player.getMinecraftPlayer().noClip) {
          throw new CommandException("Must be flying");
       }
-
+      
       if (params.size() == 0) {
          player.getMinecraftPlayer().noClip ^= true;
       } else {
          player.getMinecraftPlayer().noClip = (Boolean)params.get(0);
       }
-
+      
       // replace server handler
       if(player.getMinecraftPlayer() instanceof EntityPlayerMP) {
          updateServerHandler((EntityPlayerMP)player.getMinecraftPlayer());
@@ -58,19 +61,19 @@ public class Noclip extends StandardCommand {
          player.getMinecraftPlayer().noClip = false;
          throw new CommandException("Noclip unavailable");
       }
-
+      
       if(player.getMinecraftPlayer().noClip == false) {
          ascendPlayer(player);
       }
-      Minecraft.getMinecraft().thePlayer.noClip = player.getMinecraftPlayer().noClip;
+      ModSpc.instance.networkHandler.sendTo(new PacketConfig(this.getConfig(), player.getMinecraftPlayer().noClip), (EntityPlayerMP) player.getMinecraftPlayer());
       player.sendChatMessage("Noclip is now " + FontColour.AQUA + (!player.getMinecraftPlayer().noClip ? "disabled" : "enabled"));
    }
-
+   
    @Override
    public Parameters getParameters() {
       return Parameters.DEFAULT_BOOLEAN;
    }
-
+   
    private static boolean hasXCommands() {
       try {
          NetHandlerPlayServer.class.getDeclaredField("clientHasXCommands");
@@ -79,7 +82,7 @@ public class Noclip extends StandardCommand {
          return false;
       }
    }
-
+   
    /**
     * Changes server handler to SPC's server handler if noclip is enabled,
     * otherwise restores the default server handler.
@@ -88,17 +91,17 @@ public class Noclip extends StandardCommand {
       if(hasXCommands()) {
          return;
       }
-
+      
       NetHandlerPlayServer handler = playerEntity.playerNetServerHandler;
-
+      
       if(playerEntity.noClip) {
          if(!(handler instanceof ONetServerHandler)) {
             playerEntity.playerNetServerHandler = new ONetServerHandler(MinecraftServer.getServer(),
-                     handler.netManager, handler.playerEntity, handler);
+                  handler.netManager, handler.playerEntity, handler);
          }
       } else {
          if(handler instanceof ONetServerHandler) {
-        	 NetHandlerPlayServer oldInstance = ((ONetServerHandler)handler).getOldInstance();
+            NetHandlerPlayServer oldInstance = ((ONetServerHandler)handler).getOldInstance();
             if(oldInstance != null) {
                handler.netManager.setNetHandler(oldInstance);
                playerEntity.playerNetServerHandler = oldInstance;
@@ -106,17 +109,17 @@ public class Noclip extends StandardCommand {
          }
       }
    }
-
+   
    public static void checkSafe(EntityPlayerMP player) {
       if(player.noClip && !player.capabilities.isFlying) {
          player.noClip = false;
-         Minecraft.getMinecraft().thePlayer.noClip = false;
+         ModSpc.instance.networkHandler.sendTo(new PacketConfig(Config.NOCLIP, false), player);
          player.addChatMessage(new ChatComponentText("Noclip auto-disabled. (Player not flying)"));
          updateServerHandler(player);
          ascendPlayer(new Player(player));
       }
    }
-
+   
    private static boolean ascendPlayer(Player player) {
       Coordinate playerPos = player.getPosition();
       if(player.isClearBelow(playerPos) && playerPos.getY() > 0) {
@@ -137,5 +140,19 @@ public class Noclip extends StandardCommand {
          }
       }
       return true;
+   }
+   
+   @Override
+   public void init(Object... params) {
+   }
+   
+   @Override
+   public void onConfigRecieved(Boolean value) {
+      ModSpc.instance.proxy.getClientPlayer().getMinecraftPlayer().noClip = value;
+   }
+   
+   @Override
+   public Config getConfig() {
+      return Config.NOCLIP;
    }
 }

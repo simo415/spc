@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sijobe.spc.util.RegistryIdCompatible;
+
 import net.minecraft.util.RegistryNamespaced;
 
 public class Block
 {
-	public static final RegistryNamespaced blockRegistry = new RegistryNamespaced();
+	public static final RegistryNamespaced blockRegistry = new RegistryIdCompatible();
 	public static final Map<net.minecraft.block.Block, Block> conversionRegistry = new HashMap<net.minecraft.block.Block, Block>();
 	public static final RegistryNamespaced realBlockRegistry = net.minecraft.block.Block.blockRegistry;
 	
@@ -18,8 +20,9 @@ public class Block
 		for(Object i : realBlockRegistry)
 		{
 			net.minecraft.block.Block block = (net.minecraft.block.Block) i;
+			int id = realBlockRegistry.getIDForObject(block);
 			Block wrapped = new Block(block);
-			blockRegistry.putObject(realBlockRegistry.getNameForObject(block), wrapped);
+			blockRegistry.addObject(id, realBlockRegistry.getNameForObject(block), wrapped);
 			conversionRegistry.put(block, wrapped);
 		}
 		Blocks.init();

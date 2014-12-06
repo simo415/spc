@@ -2,10 +2,15 @@ package com.sijobe.spc.command;
 
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.sijobe.spc.ModSpc;
+import com.sijobe.spc.network.Config;
+import com.sijobe.spc.network.IClientConfig;
+import com.sijobe.spc.network.PacketConfig;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
 
 /**
@@ -25,17 +30,17 @@ import com.sijobe.spc.wrapper.Player;
    videoURL = "http://www.youtube.com/watch?v=1Qy2jhvCkDk",
    version = "1.4.6"
 )
-public class LongerLegs extends StandardCommand {
+public class LongerLegs extends StandardCommand implements IClientConfig<Float> {
 
 	@Override
 	public boolean isEnabled() {
-		return Minecraft.isSinglePlayer();
+		return true;
 	}
 
 	@Override
 	public void execute(CommandSender sender, List<?> params)
 			throws CommandException {
-		Player player = Minecraft.getPlayer();
+		Player player = getSenderAsPlayer(sender);
 		if (player.getStepHeight() != 0.5F) {
 			player.setStepHeight(0.5F);
 			sender.sendMessageToPlayer("Longer legs is "+FontColour.AQUA+"disabled");
@@ -43,6 +48,21 @@ public class LongerLegs extends StandardCommand {
 			player.setStepHeight(1.0F);
 			sender.sendMessageToPlayer("Longer legs is "+FontColour.AQUA+"enabled");
 		}
+		ModSpc.instance.networkHandler.sendTo(new PacketConfig(this.getConfig(), player.getStepHeight()), (EntityPlayerMP) player.getMinecraftPlayer());
 	}
 
+	@Override
+	public void init(Object... params) {
+	}
+
+	@Override
+	public void onConfigRecieved(Float value) {
+		System.out.println("foo");
+		ModSpc.instance.proxy.getClientPlayer().setStepHeight(value);
+	}
+
+	@Override
+	public Config<Float> getConfig() {
+		return Config.LONGER_LEGS;
+	}
 }

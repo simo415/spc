@@ -2,10 +2,12 @@ package com.sijobe.spc.core;
 
 import com.sijobe.spc.updater.ModVersion;
 import com.sijobe.spc.util.Settings;
-import com.sijobe.spc.wrapper.Minecraft;
+import com.sijobe.spc.wrapper.MinecraftServer;
 
 import java.io.File;
 import java.util.Date;
+
+import net.minecraft.server.integrated.IntegratedServer;
 
 /**
  * Contains all of the constant values that the mod uses
@@ -32,7 +34,7 @@ public class Constants {
    /**
     * The directory that the mod saves/loads global settings from
     */
-   public static final File MOD_DIR = new File(Minecraft.getMinecraftDirectory(), "mods/spc");
+   public static final File MOD_DIR = new File(MinecraftServer.getDirectoryName(), "mods/spc");
    
    // Creates the mod directory if it doesn't already exist
    static {
@@ -49,7 +51,7 @@ public class Constants {
    /**
     * Directory where the Minecraft level saves are located
     */
-   public static final File SAVES_DIR = new File(Minecraft.getMinecraftDirectory(), "saves");
+   public static final File SAVES_DIR = new File(MinecraftServer.getDirectoryName(), MinecraftServer.getMinecraftServer().isDedicatedServer() ? "" : "saves");
    
    /**
     * @return the version

@@ -4,9 +4,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 
 class Processor
 {

@@ -1,6 +1,5 @@
 package com.sijobe.spc.command;
 
-import com.sijobe.spc.core.IPlayerSP;
 import com.sijobe.spc.util.AccessHelper;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.util.Settings;
@@ -10,7 +9,6 @@ import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
-import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
@@ -102,15 +100,5 @@ public class SetSpeed extends StandardCommand {
 	@Override
 	public Parameters getParameters() {
 		return PARAMETERS;
-	}
-
-	/**
-	 * Only enabled in single player since this is a client-side mod
-	 * 
-	 * @see com.sijobe.spc.wrapper.CommandBase#isEnabled()
-	 */
-	@Override
-	public boolean isEnabled() {
-		return Minecraft.isSinglePlayer();
 	}
 }

@@ -6,7 +6,6 @@ import com.sijobe.spc.wrapper.CommandBase;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Coordinate;
-import com.sijobe.spc.wrapper.Minecraft;
 import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class DoDrops extends StandardCommand implements IPlayerMP {
 
    @Override
    public boolean isEnabled() {
-      return Minecraft.isSinglePlayer();
+      return true;
    }
 
    @Override

@@ -332,7 +332,7 @@ public abstract class CommandBase extends net.minecraft.command.CommandBase {
       if (player == null) {
          return null;
       }
-      String directoryName = MinecraftServer.getDirectoryName();
+      String directoryName = MinecraftServer.getWorldFolder();
       SettingsManager manager = MANAGER.get(directoryName);
       if (manager == null) {
          File spcPlayers = new File(MinecraftServer.getWorldDirectory(), "spc/players");
