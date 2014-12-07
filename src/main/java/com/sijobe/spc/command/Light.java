@@ -36,7 +36,7 @@ public class Light extends StandardCommand implements IClientConfig<Boolean> {
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = super.getSenderAsPlayer(sender); // Why super.? Meh, Cannon has it like that
-      Settings config = this.loadSettings(player);
+      Settings config = loadSettings(player);
       boolean lit = !config.getBoolean("light", false);
       config.set("light", lit);
       ModSpc.instance.networkHandler.sendTo(new PacketConfig(this.getConfig(), lit), (EntityPlayerMP) player.getMinecraftPlayer());
@@ -52,7 +52,7 @@ public class Light extends StandardCommand implements IClientConfig<Boolean> {
    }
    
    @Override
-   public Config getConfig() {
+   public Config<Boolean> getConfig() {
       return Config.LIGHT;
    }
 }

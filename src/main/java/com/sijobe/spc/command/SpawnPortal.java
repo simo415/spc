@@ -10,10 +10,7 @@ import com.sijobe.spc.wrapper.Player;
 import com.sijobe.spc.wrapper.World;
 import com.sijobe.spc.wrapper.Blocks;
 
-import java.lang.reflect.Method;
-
 import net.minecraft.block.BlockEndPortal;
-import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;

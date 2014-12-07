@@ -30,14 +30,6 @@ public class DynamicClassLoader {
     */
    private static URLClassLoader CLASSLOADER;
    
-   /**
-    * Flag designates whether the populateClassLoaderWithClasses method has 
-    * been called yet or not. 
-    * 
-    * @see DynamicClassLoader#populateClassLoaderWithClasses()
-    */
-   private static boolean POPULATED = false;
-   
    /*
     * A vector used to store all SPC classes
    */

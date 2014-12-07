@@ -2,10 +2,8 @@ package com.sijobe.spc.proxy;
 
 import java.io.File;
 
-import com.sijobe.spc.core.IBlockBroken;
 import com.sijobe.spc.wrapper.Player;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.EnumDifficulty;
 
 public abstract class Proxy{

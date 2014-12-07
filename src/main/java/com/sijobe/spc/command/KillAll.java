@@ -8,7 +8,6 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
 

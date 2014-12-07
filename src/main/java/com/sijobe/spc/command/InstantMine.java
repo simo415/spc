@@ -5,8 +5,6 @@ import com.sijobe.spc.core.IBlockBroken;
 import com.sijobe.spc.core.IBreakSpeed;
 import com.sijobe.spc.network.Config;
 import com.sijobe.spc.network.IClientConfig;
-import com.sijobe.spc.util.AccessHelper;
-import com.sijobe.spc.util.ForgeHelper;
 import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.Block;
@@ -17,7 +15,6 @@ import com.sijobe.spc.wrapper.World;
 
 import java.util.List;
 
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**

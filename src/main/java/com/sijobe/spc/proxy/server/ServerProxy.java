@@ -8,10 +8,8 @@ import net.minecraft.server.dedicated.PropertyManager;
 
 import com.sijobe.spc.proxy.Proxy;
 import com.sijobe.spc.util.AccessHelper;
-import com.sijobe.spc.wrapper.Block;
 import com.sijobe.spc.wrapper.MinecraftServer;
 import com.sijobe.spc.wrapper.Player;
-import com.sijobe.spc.wrapper.World;
 
 public class ServerProxy extends Proxy {
 

@@ -1,10 +1,8 @@
 package com.sijobe.spc;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -19,14 +17,9 @@ import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
-import com.google.common.eventbus.Subscribe;
-
-import com.sijobe.spc.core.Constants;
 import com.sijobe.spc.core.HookManager;
 import com.sijobe.spc.core.IBlockBroken;
 import com.sijobe.spc.core.IBreakSpeed;
-import com.sijobe.spc.core.IHook;
-import com.sijobe.spc.util.DynamicClassLoader;
 import com.sijobe.spc.wrapper.Block;
 import com.sijobe.spc.wrapper.Item;
 import com.sijobe.spc.wrapper.Player;
@@ -143,7 +136,7 @@ public class ModSpc
 		{
 			if(hook.isEnabled())
 			{
-				hook.getConfig().setHandler(hook);
+				hook.getConfig().setHandler((IClientConfig) hook);
 			}
 		}
 	}

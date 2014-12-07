@@ -1,11 +1,9 @@
 package com.sijobe.spc.command;
 
 import com.sijobe.spc.ModSpc;
-import com.sijobe.spc.core.Constants;
 import com.sijobe.spc.network.Config;
 import com.sijobe.spc.network.IClientConfig;
 import com.sijobe.spc.network.PacketConfig;
-import com.sijobe.spc.proxy.client.MinecraftClient;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.util.KeyListener;
 import com.sijobe.spc.util.KeyboardHandler;
@@ -15,12 +13,9 @@ import com.sijobe.spc.validation.ParameterInteger;
 import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
-import com.sijobe.spc.wrapper.CommandManager;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.MinecraftServer;
 import com.sijobe.spc.wrapper.Player;
 
-import java.io.File;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;

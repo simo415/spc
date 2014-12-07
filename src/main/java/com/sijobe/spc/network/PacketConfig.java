@@ -10,7 +10,7 @@ public class PacketConfig implements IMessage {
 	public PacketConfig() {
 	}
 	
-	public PacketConfig(Config config, Object value) {
+	public PacketConfig(Config<?> config, Object value) {
 		this.config = config;
 		this.value = value;
 		if(!this.value.getClass().equals(this.config.kind)) {

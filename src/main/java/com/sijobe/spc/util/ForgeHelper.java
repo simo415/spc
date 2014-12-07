@@ -66,7 +66,6 @@ public final class ForgeHelper {
 		getCapturedDrops(entityPlayerMP).clear();
 	}
    
-   @SuppressWarnings("unchecked")
 	public static void captureDrops(EntityPlayerMP entityPlayerMP, DamageSource damageSource, int recentlyHit) {
 		setCaptureDrops(entityPlayerMP, false);
 		Object event = createPlayerDropsEvent(entityPlayerMP, damageSource, getCapturedDrops(entityPlayerMP), recentlyHit > 0);
@@ -174,7 +173,7 @@ public final class ForgeHelper {
          capturedDropsField = ReflectionHelper.getField(Entity.class, "capturedDrops");
          captureDropsField = ReflectionHelper.getField(Entity.class, "captureDrops");
          playerDropsEventClass = ReflectionHelper.getClass("net.minecraftforge.event.entity.player.PlayerDropsEvent");
-         final Class[] params = new Class[]{ EntityPlayer.class, DamageSource.class, ArrayList.class, Boolean.TYPE };
+         final Class<?>[] params = new Class[]{ EntityPlayer.class, DamageSource.class, ArrayList.class, Boolean.TYPE };
          playerDropsEventConstructor = ReflectionHelper.getConstructor(playerDropsEventClass, params);
          watchClass = ReflectionHelper.getClass("net.minecraftforge.event.world.ChunkWatchEvent$Watch");
          watchConstructor = ReflectionHelper.getConstructor(watchClass, new Class[]{ChunkCoordIntPair.class, EntityPlayerMP.class});

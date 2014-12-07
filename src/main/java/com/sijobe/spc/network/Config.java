@@ -1,20 +1,18 @@
 package com.sijobe.spc.network;
 
-import java.lang.reflect.Method;
-
 public final class Config<T> {
-	static Config[] configs = new Config[256];
-	public static final Config BLOCK_REACH = new Config(0, Float.class);
-	public static final Config NOCLIP = new Config(1, Boolean.class);
-	public static final Config LIGHT = new Config(2, Boolean.class);
-	public static final Config INSTANT_MINE = new Config(3, Boolean.class);
-	public static final Config PREFIX_SLASH = new Config(4, Boolean.class);
-	public static final Config LONGER_LEGS = new Config(5, Float.class);
-	public static final Config BIND = new Config(6, Integer.class);
+	static Config<?>[] configs = new Config[256];
+	public static final Config<Float> BLOCK_REACH = new Config<Float>(0, Float.class);
+	public static final Config<Boolean> NOCLIP = new Config<Boolean>(1, Boolean.class);
+	public static final Config<Boolean> LIGHT = new Config<Boolean>(2, Boolean.class);
+	public static final Config<Boolean> INSTANT_MINE = new Config<Boolean>(3, Boolean.class);
+	public static final Config<Boolean> PREFIX_SLASH = new Config<Boolean>(4, Boolean.class);
+	public static final Config<Float> LONGER_LEGS = new Config<Float>(5, Float.class);
+	public static final Config<Integer> BIND = new Config<Integer>(6, Integer.class);
 	
 	int id;
 	Class<T> kind;
-	private IClientConfig handler;
+	private IClientConfig<T> handler;
 	
 	private Config(int id, Class<T> kind) {
 		this.id = id;

@@ -36,14 +36,12 @@ abstract class MethodTransformer extends MethodVisitor
 				{
 					String annotation = method.getAnnotation(MethodReplacer.Hook.class).value();
 					System.out.println("found replacement for "+annotation);
-					String cl = annotation.split(":", 2)[0];
 					modifiers.add(new MethodReplacer(annotation, method));
 				}
 				else if(method.isAnnotationPresent(MethodPrefixer.Hook.class))
 				{
 					String annotation = method.getAnnotation(MethodPrefixer.Hook.class).value();
 					System.out.println("found prefix for "+annotation);
-					String cl = annotation.split(":", 2)[0];
 					modifiers.add(new MethodPrefixer(annotation, method));
 				}
 			}

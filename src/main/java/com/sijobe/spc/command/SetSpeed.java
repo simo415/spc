@@ -8,13 +8,9 @@ import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.Coordinate;
-import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 
 /**

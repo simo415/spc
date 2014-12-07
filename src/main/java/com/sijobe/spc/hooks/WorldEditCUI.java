@@ -5,8 +5,6 @@ import com.sijobe.spc.util.ReflectionHelper;
 import com.sijobe.spc.util.WorldEditCUIHelper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class WorldEditCUI implements ICUIEventHandler {
@@ -119,7 +117,6 @@ public class WorldEditCUI implements ICUIEventHandler {
       return null;
    }
    
-	@SuppressWarnings("unchecked")
 	private boolean setWorldEditCUIMod() {
       WorldEditCUIMod = getWorldEditCUIMod();
       return (WorldEditCUIMod != null);

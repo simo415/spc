@@ -7,8 +7,6 @@ import com.sijobe.spc.wrapper.MinecraftServer;
 import java.io.File;
 import java.util.Date;
 
-import net.minecraft.server.integrated.IntegratedServer;
-
 /**
  * Contains all of the constant values that the mod uses
  *

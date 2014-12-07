@@ -43,7 +43,6 @@ public class Difficulty extends StandardCommand {
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       World world = super.getSenderAsPlayer(sender).getWorld();
-      int change;
       if (params.size() > 0) {
     	  world.setDifficulty(EnumDifficulty.getDifficultyEnum((Integer)params.get(0)));
       } else {

@@ -4,14 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.management.ServerConfigurationManager;
-
 public class AccessHelper
 {
 	public static void setInt(Object obj, String name, int value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		Field field = clazz.getDeclaredField(name);
 		field.setAccessible(true);
 		field.setInt(obj, value);
@@ -19,14 +16,14 @@ public class AccessHelper
 	
 	public static void setFloat(Object obj, String name, float value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		Field field = clazz.getDeclaredField(name);
 		field.setAccessible(true);
 		field.setFloat(obj, value);
 	}
 	
 	public static void setBoolean(Object obj, String name, boolean value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		Field field;
 		while(true)
 		{
@@ -49,7 +46,7 @@ public class AccessHelper
 	}
 	
 	public static Object getObj(Object obj, String name) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		Field field;
 		while(true)
 		{
@@ -71,9 +68,10 @@ public class AccessHelper
 		return field.get(obj);
 	}
 	
-	public static <T> T callMethod(Object obj, String name, Object ... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	@SuppressWarnings("unchecked")
+   public static <T> T callMethod(Object obj, String name, Object ... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		Method method;
 		while(true)
 		{

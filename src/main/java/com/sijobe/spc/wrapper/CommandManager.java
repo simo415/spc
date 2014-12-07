@@ -63,6 +63,7 @@ public class CommandManager {
     * 
     * @return A List of command names in Minecraft
     */
+   @SuppressWarnings("unchecked")
    public static List<String> getCommandNames() {
       return new ArrayList<String>(getCommandManager().getCommands().keySet());
    }
@@ -162,6 +163,7 @@ public class CommandManager {
     * 
     * @return The command map
     */
+   @SuppressWarnings("unchecked")
    private static Map<String,ICommand> getCommandMap() {
       return getCommandManager().getCommands();
    }

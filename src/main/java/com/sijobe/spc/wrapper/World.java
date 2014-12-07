@@ -6,8 +6,6 @@ import java.util.Random;
 import com.sijobe.spc.ModSpc;
 import com.sijobe.spc.util.AccessHelper;
 
-
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;

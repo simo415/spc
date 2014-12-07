@@ -1,6 +1,5 @@
 package com.sijobe.spc.asm;
 
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 
 import com.sijobe.spc.command.PrefixSlash;

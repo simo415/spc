@@ -7,7 +7,6 @@ import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.Entity;
 import com.sijobe.spc.wrapper.Player;
 
 /**

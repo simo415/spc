@@ -6,18 +6,14 @@ import java.lang.reflect.InvocationTargetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.EnumDifficulty;
 
-import com.sijobe.spc.command.InstantMine;
 import com.sijobe.spc.proxy.Proxy;
 import com.sijobe.spc.util.AccessHelper;
-import com.sijobe.spc.wrapper.Block;
 import com.sijobe.spc.wrapper.Player;
-import com.sijobe.spc.wrapper.World;
 
 public class ClientProxy extends Proxy {
 	@Override

@@ -1,10 +1,10 @@
 package com.sijobe.spc.command;
 
 import com.sijobe.spc.ModSpc;
+import com.sijobe.spc.core.IPlayerMP;
 import com.sijobe.spc.network.Config;
 import com.sijobe.spc.network.IClientConfig;
 import com.sijobe.spc.network.PacketConfig;
-import com.sijobe.spc.overwrite.ONetServerHandler;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandBase;
@@ -15,11 +15,8 @@ import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
 
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.NetHandlerPlayServer;
 
 /**
  * Command for disabling clipping
@@ -35,7 +32,7 @@ import net.minecraft.network.NetHandlerPlayServer;
       videoURL = "http://www.youtube.com/watch?v=4ZOvu3hf7k0", // video for fly command
       enabled = true
       )
-public class Noclip extends StandardCommand implements IClientConfig<Boolean> {
+public class Noclip extends StandardCommand implements IPlayerMP, IClientConfig<Boolean> {
    
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
@@ -54,14 +51,6 @@ public class Noclip extends StandardCommand implements IClientConfig<Boolean> {
          player.getMinecraftPlayer().noClip = (Boolean)params.get(0);
       }
       
-      // replace server handler
-      if(player.getMinecraftPlayer() instanceof EntityPlayerMP) {
-         updateServerHandler((EntityPlayerMP)player.getMinecraftPlayer());
-      } else {
-         player.getMinecraftPlayer().noClip = false;
-         throw new CommandException("Noclip unavailable");
-      }
-      
       if(player.getMinecraftPlayer().noClip == false) {
          ascendPlayer(player);
       }
@@ -74,48 +63,11 @@ public class Noclip extends StandardCommand implements IClientConfig<Boolean> {
       return Parameters.DEFAULT_BOOLEAN;
    }
    
-   private static boolean hasXCommands() {
-      try {
-         NetHandlerPlayServer.class.getDeclaredField("clientHasXCommands");
-         return true;
-      } catch (Throwable t) {
-         return false;
-      }
-   }
-   
-   /**
-    * Changes server handler to SPC's server handler if noclip is enabled,
-    * otherwise restores the default server handler.
-    */
-   private static void updateServerHandler(EntityPlayerMP playerEntity) {
-      if(hasXCommands()) {
-         return;
-      }
-      
-      NetHandlerPlayServer handler = playerEntity.playerNetServerHandler;
-      
-      if(playerEntity.noClip) {
-         if(!(handler instanceof ONetServerHandler)) {
-            playerEntity.playerNetServerHandler = new ONetServerHandler(MinecraftServer.getServer(),
-                  handler.netManager, handler.playerEntity, handler);
-         }
-      } else {
-         if(handler instanceof ONetServerHandler) {
-            NetHandlerPlayServer oldInstance = ((ONetServerHandler)handler).getOldInstance();
-            if(oldInstance != null) {
-               handler.netManager.setNetHandler(oldInstance);
-               playerEntity.playerNetServerHandler = oldInstance;
-            }
-         }
-      }
-   }
-   
    public static void checkSafe(EntityPlayerMP player) {
       if(player.noClip && !player.capabilities.isFlying) {
          player.noClip = false;
          ModSpc.instance.networkHandler.sendTo(new PacketConfig(Config.NOCLIP, false), player);
          player.addChatMessage(new ChatComponentText("Noclip auto-disabled. (Player not flying)"));
-         updateServerHandler(player);
          ascendPlayer(new Player(player));
       }
    }
@@ -152,7 +104,12 @@ public class Noclip extends StandardCommand implements IClientConfig<Boolean> {
    }
    
    @Override
-   public Config getConfig() {
+   public Config<Boolean> getConfig() {
       return Config.NOCLIP;
+   }
+
+   @Override
+   public void onTick(Player player) {
+      checkSafe((EntityPlayerMP) player.getMinecraftPlayer());
    }
 }

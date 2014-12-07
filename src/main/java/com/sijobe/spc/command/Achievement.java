@@ -5,7 +5,6 @@ import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.MinecraftServer;
 import com.sijobe.spc.wrapper.Player;
 import com.sijobe.spc.wrapper.Stats;
 

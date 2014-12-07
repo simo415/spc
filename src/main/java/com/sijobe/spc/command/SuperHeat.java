@@ -5,11 +5,9 @@ import com.sijobe.spc.validation.ParameterString;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
-import com.sijobe.spc.wrapper.Item;
 import com.sijobe.spc.wrapper.Player;
 
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.ItemStack;
@@ -40,9 +38,6 @@ public class SuperHeat extends StandardCommand {
 
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
-      @SuppressWarnings("unchecked")
-      Map<Integer, ItemStack> smelt = FurnaceRecipes.smelting().getSmeltingList();
-
       Player player = getSenderAsPlayer(sender);
       boolean all = false;
 
@@ -61,7 +56,6 @@ public class SuperHeat extends StandardCommand {
             continue;
          }
          
-         net.minecraft.item.Item key = oldStack.getItem();
          ItemStack newStack = FurnaceRecipes.smelting().getSmeltingResult(oldStack);
          if (newStack != null) {
             int amt = oldStack.stackSize;

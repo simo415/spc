@@ -45,6 +45,7 @@ public class CheckVersion extends Thread {
     * 
     * @see java.lang.Thread#run()
     */
+   @SuppressWarnings("unchecked")
    public void run() {
       // download file
       File f = downloadFile(MANIFEST);

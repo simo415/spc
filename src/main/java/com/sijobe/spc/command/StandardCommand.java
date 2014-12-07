@@ -1,7 +1,6 @@
 package com.sijobe.spc.command;
 
 import com.sijobe.spc.wrapper.CommandBase;
-import com.sijobe.spc.wrapper.CommandSender;
 
 /**
  * Provides an abstract class for a standard (single) command to extend

@@ -82,7 +82,7 @@ public class BlockReach extends StandardCommand implements IClientConfig<Float>{
    }
    
    @Override
-   public Config getConfig() {
+   public Config<Float> getConfig() {
       return Config.BLOCK_REACH;
    }
 }

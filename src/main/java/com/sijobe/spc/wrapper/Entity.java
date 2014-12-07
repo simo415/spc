@@ -43,6 +43,7 @@ public class Entity {
     * @param value - The class of the value
     * @return The matching entity list, or null if not found
     */
+   @SuppressWarnings("unchecked")
    private static <K,V> Map<K,V> getEntityList(Class<K> key, Class<V> value) {
       Map<K,V> map = null;
       try {
@@ -223,6 +224,7 @@ public class Entity {
     * @param world - The world to get the loaded entities from
     * @return A List of loaded entities
     */
+   @SuppressWarnings("unchecked")
    private static List<net.minecraft.entity.Entity> getLoadedEntities(World world) {
       return world.getMinecraftWorld().loadedEntityList;
    }
