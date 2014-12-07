@@ -32,8 +32,6 @@ import com.sijobe.spc.network.IClientConfig;
 import com.sijobe.spc.network.PacketConfig;
 import com.sijobe.spc.proxy.Proxy;
 
-//TODO make prefixslash work in multiplayer
-
 @Mod(useMetadata=true, modid="spc", version="5.0")
 public class ModSpc
 {

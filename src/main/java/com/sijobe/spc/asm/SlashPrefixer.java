@@ -1,5 +1,7 @@
 package com.sijobe.spc.asm;
 
+import net.minecraft.network.NetHandlerPlayServer;
+
 import org.objectweb.asm.MethodVisitor;
 
 import com.sijobe.spc.command.PrefixSlash;
@@ -33,7 +35,8 @@ public class SlashPrefixer extends MethodTransformer
 	{
 		if(opcode == Opcodes.INVOKEVIRTUAL && owner.equals("java/lang/String") && name.equals("startsWith") && desc.equals("(Ljava/lang/String;)Z"))
 		{
-			this.mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/sijobe/spc/asm/SlashPrefixer", "isCommand", "(Ljava/lang/String;)Z");
+		   this.mv.visitVarInsn(Opcodes.ALOAD, 0);
+			this.mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/sijobe/spc/asm/SlashPrefixer", "isCommand", "(Ljava/lang/String;Lnet/minecraft/network/NetHandlerPlayServer;)Z");
 		}
 		else
 		{
@@ -41,8 +44,8 @@ public class SlashPrefixer extends MethodTransformer
 		}
 	}
 
-	public static boolean isCommand(String s)
+	public static boolean isCommand(String s, NetHandlerPlayServer handler)
 	{
-		return s.startsWith("/") || PrefixSlash.prefixSlash;
+		return s.startsWith("/") || PrefixSlash.playersUsing.contains(handler.playerEntity.getCommandSenderName());
 	}
 }

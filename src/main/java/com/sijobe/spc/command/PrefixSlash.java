@@ -1,9 +1,5 @@
 package com.sijobe.spc.command;
 
-import com.sijobe.spc.ModSpc;
-import com.sijobe.spc.network.Config;
-import com.sijobe.spc.network.IClientConfig;
-import com.sijobe.spc.network.PacketConfig;
 import com.sijobe.spc.util.FontColour;
 import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.validation.Parameters;
@@ -12,9 +8,9 @@ import com.sijobe.spc.wrapper.CommandException;
 import com.sijobe.spc.wrapper.CommandSender;
 import com.sijobe.spc.wrapper.Player;
 
+import java.util.HashSet;
 import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayerMP;
+import java.util.Set;
 
 /**
  * Command to toggle requiring '/'
@@ -30,8 +26,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
       videoURL = "",
       enabled = true
       )
-public class PrefixSlash extends StandardCommand implements IClientConfig<Boolean> {
-   public static boolean prefixSlash = false;
+public class PrefixSlash extends StandardCommand {
+   public static Set<String> playersUsing = new HashSet<String>();
    
    @Override
    public boolean isEnabled() {
@@ -48,9 +44,14 @@ public class PrefixSlash extends StandardCommand implements IClientConfig<Boolea
       } else {
          prefixSlash = ((Boolean)params.get(0));
       }
+      if(playersUsing.contains(sender.getSenderName()) && !prefixSlash) {
+         playersUsing.remove(sender.getSenderName());
+      }
+      else if(!playersUsing.contains(sender.getSenderName()) && prefixSlash){
+         playersUsing.add(sender.getSenderName());
+      }
       config.set("prefixSlash", prefixSlash);
       super.saveSettings(player);
-      ModSpc.instance.networkHandler.sendTo(new PacketConfig(this.getConfig(), prefixSlash), (EntityPlayerMP) player.getMinecraftPlayer());
       player.sendChatMessage("Slash prefixing is now " + FontColour.AQUA
             + (prefixSlash ? "enabled" : "disabled"));
    }
@@ -58,19 +59,5 @@ public class PrefixSlash extends StandardCommand implements IClientConfig<Boolea
    @Override
    public Parameters getParameters() {
       return Parameters.DEFAULT_BOOLEAN;
-   }
-   
-   @Override
-   public void init(Object... params) {
-   }
-   
-   @Override
-   public void onConfigRecieved(Boolean value) {
-      prefixSlash = value;
-   }
-   
-   @Override
-   public Config<Boolean> getConfig() {
-      return Config.PREFIX_SLASH;
    }
 }

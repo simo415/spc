@@ -6,9 +6,8 @@ public final class Config<T> {
 	public static final Config<Boolean> NOCLIP = new Config<Boolean>(1, Boolean.class);
 	public static final Config<Boolean> LIGHT = new Config<Boolean>(2, Boolean.class);
 	public static final Config<Boolean> INSTANT_MINE = new Config<Boolean>(3, Boolean.class);
-	public static final Config<Boolean> PREFIX_SLASH = new Config<Boolean>(4, Boolean.class);
-	public static final Config<Float> LONGER_LEGS = new Config<Float>(5, Float.class);
-	public static final Config<Integer> BIND = new Config<Integer>(6, Integer.class);
+	public static final Config<Float> LONGER_LEGS = new Config<Float>(4, Float.class);
+	public static final Config<Integer> BIND = new Config<Integer>(5, Integer.class);
 	
 	int id;
 	Class<T> kind;
