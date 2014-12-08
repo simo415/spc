@@ -5,59 +5,89 @@ import java.util.HashMap;
 
 import org.objectweb.asm.ClassReader;
 
-class Processor
-{
-	private static Processor instance = new Processor();
-	
-	static Processor getInstance()
-	{
-		return instance;
-	}
-	
-	protected Map<String, ClassTransformer> classTransformers;
-	
-	Processor()
-	{
-		this.classTransformers = new HashMap<String, ClassTransformer>();
-	}
-	
-	byte[] process(String name, byte[] data)
-	{
-		if(this.classTransformers.containsKey(name))
-		{
-			ClassTransformer transformer = this.classTransformers.get(name);
-			this.classTransformers.remove(name);
-			ClassReader reader = new ClassReader(data);
-			reader.accept(transformer, 0);
-			return transformer.getWriter().toByteArray();
-		}
-		else
-		{
-			return data;
-		}
-	}
-	
-	void registerClassTransformer(ClassTransformer ct)
-	{
-		this.classTransformers.put(ct.getApplicableClass(), ct);
-	}
-	
-	void registerMethodTransformer(MethodTransformer mt)
-	{
-		String id = mt.getApplicableMethod();
-		String clazz = id.split(":", 2)[0];
-		if(!this.classTransformers.containsKey(clazz))
-		{
-			this.classTransformers.put(clazz, new ClassTransformer(clazz));
-		}
-		this.classTransformers.get(clazz).registerMethodTransformer(mt);
-	}
-	
-	void registerMethodTransformers(MethodTransformer[] mt)
-	{
-		for(MethodTransformer i : mt)
-		{
-			this.registerMethodTransformer(i);
-		}
-	}
+/**
+ * Give it some bytecode and it will modify that class with the previously given transformers
+ * 
+ * @author aucguy
+ * @version 1.0
+ */
+class Processor {
+   /**
+    * the instance
+    */
+   private static Processor instance = new Processor();
+   
+   /**
+    * how to get the processor instance
+    * 
+    * @return the Processor instance
+    */
+   static Processor getInstance() {
+      return instance;
+   }
+   
+   /**
+    * maps class binary names to classTransformers
+    */
+   protected Map<String, ClassTransformer> classTransformers;
+   
+   /**
+    * makes a Processor
+    */
+   Processor() {
+      this.classTransformers = new HashMap<String, ClassTransformer>();
+   }
+   
+   /**
+    * modifies the given bytecode with previously given Transformers
+    * 
+    * @param name - the binary name of the class
+    * @param data - the class's bytecode
+    * @return the modified bytecode
+    */
+   byte[] process(String name, byte[] data) {
+      if (this.classTransformers.containsKey(name)) {
+         ClassTransformer transformer = this.classTransformers.get(name);
+         this.classTransformers.remove(name);
+         ClassReader reader = new ClassReader(data);
+         reader.accept(transformer, 0);
+         return transformer.getWriter().toByteArray();
+      } else {
+         return data;
+      }
+   }
+   
+   /**
+    * registers a classTransformer with this Processor
+    * 
+    * @param ct - the classTransformer to register
+    */
+   void registerClassTransformer(ClassTransformer ct) {
+      this.classTransformers.put(ct.getApplicableClass(), ct);
+   }
+   
+   /**
+    * registers the given method transformer with whatever classTransformer it goes with
+    * 
+    * @param mt - the methodTransformer to register
+    */
+   void registerMethodTransformer(MethodTransformer mt) {
+      String id = mt.getApplicableMethod();
+      String clazz = id.split(":", 2)[0];
+      if (!this.classTransformers.containsKey(clazz)) {
+         this.classTransformers.put(clazz, new ClassTransformer(clazz));
+      }
+      this.classTransformers.get(clazz).registerMethodTransformer(mt);
+   }
+   
+   /**
+    * registers multiple method transformers
+    * 
+    * @param mt - the methodTransformers to register
+    */
+   void registerMethodTransformers(MethodTransformer[] mt) {
+      for (MethodTransformer i : mt) {
+         this.registerMethodTransformer(i);
+      }
+   }
 }

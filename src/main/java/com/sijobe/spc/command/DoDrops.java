@@ -28,11 +28,6 @@ public class DoDrops extends StandardCommand implements IPlayerMP {
    private static boolean removeDrops = false;
 
    @Override
-   public boolean isEnabled() {
-      return true;
-   }
-
-   @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player player = CommandBase.getSenderAsPlayer(sender);
       if (params.size() == 0) {

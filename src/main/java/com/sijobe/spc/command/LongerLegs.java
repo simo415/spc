@@ -33,11 +33,6 @@ import com.sijobe.spc.wrapper.Player;
 public class LongerLegs extends StandardCommand implements IClientConfig<Float> {
 
 	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@Override
 	public void execute(CommandSender sender, List<?> params)
 			throws CommandException {
 		Player player = getSenderAsPlayer(sender);

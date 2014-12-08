@@ -27,7 +27,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
       version = "1.4"
       )
 public class Light extends StandardCommand implements IClientConfig<Boolean> {
-   
+      
    public static boolean isLit = false; // is current world lit? client sided
    
    /**
@@ -48,7 +48,7 @@ public class Light extends StandardCommand implements IClientConfig<Boolean> {
    
    @Override
    public void onConfigRecieved(Boolean value) {
-      ModSpc.instance.proxy.toggleClientLighting(value);
+      ModSpc.instance.proxy.setClientLighting(value);
    }
    
    @Override

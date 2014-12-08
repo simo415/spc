@@ -38,6 +38,6 @@ public class Keypress extends StandardCommand {
 	public void execute(CommandSender sender, List<?> params) throws CommandException {
 		Settings settings = loadSettings(getSenderAsPlayer(sender));
 		String command = settings.getProperty(Bind.SETTINGS_PREFIX+params.get(0));
-		CommandManager.runCommand(sender, command);
-	}
+      CommandManager.runCommand(sender, command);
+   }
 }

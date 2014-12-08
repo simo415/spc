@@ -37,16 +37,6 @@ public class Sudo extends StandardCommand {
       }
    );
    
-   /**
-    * Command is only enabled in LAN/SMP mode
-    * 
-    * @see com.sijobe.spc.wrapper.CommandBase#isEnabled()
-    */
-   /*@Override
-   public boolean isEnabled() {
-      return !Minecraft.isSinglePlayer();
-   }*/
-   
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {
       Player su = (Player)params.get(0);

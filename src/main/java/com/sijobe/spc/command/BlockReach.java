@@ -38,7 +38,11 @@ public class BlockReach extends StandardCommand implements IClientConfig<Float>{
          }
          );
    
-   public static float reachDistance = 4.5F; //refered to through ASM modifications and is client sided
+   /**
+    * the block reachDistance for the client
+    * refered to through ASM modifications and is client sided
+    */
+   public static float reachDistance = 4.5F;
    
    /**
     * @see com.sijobe.spc.wrapper.CommandBase#execute(com.sijobe.spc.wrapper.CommandSender, java.util.List)

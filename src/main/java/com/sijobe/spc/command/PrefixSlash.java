@@ -27,12 +27,10 @@ import java.util.Set;
       enabled = true
       )
 public class PrefixSlash extends StandardCommand {
+   /**
+    * a list of players that have slashes prefixed
+    */
    public static Set<String> playersUsing = new HashSet<String>();
-   
-   @Override
-   public boolean isEnabled() {
-      return true;
-   }
    
    @Override
    public void execute(CommandSender sender, List<?> params) throws CommandException {

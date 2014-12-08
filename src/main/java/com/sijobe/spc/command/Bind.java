@@ -29,7 +29,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * @version 1.1
  */
 public class Bind extends MultipleCommands implements KeyListener, IClientConfig<Integer> {
+   /**
+    * the settings prefix
+    */
    public static final String SETTINGS_PREFIX = "keybinding-";
+   
+   /**
+    * the command that is sent everytime a bound key is pressed
+    */
    public static final String KEYPRESS_COMMAND = "/keypress ";
    
    /**

@@ -37,7 +37,7 @@ public class ClientProxy extends Proxy {
 	}
 
 	@Override
-	public void toggleClientLighting(boolean isLit) {
+	public void setClientLighting(boolean isLit) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		if(isLit) {
 			player.addChatMessage(new ChatComponentText("Lighting world"));

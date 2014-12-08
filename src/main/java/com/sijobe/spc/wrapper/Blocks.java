@@ -1,5 +1,11 @@
 package com.sijobe.spc.wrapper;
 
+/**
+ * kinda like net.minecraft.init.Blocks, but a wrapper
+ * 
+ * @author aucguy
+ * @version 1.0
+ */
 public class Blocks
 {
 	public static Block air;
@@ -10,6 +16,9 @@ public class Blocks
 	public static Block torch;
 	public static Block dragon_egg;
 	
+	/**
+	 * initializes the blocks
+	 */
 	static void init()
 	{
 		air = (Block) Block.blockRegistry.getObject("minecraft:air");

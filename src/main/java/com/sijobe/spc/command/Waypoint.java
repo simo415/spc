@@ -39,11 +39,6 @@ public class Waypoint extends MultipleCommands {
    }
    
    @Override
-   public boolean isEnabled() {
-      return true;
-   }
-
-   @Override
    public String[] getCommands() {
       return new String[] {"set", "rem", "goto"};
    }

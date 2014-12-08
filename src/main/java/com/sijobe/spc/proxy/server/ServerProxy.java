@@ -47,7 +47,7 @@ public class ServerProxy extends Proxy {
 	}
 
 	@Override
-	public void toggleClientLighting(boolean isLit) {	
+	public void setClientLighting(boolean isLit) {	
 	}
 	
 	@Override
