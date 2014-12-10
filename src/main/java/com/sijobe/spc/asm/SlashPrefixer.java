@@ -5,7 +5,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import org.objectweb.asm.MethodVisitor;
 
 import com.sijobe.spc.command.PrefixSlash;
-import com.sun.xml.internal.ws.org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Opcodes;
 
 /**
  * prefixes slashes onto commands if the player has it enabled

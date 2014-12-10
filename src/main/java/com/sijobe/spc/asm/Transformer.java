@@ -4,11 +4,18 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 /**
  * the ASMtransformer
+ * 
  * @author aucguy
  * @version 1.0
  */
 public class Transformer implements IClassTransformer {
+   static Transformer instance;
+   
    public Transformer() {
+      instance = this;
+   }
+   
+   void hookTransformers() {
       Processor processor = Processor.getInstance();
       processor.registerMethodTransformers(MethodTransformer.generateFromFunctions(SimpleHooked.class));
       processor.registerMethodTransformer(new SlashPrefixer());

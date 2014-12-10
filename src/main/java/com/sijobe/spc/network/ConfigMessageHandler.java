@@ -11,9 +11,9 @@ import cpw.mods.fml.relauncher.Side;
  * @author aucguy
  * @version 1.0
  */
-public class ConfigMessageHandler implements IMessageHandler<PacketConfig, IMessage> {
+public class ConfigMessageHandler implements IMessageHandler<PacketConfig, DummyMessage> {
 	@Override
-	public IMessage onMessage(PacketConfig message, MessageContext ctx) {
+	public DummyMessage onMessage(PacketConfig message, MessageContext ctx) {
 		if(ctx.side != Side.CLIENT) {
 			System.out.println("Config packet handled on server side. Abandon Ship!");
 			return null;

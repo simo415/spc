@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Random;
 
 import com.sijobe.spc.ModSpc;
-import com.sijobe.spc.util.AccessHelper;
+import com.sijobe.spc.util.ReflectionHelper;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.inventory.IInventory;
@@ -109,21 +109,7 @@ public class World {
     */
    public void setCheats(boolean cheats) {
       changeWorldInfo("allowCommands", cheats);
-      try {
-		AccessHelper.setBoolean(MinecraftServer.getMinecraftServer().getConfigurationManager(), "commandsAllowedForAll", cheats);
-	} catch (NoSuchFieldException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (SecurityException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IllegalArgumentException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IllegalAccessException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+		ReflectionHelper.setField(ReflectionHelper.commandsAllowedForAll, MinecraftServer.getMinecraftServer().getConfigurationManager(), cheats);
    }
    
    /**

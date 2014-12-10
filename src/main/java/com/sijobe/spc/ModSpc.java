@@ -38,8 +38,11 @@ import com.sijobe.spc.proxy.Proxy;
  * @author aucguy
  * @version 1.0
  */
-@Mod(useMetadata = true, modid = "spc", version = "5.0")
-public class ModSpc { 
+@Mod(
+      useMetadata = true,
+      modid = "spc",
+      version = "5.0")
+public class ModSpc {
    /**
     * the spc mod instance
     */
@@ -94,9 +97,7 @@ public class ModSpc {
     * @throws ClassNotFoundException - because of reflection
     */
    @EventHandler
-   public void init(FMLInitializationEvent event)
-         throws InstantiationException, IllegalAccessException,
-         ClassNotFoundException {
+   public void init(FMLInitializationEvent event) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
       this.side = event.getSide();
       if (this.side == Side.CLIENT) {
          // if reflection wasn't used then when this class was loaded the
@@ -104,27 +105,10 @@ public class ModSpc {
          // and since ClientProxy referrs to net.minecraft.client.Minecraft,
          // that would be loaded
          // loading net.minecraft.client.Minecraft on a server crashes it.
-         this.proxy = (Proxy) Class.forName(
-               "com.sijobe.spc.proxy.client.ClientProxy").newInstance(); // using
-                                                                         // reflection
-                                                                         // to
-                                                                         // prevent
-                                                                         // client
-                                                                         // class
-                                                                         // loading
-                                                                         // server
-                                                                         // side
+         this.proxy = (Proxy) Class.forName("com.sijobe.spc.proxy.client.ClientProxy").newInstance();
       } else {
-         this.proxy = (Proxy) Class.forName(
-               "com.sijobe.spc.proxy.server.ServerProxy").newInstance(); // using
-                                                                         // reflection
-                                                                         // to
-                                                                         // prevent
-                                                                         // client
-                                                                         // class
-                                                                         // loading
-                                                                         // server
-                                                                         // side
+         // using reflection to prevent client classes loading server side
+         this.proxy = (Proxy) Class.forName("com.sijobe.spc.proxy.server.ServerProxy").newInstance();
       }
       
       Block.init();
@@ -137,8 +121,7 @@ public class ModSpc {
       MinecraftForge.EVENT_BUS.register(this);
       FMLCommonHandler.instance().bus().register(this);
       this.networkHandler = new SimpleNetworkWrapper("spc.network");
-      this.networkHandler.registerMessage(ConfigMessageHandler.class,
-            PacketConfig.class, 0, Side.CLIENT);
+      this.networkHandler.registerMessage(ConfigMessageHandler.class, PacketConfig.class, 0, Side.CLIENT);
       this.loadClientSettingHooks();
    }
    
@@ -185,9 +168,8 @@ public class ModSpc {
          if (hook.isEnabled()) {
             // TODO pass same player instance instead of creating a new one each
             // time
-            event.newSpeed = hook.getBreakSpeed(new Player(event.entityPlayer),
-                  Block.fromMinecraftBlock(event.block), event.metadata,
-                  event.originalSpeed, event.x, event.y, event.z);
+            event.newSpeed = hook
+                  .getBreakSpeed(new Player(event.entityPlayer), Block.fromMinecraftBlock(event.block), event.metadata, event.originalSpeed, event.x, event.y, event.z);
          }
       }
    }
@@ -201,10 +183,8 @@ public class ModSpc {
    public void onBlockBreak(BreakEvent event) {
       for (IBlockBroken hook : this.hookManager.getHooks(IBlockBroken.class)) {
          if (hook.isEnabled()) {
-            hook.onBreakBroken(event.x, event.y, event.z,
-                  new World(event.world),
-                  Block.fromMinecraftBlock(event.block), event.blockMetadata,
-                  new Player(event.getPlayer()));
+            hook.onBreakBroken(event.x, event.y, event.z, new World(event.world), Block.fromMinecraftBlock(event.block), event.blockMetadata, new Player(
+                  event.getPlayer()));
          }
       }
    }

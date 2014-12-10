@@ -27,17 +27,43 @@ class Processor {
    }
    
    /**
+    * obfuscated name storage
+    */
+   public Map<String, String> mappings;
+   
+   /**
     * maps class binary names to classTransformers
     */
    protected Map<String, ClassTransformer> classTransformers;
+   
+   /**
+    * whether or not the class files are obfuscated
+    */
+   public boolean obfuscated;
    
    /**
     * makes a Processor
     */
    Processor() {
       this.classTransformers = new HashMap<String, ClassTransformer>();
+      this.mappings = new HashMap<String, String>();
+      this.loadMappings();
    }
    
+   /**
+    * loads the obfuscated name mappings
+    */
+   protected void loadMappings() {
+      this.mappings.put("net.minecraft.client.multiplayer.PlayerControllerMP", "biy");
+      this.mappings.put("net.minecraft.client.multiplayer.PlayerControllerMP.getBlockReachDistance", "d");
+      this.mappings.put("net.minecraft.client.renderer.ItemRenderer", "blq");
+      this.mappings.put("net.minecraft.client.renderer.ItemRenderer.renderInsideOfBlock", "a");
+      this.mappings.put("net.minecraft.util.IIcon", "ps");
+      this.mappings.put("net.minecraft.network.NetHandlerPlayServer", "mx");
+      this.mappings.put("net.minecraft.network.NetHandlerPlayServer.processChatMessage", "a");
+      this.mappings.put("net.minecraft.network.play.client.C01PacketChatMessage", "ie");
+   }
+
    /**
     * modifies the given bytecode with previously given Transformers
     * 

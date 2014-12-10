@@ -1,7 +1,7 @@
 package com.sijobe.spc.command;
 
-import com.sijobe.spc.util.AccessHelper;
 import com.sijobe.spc.util.FontColour;
+import com.sijobe.spc.util.ReflectionHelper;
 import com.sijobe.spc.util.Settings;
 import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.ParameterString;
@@ -62,24 +62,10 @@ public class SetSpeed extends StandardCommand {
 			try {
 				float speed = Float.parseFloat((String)params.get(0));
 				config.set(CONFIG_KEY, speed);
-				try {
-					PlayerCapabilities capabilities = super.getSenderAsPlayer(sender).getMinecraftPlayer().capabilities;
-					AccessHelper.setFloat(capabilities, "walkSpeed", speed/10);
-					AccessHelper.setFloat(capabilities, "flySpeed", speed/20);
-					super.getSenderAsPlayer(sender).getMinecraftPlayer().sendPlayerAbilities();
-				} catch (NoSuchFieldException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				PlayerCapabilities capabilities = super.getSenderAsPlayer(sender).getMinecraftPlayer().capabilities;
+				ReflectionHelper.setField(ReflectionHelper.walkSpeed, capabilities, speed/10);
+				ReflectionHelper.setField(ReflectionHelper.flySpeed, capabilities, speed/20);
+				super.getSenderAsPlayer(sender).getMinecraftPlayer().sendPlayerAbilities();
 			} catch (NumberFormatException e) {
 				throw new CommandException("Could not parse " + (String)params.get(0) + " as a speed.");
 			}

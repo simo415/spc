@@ -4,7 +4,6 @@ import com.sijobe.spc.ModSpc;
 import com.sijobe.spc.network.Config;
 import com.sijobe.spc.network.IClientConfig;
 import com.sijobe.spc.network.PacketConfig;
-import com.sijobe.spc.util.ForgeHelper;
 import com.sijobe.spc.validation.Parameter;
 import com.sijobe.spc.validation.Parameters;
 import com.sijobe.spc.validation.ParameterDouble;
@@ -56,7 +55,7 @@ public class BlockReach extends StandardCommand implements IClientConfig<Float>{
       EntityPlayerMP playerEntity = (EntityPlayerMP)player.getMinecraftPlayer();
       if(params.size() == 0) {
          sender.sendMessageToPlayer("Current block reach distance: " +
-               ForgeHelper.getBlockReachDistance(playerEntity.theItemInWorldManager));
+               playerEntity.theItemInWorldManager.getBlockReachDistance());
       } else {
          double newReach = (Double)params.get(0);
          if(newReach < 4.5D || newReach > 255.0D) {

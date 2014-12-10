@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.sijobe.spc.ModSpc;
 import com.sijobe.spc.core.Constants;
-import com.sijobe.spc.util.AccessHelper;
+import com.sijobe.spc.util.ReflectionHelper;
 
 import cpw.mods.fml.relauncher.Side;
 
@@ -114,10 +114,7 @@ public class MinecraftServer {
       if(ModSpc.instance.side == Side.SERVER) {
          String dir = null;
          try {
-            dir = ((File) AccessHelper.callMethod(getMinecraftServer(), "getDataDirectory")).getAbsolutePath();
-         } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            dir = ((File) ReflectionHelper.getDataDirectory.invoke(getMinecraftServer())).getAbsolutePath();
          } catch (SecurityException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
