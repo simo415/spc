@@ -234,6 +234,7 @@ public class DynamicClassLoader {
             } catch (Throwable t) {
             }
          }
+         jf.close();
       } catch (Exception e) {
          e.printStackTrace();
          return null;

@@ -17,8 +17,12 @@ public class Transformer implements IClassTransformer {
    
    void hookTransformers() {
       Processor processor = Processor.getInstance();
+      processor.mappings.shouldWarn = true;
       processor.registerMethodTransformers(MethodTransformer.generateFromFunctions(SimpleHooked.class));
       processor.registerMethodTransformer(new SlashPrefixer());
+      processor.registerMethodTransformer(new EntityReacherClient());
+      processor.registerMethodTransformer(new EntityReacherServer());
+      processor.mappings.shouldWarn = false;
    }
    
    @Override

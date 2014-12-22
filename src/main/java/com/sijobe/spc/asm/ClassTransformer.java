@@ -62,7 +62,7 @@ class ClassTransformer extends ClassVisitor {
       if (this.methodTransformers.containsKey(id)) {
          MethodTransformer transformer = this.methodTransformers.get(id);
          transformer.injectMethodWriter(writer);
-         return transformer;
+         return transformer.new Wrapper(transformer);
       } else {
          return writer;
       }

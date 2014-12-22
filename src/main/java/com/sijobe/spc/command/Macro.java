@@ -172,6 +172,7 @@ public class Macro extends MultipleCommands {
       }
       byte[] data = new byte[(int) file.length()];
       reader.read(data);
+      reader.close();
       return new String(data);
    }
    

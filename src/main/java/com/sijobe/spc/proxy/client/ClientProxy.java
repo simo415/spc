@@ -1,7 +1,10 @@
 package com.sijobe.spc.proxy.client;
 
 import java.io.File;
+import java.lang.reflect.Field;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
@@ -14,6 +17,8 @@ import com.sijobe.spc.util.ReflectionHelper;
 import com.sijobe.spc.wrapper.Player;
 
 public class ClientProxy extends Proxy {
+   public static final Field blockHitDelayField = ReflectionHelper.getField(PlayerControllerMP.class, "blockHitDelay", "i", "field_78781_i");
+   
    @Override
    public File getDataDirectory() {
       return MinecraftClient.getMinecraftDirectory();
@@ -73,7 +78,7 @@ public class ClientProxy extends Proxy {
    
    @Override
    public void setClientHitDelay(int delay) {
-      ReflectionHelper.setField(ReflectionHelper.blockHitDelay, Minecraft
+      ReflectionHelper.setField(blockHitDelayField, Minecraft
             .getMinecraft().playerController, delay);
    }
 }

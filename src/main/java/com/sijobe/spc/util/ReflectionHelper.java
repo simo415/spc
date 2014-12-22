@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -17,14 +16,8 @@ import net.minecraft.server.management.ServerConfigurationManager;
  */
 public class ReflectionHelper {
    /**
-    * stores obfuscation names
-    */
-   public static final Mappings mappings = new Mappings();
-   
-   /**
     * a bunch of stuff that is accessed through reflection
     */
-   public static final Field blockHitDelay = getField(PlayerControllerMP.class, "blockHitDelay", "i", "field_78781_i");
    public static final Field walkSpeed = getField(PlayerCapabilities.class, "walkSpeed", "g", "field_75097_g");
    public static final Field flySpeed = getField(PlayerCapabilities.class, "flySpeed", "f", "field_75096_f");
    public static final Field commandsAllowedForAll = getField(ServerConfigurationManager.class, "commandsAllowedForAll", "o", "field_72407_n");

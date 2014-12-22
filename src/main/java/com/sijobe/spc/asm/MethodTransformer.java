@@ -16,6 +16,22 @@ import org.objectweb.asm.Opcodes;
  * @version 1.0
  */
 abstract class MethodTransformer extends MethodVisitor {
+   /**
+    * allows for deobfuscated names to go through the visit methods
+    */
+   final class Wrapper extends MethodVisitor {
+      Wrapper(MethodVisitor mv) {
+         super(Opcodes.ASM4, mv);
+      }
+      
+      @Override
+      public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+         String[] parts = convertMethod(owner.replace('/', '.'), name.replace('/', '.'), desc.replace('/', '.'), Processor
+               .getInstance().reversedMappings);
+         super.visitMethodInsn(opcode, parts[0].replace('.', '/'), parts[1].replace('.', '/'), parts[2]
+               .replace('.', '/'));
+      }
+   }
    
    /**
     * the method id of this transformer a method id is in the format
@@ -30,59 +46,70 @@ abstract class MethodTransformer extends MethodVisitor {
     */
    MethodTransformer(String id) {
       super(Opcodes.ASM4);
-      this.id = this.convertId(id);
+      String[] parts = id.split(":");
+      String[] changed = convertMethod(parts[0], parts[1], parts[2]);
+      this.id = changed[0] + ":" + changed[1] + ":" + changed[2];
+      System.out.println("id changed from "+id+" to "+this.id);
+   }
+   
+   protected String[] convertMethod(String oldOwner, String oldName, String oldDesc) {
+      return convertMethod(oldOwner, oldName, oldDesc, Processor.getInstance().mappings);
    }
    
    /**
-    * converts the given development-named id to the obfuscated id if necessary.
+    * converts the given development-named method to the obfuscated method if
+    * necessary.
     * 
-    * @param id - the unobfuscated id
+    * @param oldOwner - the deobfuscated name of the class with the given method
+    * @param oldName - the deobfuscated name of the method
+    * @param oldDesc - the deobfuscated method descriptor
+    * @param slashes - whether or not the names contain slashes
     */
-   protected String convertId(String id) {
-      if(Processor.getInstance().obfuscated) {
-         Map<String, String> mappings = Processor.getInstance().mappings;
-         String[] parts = id.split(":");
-         String oldClass = parts[0];
-         String oldMethod = parts[1];
-         String oldDescriptor = parts[2];
-         String newClass = mappings.get(oldClass);
-         String newMethod = mappings.get(oldClass + "." + oldMethod);
+   protected static String[] convertMethod(String oldOwner, String oldName, String oldDesc, Map<String, String> mappings) {
+      if (Processor.getInstance().obfuscated) {
+         String newOwner = mappings.get(oldOwner);
+         String[] parts = mappings.get(oldOwner + "." + oldName).split("\\.");
+         String newName = parts[parts.length-1];
          
-         String[] partsDesc = oldDescriptor.split("\\)");
+         String[] partsDesc = oldDesc.split("\\)");
          String oldArgs = partsDesc[0].replace("(", "");
          String oldReturn = partsDesc[1];
          
          String newArgs = "";
-         for(int i=0; i < oldArgs.length(); i++) {
-            if(oldArgs.charAt(i) == 'L') {
+         for (int i = 0; i < oldArgs.length(); i++) {
+            if (oldArgs.charAt(i) == 'L') {
                i++;
                String arg = "";
-               for(; oldArgs.charAt(i) != ';'; i++) {
+               for (; oldArgs.charAt(i) != ';'; i++) {
                   arg += oldArgs.charAt(i);
                }
-               newArgs += "L" + mappings.get(arg.replace('/', '.')) + ";";
-            }
-            else {
+               newArgs += "L" + mappings.get(arg) + ";";
+            } else {
                newArgs += oldArgs.charAt(i);
             }
          }
          
          String newReturn;
-         if(oldReturn.startsWith("L")) {
-            newReturn = "L"+mappings.get(oldReturn.substring(1, oldReturn.length()-1).replace('/', '.'))+";";
-         }
-         else {
+         if (oldReturn.startsWith("L")) {
+            newReturn = "L" + mappings.get(oldReturn.substring(1, oldReturn.length() - 1)) + ";";
+         } else {
             newReturn = oldReturn;
          }
          
-         String newId = newClass+":"+newMethod+":("+newArgs+")"+newReturn;
-         System.out.println("methodtranformer id '"+id+"' changed to '"+newId+"'.");
+         String[] newId = new String[] { newOwner, newName, "(" + newArgs + ")" + newReturn };
          return newId;
-      }
-      else {
-         return id;
+      } else {
+         return new String[] { oldOwner, oldName, oldDesc };
       }
    }
+   
+   /**
+    * gives this MethodTrasnformer the method writer instance
+    * 
+    * @param mv - the MethodWriter created for this instance. Made just before
+    *           this instance will visit things
+    */
+   abstract void injectMethodWriter(MethodVisitor mv);
    
    /**
     * gets teh applicable method
@@ -93,13 +120,11 @@ abstract class MethodTransformer extends MethodVisitor {
       return this.id;
    }
    
-   /**
-    * gives this MethodTrasnformer the method writer instance
-    * 
-    * @param mv - the MethodWriter created for this instance. Made just before
-    *           this instance will visit things
-    */
-   abstract void injectMethodWriter(MethodVisitor mv);
+   @Override
+   public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+      String[] parts = convertMethod(owner.replace('/', '.'), name.replace('/', '.'), desc.replace('/', '.'));
+      super.visitMethodInsn(opcode, parts[0].replace('.', '/'), parts[1].replace('.', '/'), parts[2].replace('.', '/'));
+   }
    
    /**
     * generates an array of MethodTransformers from a class of annotations. This
