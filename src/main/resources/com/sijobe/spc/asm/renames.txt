@@ -1,0 +1,14 @@
+#mc version 1.7.2
+net.minecraft.client.multiplayer.PlayerControllerMP biy
+net.minecraft.client.multiplayer.PlayerControllerMP.getBlockReachDistance biy.d
+net.minecraft.client.multiplayer.PlayerControllerMP.extendedReach biy.i
+net.minecraft.client.renderer.ItemRenderer blq
+net.minecraft.client.renderer.ItemRenderer.renderInsideOfBlock blq.a
+net.minecraft.util.IIcon ps
+net.minecraft.network.NetHandlerPlayServer mx
+net.minecraft.network.NetHandlerPlayServer.processChatMessage mx.a
+net.minecraft.network.NetHandlerPlayServer.processUseEntity mx.a
+net.minecraft.network.play.client.C01PacketChatMessage ie
+net.minecraft.network.play.client.C02PacketUseEntity io
+net.minecraft.client.renderer.EntityRenderer bll
+net.minecraft.client.renderer.EntityRenderer.getMouseOver bll.a
